@@ -1,6 +1,17 @@
 # Fitbod Workout Data Analysis Tool
 
+Try it out here: [https://fitbod-report.streamlit.app/](https://fitbod-report.streamlit.app/)
+
 A Streamlit-based web application that processes workout data exported from the [Fitbod](http://fitbod.me) app, generating detailed or summary reports in markdown and PDF formats. The tool provides weekly summaries, exercise progression tracking, and comprehensive workout analytics designed to be easily understood by both humans and AI tools.
+
+The tool was primarily created to make Fitbod data more AI-friendly. The generated markdown reports can be easily fed into tools like ChatGPT, Claude, or Gemini to:
+- Analyse workout patterns
+- Get personalised recommendations
+- Identify areas for improvement
+- Build new workout plans based on historical data
+- Compare/Build your routines with reference fitness books/programs
+
+**Privacy First**: No data storage - everything is processed in your browser.
 
 ## Features
 
