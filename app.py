@@ -27,12 +27,28 @@ def process_and_generate_report(filtered_df, unit_system, report_format, timezon
     """Process data and generate report with caching for better performance."""
     timer = monitor_performance("Report Generation")
     
-    processed_data = process_data_from_df(filtered_df)
+    # Process data in chunks for detailed reports
+    if report_format == "detailed" and len(filtered_df) > 100:
+        chunk_size = 100
+        chunks = [filtered_df[i:i + chunk_size] for i in range(0, len(filtered_df), chunk_size)]
+        
+        processed_data = []
+        progress_bar = st.progress(0)
+        for i, chunk in enumerate(chunks):
+            chunk_data = process_data_from_df(chunk)
+            processed_data.extend(chunk_data)  # Use extend instead of append since we're dealing with lists
+            progress_bar.progress((i + 1) / len(chunks))
+        
+        progress_bar.empty()
+    else:
+        processed_data = process_data_from_df(filtered_df)
+    
     weekly_summary = summarize_by_week(
         processed_data, 
         use_metric=(unit_system == "metric"),
         timezone=timezone
     )
+    
     report = generate_markdown_report(
         weekly_summary, 
         use_metric=(unit_system == "metric"), 
@@ -41,22 +57,45 @@ def process_and_generate_report(filtered_df, unit_system, report_format, timezon
     
     duration = timer()
     if duration > 5:  # Threshold for slow operations
-        st.warning(f"Report generation took {duration:.2f} seconds. Consider reducing the date range for better performance.")
+        st.warning(f"Report generation took {duration:.2f} seconds. Consider using the summary format or reducing the date range for better performance.")
     
     return report
+
+@st.cache_data
+def load_and_validate_data(file_data):
+    """Cache the data loading and validation process."""
+    df = pd.read_csv(file_data)
+    is_valid, missing_cols = validate_data_structure(df, is_dataframe=True)
+    if not is_valid:
+        raise ValueError(f"Invalid CSV structure. Missing columns: {', '.join(missing_cols)}")
+    return df
+
+@st.cache_data
+def prepare_date_filtered_data(df, start_date, end_date):
+    """Cache the date filtering process."""
+    # Convert dates only for filtering
+    date_series = pd.to_datetime(df['Date'])
+    mask = (date_series.dt.date >= start_date) & (date_series.dt.date <= end_date)
+    filtered_df = df[mask].copy()
+    
+    # Apply timezone only to filtered data
+    filtered_df['Date'] = pd.to_datetime(filtered_df['Date'])
+    if filtered_df['Date'].dt.tz is None:
+        filtered_df['Date'] = filtered_df['Date'].dt.tz_localize('UTC')
+    
+    return filtered_df
 
 def handle_file_processing(uploaded_file):
     """Process uploaded file with comprehensive error handling."""
     try:
         with st.spinner("Processing file..."):
-            df = pd.read_csv(uploaded_file)
-            if df.empty:
-                return None, "The uploaded file is empty"
-            return df, None
+            return load_and_validate_data(uploaded_file), None
     except pd.errors.EmptyDataError:
         return None, "The uploaded file is empty"
     except pd.errors.ParserError:
         return None, "Invalid CSV format"
+    except ValueError as ve:
+        return None, str(ve)
     except Exception as e:
         return None, f"Error processing file: {str(e)}"
 
@@ -98,20 +137,10 @@ if uploaded_file is not None:
         st.stop()
     
     try:
-        is_valid, missing_cols = validate_data_structure(df, is_dataframe=True)
-        
-        if not is_valid:
-            st.error(f"Invalid CSV structure. Missing columns: {', '.join(missing_cols)}")
-            st.stop()
-            
-        # Convert dates to datetime for filtering
-        df['Date'] = pd.to_datetime(df['Date'])
-        # Add timezone information if not present
-        if df['Date'].dt.tz is None:
-            df['Date'] = df['Date'].dt.tz_localize('UTC')
-            
-        min_date = df['Date'].min()
-        max_date = df['Date'].max()
+        # Get min and max dates without timezone conversion
+        date_series = pd.to_datetime(df['Date'])
+        min_date = date_series.min()
+        max_date = date_series.max()
         
         # Date range selector
         st.subheader("Select Date Range")
@@ -121,9 +150,8 @@ if uploaded_file is not None:
         with col2:
             end_date = st.date_input("End Date", max_date.date(), min_value=min_date.date(), max_value=max_date.date())
             
-        # Filter data based on date range
-        mask = (df['Date'].dt.date >= start_date) & (df['Date'].dt.date <= end_date)
-        filtered_df = df[mask]
+        # Filter data based on date range with caching
+        filtered_df = prepare_date_filtered_data(df, start_date, end_date)
         
         if filtered_df.empty:
             st.warning("No data available for the selected date range.")

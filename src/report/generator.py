@@ -108,8 +108,8 @@ def summarize_by_week(processed_data, use_metric=True, timezone='UTC'):
         week_start = local_date - timedelta(days=local_date.weekday())
         week_key = week_start.strftime('%Y-%m-%d') + ' to ' + (week_start + timedelta(days=6)).strftime('%Y-%m-%d')
         
-        # Extract and convert exercise metrics
-        weight_kg = float(entry['Weight(kg)'])
+        # Extract exercise metrics - store original weight
+        weight = float(entry['Weight(kg)'])  # Keep original weight
         reps = int(float(entry['Reps']))
         distance_m = float(entry['Distance(m)'])
         try:
@@ -117,8 +117,11 @@ def summarize_by_week(processed_data, use_metric=True, timezone='UTC'):
         except (ValueError, TypeError):
             duration = 0.0
         
+        # Convert weight if using imperial
+        if not use_metric:
+            weight, _ = convert_units(weight, 'weight', to_metric=False)
+        
         # Classify exercise type based on metrics
-        # Cardio exercises have either duration and distance, or long duration
         is_cardio = (
             (duration > 0 and distance_m > 0) or  # Running, Walking etc
             (reps == 0 and distance_m == 0 and duration > 300)  # Elliptical, Rowing etc
@@ -126,9 +129,9 @@ def summarize_by_week(processed_data, use_metric=True, timezone='UTC'):
         
         # Strength exercises are anything not cardio meeting specific criteria
         is_strength = not is_cardio and (
-            (reps == 0 and weight_kg > 0) or  # Kettlebell Single Arm Farmer Walk, Sled Push etc
-            (reps > 0 and weight_kg == 0 and duration == 0) or  # Air Squats, Bench Dip etc
-            (reps > 0 and weight_kg > 0) or  # Deadlift, Cable Face Pull etc
+            (reps == 0 and weight > 0) or  # Kettlebell Single Arm Farmer Walk, Sled Push etc
+            (reps > 0 and weight == 0 and duration == 0) or  # Air Squats, Bench Dip etc
+            (reps > 0 and weight > 0) or  # Deadlift, Cable Face Pull etc
             (reps > 0 and distance_m == 0) or  # Bent Over Barbell Row etc
             (reps == 0 and distance_m == 0)  # Dead Hang, Plank etc
         )
@@ -140,7 +143,8 @@ def summarize_by_week(processed_data, use_metric=True, timezone='UTC'):
             'is_cardio': is_cardio,
             'is_strength': is_strength,
             'duration': duration,
-            'weight_kg': weight_kg,
+            'weight': weight,  # Store converted weight if imperial
+            'weight_unit': 'lbs' if not use_metric else 'kg',
             'reps': reps,
             'distance_m': distance_m
         }
@@ -224,7 +228,7 @@ def summarize_by_week(processed_data, use_metric=True, timezone='UTC'):
                 summaries[week_key]['Workouts'][workout_time] = []
             
             # Convert units for display
-            weight, weight_unit = convert_units(exercise['weight_kg'], 'weight', use_metric)
+            weight, weight_unit = convert_units(exercise['weight'], 'weight', use_metric)
             
             # Create exercise detail
             exercise_detail = {
@@ -313,7 +317,7 @@ def generate_markdown_report(summaries, use_metric=True, report_format='summary'
         str: Markdown formatted report containing workout statistics and analysis
     """
     _, distance_unit = convert_units(1, 'distance', use_metric)
-    _, weight_unit = convert_units(1, 'weight', use_metric)
+    weight_unit = 'kg' if use_metric else 'lbs'
     
     report = ["# Workout Summary Report\n"]
     

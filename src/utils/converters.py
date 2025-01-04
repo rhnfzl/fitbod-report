@@ -24,9 +24,9 @@ def convert_units(value, unit_type, to_metric=True):
     """Convert between metric and imperial units.
     
     Args:
-        value: Numeric value to convert
+        value: Numeric value to convert (assumed to be in metric units)
         unit_type: Type of unit ('weight' or 'distance')
-        to_metric: If True, convert to metric; if False, convert to imperial
+        to_metric: If True, keep metric; if False, convert to imperial
         
     Returns:
         tuple: (converted_value, unit_string)
@@ -38,5 +38,7 @@ def convert_units(value, unit_type, to_metric=True):
     factor, metric_unit, imperial_unit = conversions[unit_type]
     
     if to_metric:
-        return value / factor, metric_unit
+        # Input is already in metric, return as is
+        return value, metric_unit
+    # Convert from metric to imperial
     return value * factor, imperial_unit 

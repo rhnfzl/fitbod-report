@@ -88,5 +88,14 @@ def process_data_from_df(df):
         df[col] = pd.to_numeric(df[col], errors='coerce').fillna(default)
         if col == 'Reps':
             df[col] = df[col].astype(int)
+        elif col == 'Weight(kg)':
+            # Keep original weight values and round to nearest 0.5 kg
+            df[col] = (df[col] * 2).round() / 2
+            # Ensure weight is not modified by any unintended conversion
+            df[col] = df[col].astype(float)
+    
+    # Ensure multiplier is applied correctly to weights if needed
+    if 'multiplier' in df.columns:
+        df['Weight(kg)'] = df['Weight(kg)'] * pd.to_numeric(df['multiplier'], errors='coerce').fillna(1.0)
     
     return process_data(df.columns.tolist(), df.values.tolist()) 
