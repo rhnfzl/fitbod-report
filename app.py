@@ -28,8 +28,8 @@ def process_and_generate_report(filtered_df, unit_system, report_format, timezon
     timer = monitor_performance("Report Generation")
     
     # Process data in chunks for detailed reports
-    if report_format == "detailed" and len(filtered_df) > 100:
-        chunk_size = 100
+    if report_format == "detailed" and len(filtered_df) > 1000:
+        chunk_size = 1000
         chunks = [filtered_df[i:i + chunk_size] for i in range(0, len(filtered_df), chunk_size)]
         
         processed_data = []
