@@ -35,54 +35,90 @@ The tool was primarily created to make Fitbod data more AI-friendly. The generat
   - Warmup vs working set distinction
   - Exercise-specific statistics
 
-- **Data Processing**:
-  - Automatic unit conversion (meters to miles/km, kilograms to pounds)
-  - CSV validation and error handling
-  - Timezone-aware date processing
-  - Clean, structured output
+- **API Access** (New):
+  - REST API endpoints using UV
+  - Programmatic report generation
+  - Same features as web interface
 
-## Project Structure
+## Prerequisites
 
-```
-fitbod-report/
-├── app.py                 # Main Streamlit application
-├── requirements.txt       # Project dependencies
-├── LICENSE               # MIT License file
-├── docs/                 # Documentation files
-├── src/                  # Source code modules
-│   ├── __init__.py
-│   ├── data/            # Data processing modules
-│   │   ├── __init__.py
-│   │   ├── processor.py # Data processing utilities
-│   │   └── validator.py # Data validation utilities
-│   ├── pdf/             # PDF generation modules
-│   │   ├── __init__.py
-│   │   └── generator.py # PDF conversion utilities
-│   ├── report/          # Report generation modules
-│   │   ├── __init__.py
-│   │   └── generator.py # Report generation utilities
-│   └── utils/           # Utility modules
-│       ├── __init__.py
-│       └── converters.py # Unit conversion utilities
-```
+- Python 3.8 or higher
+- UV package manager (for API and local development)
 
 ## Installation
 
-1. Clone the repository:
+### Using Streamlit Cloud (Recommended)
+Simply visit [https://fitbod-report.streamlit.app/](https://fitbod-report.streamlit.app/) - no installation required!
+
+### Local Development
+
+1. Install UV if you haven't already:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Clone this repository:
 ```bash
 git clone https://github.com/rhnfzl/fitbod-report.git
 cd fitbod-report
 ```
 
-2. Create and activate a virtual environment (optional but recommended):
+3. Install dependencies using UV:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+uv pip install -e .
 ```
 
-3. Install required dependencies:
+For development, install additional dependencies:
 ```bash
-pip install -r requirements.txt
+uv pip install -e ".[dev]"
+```
+
+## Usage
+
+### Web Interface
+
+1. **Streamlit Cloud (Recommended)**:
+   - Visit [https://fitbod-report.streamlit.app/](https://fitbod-report.streamlit.app/)
+   - Upload your Fitbod export CSV file
+   - Select your preferences and generate reports
+
+2. **Local Development**:
+   ```bash
+   uv run start
+   ```
+   This will start the web interface at http://localhost:8501
+
+### API Server (New)
+
+Run the API server:
+```bash
+uv run api
+```
+
+For development with auto-reload:
+```bash
+uv run dev
+```
+
+The API will be available at http://localhost:8000
+
+#### API Endpoints
+
+##### POST /api/generate-report
+Generate a workout report from uploaded data.
+
+Parameters (form-data):
+- `file`: CSV file with workout data
+- `unit_system`: 'metric' or 'imperial' (optional, default: 'metric')
+- `report_format`: 'summary' or 'detailed' (optional, default: 'summary')
+- `timezone`: Timezone string (optional, auto-detected if not provided)
+
+Example response:
+```json
+{
+    "status": "success",
+    "report": "# Workout Report\n..."
+}
 ```
 
 ## Data Preparation
@@ -93,21 +129,6 @@ pip install -r requirements.txt
    - Click Settings (cog in upper right)
    - Scroll down to "Export Workout Data"
    - Save the CSV file
-
-## Usage
-
-1. Start the Streamlit app:
-```bash
-streamlit run app.py
-```
-
-2. Use the web interface:
-   - Upload your Fitbod export CSV file
-   - Select date range for analysis
-   - Choose unit system (metric/imperial)
-   - Select report format (summary/detailed)
-   - Choose output format (markdown/PDF)
-   - Generate and download your report
 
 ## Input Data Format
 
@@ -124,16 +145,32 @@ The CSV file should contain the following columns:
 - `Note`: Any additional notes
 - `multiplier`: Exercise multiplier
 
-## Dependencies
+## Development
 
-Key dependencies include:
-- Python 3.8+
-- streamlit>=1.31.0
-- pandas>=2.2.0
-- pytz>=2024.1
-- markdown-pdf>=0.1.2
+1. Format code:
+```bash
+black .
+isort .
+```
 
-For a complete list of dependencies, see `requirements.txt`.
+2. Run tests:
+```bash
+pytest
+```
+
+## Project Structure
+
+```
+fitbod-report/
+├── app.py                  # Streamlit web application
+├── pyproject.toml         # Project configuration and dependencies
+├── requirements.txt       # Legacy requirements file
+└── src/
+    ├── api/              # API endpoints
+    ├── data/             # Data processing modules
+    ├── pdf/              # PDF generation
+    └── report/           # Report generation logic
+```
 
 ## License
 

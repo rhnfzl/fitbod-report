@@ -1,0 +1,36 @@
+[project]
+name = "fitbod-report"
+version = "0.1.0"
+description = "A Fitbod workout report generator application"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "streamlit>=1.31.0",
+    "pytz>=2024.1",
+    "markdown-pdf>=0.1.2",
+    "pandas>=2.2.0",
+    "watchdog>=6.0.0",
+    "tzlocal>=5.0.1",
+    "uvicorn>=0.27.1",
+    "starlette>=0.36.3",
+    "python-multipart>=0.0.9"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "black>=24.1.0",
+    "isort>=5.13.0"
+]
+
+[tool.uv]
+python = "3.8"
+
+[tool.uv.scripts]
+start = "streamlit run app.py"
+api = "python src/api/uv_app.py"
+dev = "uvicorn src.api.uv_app:app --reload"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build" 

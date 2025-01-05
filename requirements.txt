@@ -4,3 +4,6 @@ markdown-pdf>=0.1.2
 pandas>=2.2.0 
 watchdog>=6.0.0
 tzlocal>=5.0.1  # Changed from 5.2.1 to 5.0.1
+uvicorn>=0.27.1
+starlette>=0.36.3
+python-multipart>=0.0.9
