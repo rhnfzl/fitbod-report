@@ -2,3 +2,5 @@ streamlit>=1.31.0
 pytz>=2024.1
 markdown-pdf>=0.1.2
 pandas>=2.2.0 
+watchdog>=6.0.0
+tzlocal>=5.2.1

@@ -10,4 +10,4 @@ def convert_to_pdf(markdown_content, output_path):
     """
     pdf = MarkdownPdf()
     pdf.add_section(Section(markdown_content))
-    pdf.save(output_path) 
+    pdf.save(output_path)

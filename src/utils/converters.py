@@ -20,25 +20,49 @@ def seconds_to_time(seconds):
         print(f"Warning: Invalid seconds value: {seconds}, Error: {e}")
         return "0h 0m 0s"
 
+def round_to_gym_weight(weight_lbs):
+    """Round weight in pounds to common gym increments.
+    
+    Args:
+        weight_lbs (float): Weight in pounds
+        
+    Returns:
+        float: Weight rounded to nearest common gym increment
+    """
+    if weight_lbs < 5:
+        # Round to nearest 1 lb for very light weights
+        return round(weight_lbs)
+    elif weight_lbs < 15:
+        # Round to nearest 2.5 lbs for light weights
+        return round(weight_lbs * 2) / 2
+    else:
+        # Round to nearest 5 lbs for heavier weights
+        return round(weight_lbs / 5) * 5
+
 def convert_units(value, unit_type, to_metric=True):
     """Convert between metric and imperial units.
     
     Args:
-        value: Numeric value to convert (assumed to be in metric units)
-        unit_type: Type of unit ('weight' or 'distance')
-        to_metric: If True, keep metric; if False, convert to imperial
+        value (float): Value to convert
+        unit_type (str): Type of unit ('weight' or 'distance')
+        to_metric (bool): Convert to metric if True, to imperial if False
         
     Returns:
-        tuple: (converted_value, unit_string)
+        tuple: (converted value, unit string)
     """
-    conversions = {
-        'weight': (2.20462, 'kg', 'lbs'),  # kg to lbs
-        'distance': (0.621371, 'km', 'miles')  # km to miles
-    }
-    factor, metric_unit, imperial_unit = conversions[unit_type]
-    
-    if to_metric:
-        # Input is already in metric, return as is
-        return value, metric_unit
-    # Convert from metric to imperial
-    return value * factor, imperial_unit 
+    if unit_type == 'weight':
+        if to_metric:
+            # Imperial to metric
+            return value * 0.453592, 'kg'
+        else:
+            # Metric to imperial - apply gym rounding
+            lbs = value * 2.20462
+            return round_to_gym_weight(lbs), 'lbs'
+    elif unit_type == 'distance':
+        if to_metric:
+            # Miles to kilometers
+            return value * 1.60934, 'km'
+        else:
+            # Kilometers to miles
+            return value * 0.621371, 'miles'
+    return value, '' 

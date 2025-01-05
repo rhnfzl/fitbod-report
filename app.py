@@ -8,7 +8,13 @@ import time
 
 from src.data.validator import validate_data_structure
 from src.data.processor import process_data_from_df
-from src.report.generator import summarize_by_week, generate_markdown_report, get_available_timezones
+from src.report.generator import (
+    summarize_by_week,
+    generate_markdown_report,
+    get_available_timezones,
+    detect_timezone,
+    format_timezone_display
+)
 from src.pdf.generator import convert_to_pdf
 
 def save_report(report_content, file_format='md'):
@@ -23,7 +29,7 @@ def monitor_performance(operation_name):
     return lambda: time.time() - start_time
 
 @st.cache_data
-def process_and_generate_report(filtered_df, unit_system, report_format, timezone):
+def process_and_generate_report(filtered_df, unit_system, report_format, timezone, period_type=None):
     """Process data and generate report with caching for better performance."""
     timer = monitor_performance("Report Generation")
     
@@ -52,7 +58,8 @@ def process_and_generate_report(filtered_df, unit_system, report_format, timezon
     report = generate_markdown_report(
         weekly_summary, 
         use_metric=(unit_system == "metric"), 
-        report_format=report_format
+        report_format=report_format,
+        period_type=period_type
     )
     
     duration = timer()
@@ -128,7 +135,11 @@ Upload your exported workout data to get started!
 """)
 
 # File uploader
-uploaded_file = st.file_uploader("Upload your Fitbod export (CSV file)", type=['csv'])
+uploaded_file = st.file_uploader(
+    "Upload your Fitbod export (CSV file)", 
+    type=['csv'],
+    help="Upload the CSV file exported from your Fitbod app. To export: Open Fitbod app > Log > Settings > Export Workout Data"
+)
 
 if uploaded_file is not None:
     df, error = handle_file_processing(uploaded_file)
@@ -146,9 +157,21 @@ if uploaded_file is not None:
         st.subheader("Select Date Range")
         col1, col2 = st.columns(2)
         with col1:
-            start_date = st.date_input("Start Date", min_date.date(), min_value=min_date.date(), max_value=max_date.date())
+            start_date = st.date_input(
+                "Start Date", 
+                min_date.date(), 
+                min_value=min_date.date(), 
+                max_value=max_date.date(),
+                help="Select the start date for your workout analysis"
+            )
         with col2:
-            end_date = st.date_input("End Date", max_date.date(), min_value=min_date.date(), max_value=max_date.date())
+            end_date = st.date_input(
+                "End Date", 
+                max_date.date(), 
+                min_value=min_date.date(), 
+                max_value=max_date.date(),
+                help="Select the end date for your workout analysis"
+            )
             
         # Filter data based on date range with caching
         filtered_df = prepare_date_filtered_data(df, start_date, end_date)
@@ -161,78 +184,127 @@ if uploaded_file is not None:
         st.subheader("Report Settings")
         col3, col4, col5, col6 = st.columns(4)
         with col3:
-            unit_system = st.selectbox("Unit System", ["metric", "imperial"], index=0)
+            unit_system = st.selectbox(
+                "Unit System", 
+                ["metric", "imperial"], 
+                index=0,
+                help="Choose metric (kg, km) or imperial (lbs, miles) units for your report"
+            )
         with col4:
-            report_format = st.selectbox("Report Format", ["summary", "detailed"], index=0)
+            report_format = st.selectbox(
+                "Report Format", 
+                ["summary", "detailed"], 
+                index=0,
+                help="Summary: Key metrics and statistics only. Detailed: Includes set-by-set breakdown and exercise details"
+            )
+            # Add warning for detailed format
+            if report_format == "detailed":
+                weeks_count = (end_date - start_date).days // 7
+                if weeks_count > 12:  # More than 12 weeks
+                    st.warning("⚠️ Detailed reports for long periods may be slow. Consider using summary format or reducing the date range.")
         with col5:
-            output_format = st.selectbox("Output Format", ["markdown", "pdf"], index=0)
+            output_format = st.selectbox(
+                "Output Format", 
+                ["markdown", "pdf"], 
+                index=0,
+                help="Markdown: Text-based format ideal for sharing with AI tools. PDF: Formatted document for printing or sharing"
+            )
         with col6:
             # Get all timezones
             available_timezones = get_available_timezones()
-            # Set default to Europe/Amsterdam (should be first in the list)
-            default_index = 0  # Europe/Amsterdam is first in our new list
             
-            # Add region separators in the UI
-            def format_timezone(tz):
-                if '/' in tz:
-                    region, city = tz.split('/', 1)
-                    return f"{region} - {city.replace('_', ' ')}"
-                return tz
+            # Format timezones for display
+            formatted_timezones = [format_timezone_display(tz) for tz in available_timezones]
             
-            formatted_timezones = [format_timezone(tz) for tz in available_timezones]
+            # Try to get detected timezone from session state or detect it
+            if 'detected_timezone_index' not in st.session_state:
+                detected_tz = detect_timezone(available_timezones)
+                st.session_state.detected_timezone_index = available_timezones.index(detected_tz)
+            
             timezone_display = st.selectbox(
                 "Timezone",
                 formatted_timezones,
-                index=default_index,
-                help="Select your timezone for accurate date handling"
+                index=st.session_state.detected_timezone_index,
+                help="Select your timezone for accurate date and time handling in the report"
             )
             # Convert back to actual timezone name
             timezone = available_timezones[formatted_timezones.index(timezone_display)]
             
-        if st.button("Generate Report"):
-            with st.spinner("Generating report..."):
-                # Process data and generate report using cached function
-                report_content = process_and_generate_report(
-                    filtered_df,
-                    unit_system,
-                    report_format,
-                    timezone
-                )
-                
-                # Save report based on selected format
-                if output_format == "markdown":
-                    tmp_path = save_report(report_content, 'md')
-                    with open(tmp_path, 'r') as f:
-                        st.download_button(
-                            "Download Report",
-                            f.read(),
-                            file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.md",
-                            mime="text/markdown"
+        # Additional report settings
+        st.subheader("Summary Options")
+        period_type = st.selectbox(
+            "Summary Period",
+            ["weekly", "monthly", "4-weeks", "8-weeks", "12-weeks", "24-weeks"],
+            index=0,
+            help="Choose how to group your workout data. Weekly shows week-by-week progress, while other options provide broader trends"
+        )
+            
+        # Create columns for buttons
+        btn_col1, btn_col2 = st.columns(2)
+        
+        # Initialize session state for report content if not exists
+        if 'report_content' not in st.session_state:
+            st.session_state.report_content = None
+        
+        with btn_col1:
+            if st.button(
+                "Generate Report",
+                help="Click to generate your workout report based on the selected options"
+            ):
+                with st.spinner("Generating report..."):
+                    # Process data and generate report using cached function
+                    try:
+                        st.session_state.report_content = process_and_generate_report(
+                            filtered_df,
+                            unit_system,
+                            report_format,
+                            timezone,
+                            period_type
                         )
-                    os.unlink(tmp_path)
-                else:  # PDF
-                    # Generate PDF using markdown-pdf
-                    pdf_path = os.path.join(tempfile.gettempdir(), f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf")
-                    convert_to_pdf(report_content, pdf_path)
+                    except Exception as e:
+                        st.error(f"Error generating report: {str(e)}")
+                        st.stop()
                     
-                    with open(pdf_path, 'rb') as f:
-                        st.download_button(
-                            "Download Report",
-                            f.read(),
-                            file_name=os.path.basename(pdf_path),
-                            mime="application/pdf"
-                        )
-                    
-                    # Clean up temporary file
-                    os.unlink(pdf_path)
-                
-                # Preview the report
-                st.subheader("Report Preview")
-                # Display report in a code block for easy copying
-                st.code(report_content, language='markdown', line_numbers=True)
-                # Also show rendered version
-                # st.markdown("### Rendered Preview")
-                # st.markdown(report_content)
+                    # Save report based on selected format
+                    if output_format == "markdown":
+                        tmp_path = save_report(st.session_state.report_content, 'md')
+                        with open(tmp_path, 'r') as f:
+                            with btn_col2:
+                                st.download_button(
+                                    "Download Report",
+                                    f.read(),
+                                    file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.md",
+                                    mime="text/markdown",
+                                    help="Download your report in Markdown format"
+                                )
+                        os.unlink(tmp_path)
+                    else:  # PDF
+                        # Generate PDF using markdown-pdf
+                        pdf_path = os.path.join(tempfile.gettempdir(), f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf")
+                        convert_to_pdf(st.session_state.report_content, pdf_path)
+                        
+                        with open(pdf_path, 'rb') as f:
+                            with btn_col2:
+                                st.download_button(
+                                    "Download Report",
+                                    f.read(),
+                                    file_name=os.path.basename(pdf_path),
+                                    mime="application/pdf",
+                                    help="Download your report in PDF format"
+                                )
+                        
+                        # Clean up temporary file
+                        os.unlink(pdf_path)
+        
+        # Preview the report (outside of button click handler)
+        if st.session_state.report_content is not None:
+            st.markdown("---")  # Add a visual separator
+            st.subheader("Report Preview")
+            # Display report in a code block for easy copying
+            st.code(st.session_state.report_content, language='markdown', line_numbers=True)
+            # Also show rendered version
+            # st.markdown("### Rendered Preview")
+            # st.markdown(report_content)
                 
     except Exception as e:
         st.error(f"Error processing file: {str(e)}") 
