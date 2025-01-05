@@ -3,4 +3,4 @@ pytz>=2024.1
 markdown-pdf>=0.1.2
 pandas>=2.2.0 
 watchdog>=6.0.0
-tzlocal>=5.2.1
+tzlocal>=5.0.1  # Changed from 5.2.1 to 5.0.1

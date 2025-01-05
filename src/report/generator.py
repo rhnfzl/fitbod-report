@@ -9,6 +9,7 @@ metrics like total volume, distance, duration, and week-over-week changes.
 """
 
 import pytz
+import tzlocal
 from datetime import datetime, timedelta
 from ..utils.converters import convert_units, seconds_to_time
 
@@ -18,7 +19,6 @@ def get_available_timezones():
     Returns:
         list: List of timezone names organized by region with consolidated similar zones
     """
-    import pytz
     
     # Define timezone groups with primary city for each timezone
     timezone_groups = {
@@ -206,7 +206,6 @@ def detect_timezone(available_timezones):
     
     # Try to get local timezone
     try:
-        import tzlocal
         detected_tz = str(tzlocal.get_localzone())
     except:
         # Fallback to system time if tzlocal fails
