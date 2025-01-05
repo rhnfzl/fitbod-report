@@ -35,15 +35,10 @@ The tool was primarily created to make Fitbod data more AI-friendly. The generat
   - Warmup vs working set distinction
   - Exercise-specific statistics
 
-- **API Access** (New):
-  - REST API endpoints using UV
-  - Programmatic report generation
-  - Same features as web interface
-
 ## Prerequisites
 
 - Python 3.8 or higher
-- UV package manager (for API and local development)
+- UV package manager (for local development)
 
 ## Installation
 
@@ -88,39 +83,6 @@ uv pip install -e ".[dev]"
    ```
    This will start the web interface at http://localhost:8501
 
-### API Server (New)
-
-Run the API server:
-```bash
-uv run api
-```
-
-For development with auto-reload:
-```bash
-uv run dev
-```
-
-The API will be available at http://localhost:8000
-
-#### API Endpoints
-
-##### POST /api/generate-report
-Generate a workout report from uploaded data.
-
-Parameters (form-data):
-- `file`: CSV file with workout data
-- `unit_system`: 'metric' or 'imperial' (optional, default: 'metric')
-- `report_format`: 'summary' or 'detailed' (optional, default: 'summary')
-- `timezone`: Timezone string (optional, auto-detected if not provided)
-
-Example response:
-```json
-{
-    "status": "success",
-    "report": "# Workout Report\n..."
-}
-```
-
 ## Data Preparation
 
 1. Export your Fitbod data:
@@ -145,19 +107,6 @@ The CSV file should contain the following columns:
 - `Note`: Any additional notes
 - `multiplier`: Exercise multiplier
 
-## Development
-
-1. Format code:
-```bash
-black .
-isort .
-```
-
-2. Run tests:
-```bash
-pytest
-```
-
 ## Project Structure
 
 ```
@@ -166,7 +115,6 @@ fitbod-report/
 ├── pyproject.toml         # Project configuration and dependencies
 ├── requirements.txt       # Legacy requirements file
 └── src/
-    ├── api/              # API endpoints
     ├── data/             # Data processing modules
     ├── pdf/              # PDF generation
     └── report/           # Report generation logic
