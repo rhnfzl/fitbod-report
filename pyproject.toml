@@ -10,10 +10,7 @@ dependencies = [
     "markdown-pdf>=0.1.2",
     "pandas>=2.2.0",
     "watchdog>=6.0.0",
-    "tzlocal>=5.0.1",
-    "uvicorn>=0.27.1",
-    "starlette>=0.36.3",
-    "python-multipart>=0.0.9"
+    "tzlocal>=5.0.1"
 ]
 
 [project.optional-dependencies]
@@ -28,8 +25,6 @@ python = "3.8"
 
 [tool.uv.scripts]
 start = "streamlit run app.py"
-api = "python src/api/uv_app.py"
-dev = "uvicorn src.api.uv_app:app --reload"
 
 [build-system]
 requires = ["hatchling"]
