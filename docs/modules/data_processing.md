@@ -21,8 +21,8 @@ Validates the structure and content of input data.
 - **Required Columns**:
   ```python
   {
-      'Date', 'Exercise', 'Reps', 'Weight(kg)', 
-      'Duration(s)', 'Distance(m)', 'Incline', 
+      'Date', 'Exercise', 'Reps', 'Weight(kg)',
+      'Duration(s)', 'Distance(m)', 'Incline',
       'Resistance', 'isWarmup', 'Note', 'multiplier'
   }
   ```
@@ -35,7 +35,7 @@ Handles data reading and processing.
 
 `read_csv(filename)`
 - **Purpose**: Reads and validates CSV file
-- **Arguments**: 
+- **Arguments**:
   - `filename`: Path to CSV file
 - **Returns**: Tuple (headers, data)
 - **Validation**:
@@ -116,4 +116,4 @@ The module implements several error checks:
 3. **Performance**:
    - Use DataFrame for large datasets
    - Handle memory efficiently
-   - Clean up temporary data 
+   - Clean up temporary data

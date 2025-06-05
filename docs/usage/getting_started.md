@@ -87,4 +87,4 @@ The tool handles timezones in three stages:
 Common issues and solutions:
 - **Missing Columns**: Ensure your CSV export is recent and complete
 - **Date Format Issues**: The tool expects Fitbod's standard date format
-- **Empty Report**: Check if your date range contains workout data 
+- **Empty Report**: Check if your date range contains workout data

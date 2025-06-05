@@ -5,10 +5,10 @@ import pandas as pd
 
 def read_csv(filename):
     """Read CSV file and return headers and data.
-    
+
     Args:
         filename: Path to CSV file
-        
+
     Returns:
         tuple: (headers, data)
     """
@@ -25,11 +25,11 @@ def read_csv(filename):
 
 def process_data(headers, data):
     """Process raw data into structured format.
-    
+
     Args:
         headers: List of column headers
         data: List of data rows
-        
+
     Returns:
         list: Processed data records
     """
@@ -51,18 +51,18 @@ def process_data(headers, data):
 
 def process_data_from_df(df):
     """Process data from a pandas DataFrame.
-    
+
     Args:
         df: pandas DataFrame
-        
+
     Returns:
         list: Processed data records
     """
     df = df.copy()
-    
+
     # Convert isWarmup to string 'true'/'false'
     df['isWarmup'] = df['isWarmup'].astype(str).str.lower()
-    
+
     # Optimize date processing - handle various formats while maintaining functionality
     def parse_date(date_str):
         if pd.isna(date_str):
@@ -75,7 +75,7 @@ def process_data_from_df(df):
         return date_str
 
     df['Date'] = df['Date'].apply(parse_date)
-    
+
     # Optimize numeric conversions using vectorized operations
     numeric_cols = {
         'Reps': 0,
@@ -83,7 +83,7 @@ def process_data_from_df(df):
         'Distance(m)': 0.0,
         'Duration(s)': 0.0
     }
-    
+
     for col, default in numeric_cols.items():
         df[col] = pd.to_numeric(df[col], errors='coerce').fillna(default)
         if col == 'Reps':
@@ -93,9 +93,9 @@ def process_data_from_df(df):
             df[col] = (df[col] * 2).round() / 2
             # Ensure weight is not modified by any unintended conversion
             df[col] = df[col].astype(float)
-    
+
     # Ensure multiplier is applied correctly to weights if needed
     if 'multiplier' in df.columns:
         df['Weight(kg)'] = df['Weight(kg)'] * pd.to_numeric(df['multiplier'], errors='coerce').fillna(1.0)
-    
-    return process_data(df.columns.tolist(), df.values.tolist()) 
+
+    return process_data(df.columns.tolist(), df.values.tolist())

@@ -135,4 +135,4 @@ Handles PDF conversion and formatting.
 
 - markdown-pdf>=0.1.2
 - PyMuPDF (backend)
-- markdown-it-py (markdown parsing) 
+- markdown-it-py (markdown parsing)

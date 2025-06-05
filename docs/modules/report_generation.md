@@ -129,4 +129,4 @@ The module handles dates in three steps:
 3. **Performance**:
    - Optimize large datasets
    - Cache calculations
-   - Clean up resources 
+   - Clean up resources

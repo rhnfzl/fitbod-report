@@ -1,1 +1,1 @@
-"""Fitbod workout report generator package.""" 
+"""Fitbod workout report generator package."""

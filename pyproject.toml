@@ -28,4 +28,4 @@ start = "streamlit run app.py"
 
 [build-system]
 requires = ["hatchling"]
-build-backend = "hatchling.build" 
+build-backend = "hatchling.build"
