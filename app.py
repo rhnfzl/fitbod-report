@@ -181,7 +181,7 @@ if uploaded_file is not None:
 
         with tab_data:
             st.subheader("Raw Workout Data")
-            st.dataframe(df, use_container_width=True)
+            st.dataframe(df, width="stretch")
 
         with tab_report:
             # Date range selector

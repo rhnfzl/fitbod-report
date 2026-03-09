@@ -1,5 +1,0 @@
-streamlit>=1.42.0
-markdown-pdf>=1.13.0
-watchdog>=6.0.0
-tzlocal>=5.2
-pyyaml>=6.0

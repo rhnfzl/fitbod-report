@@ -84,7 +84,7 @@ uv pip install -e ".[dev]"
 
 2. **Local Development**:
    ```bash
-   uv run start
+   uv run streamlit run app.py
    ```
    This will start the web interface at http://localhost:8501
 
@@ -118,7 +118,6 @@ The CSV file should contain the following columns:
 fitbod-report/
 ├── app.py                  # Streamlit web application
 ├── pyproject.toml         # Project configuration and dependencies
-├── requirements.txt       # Legacy requirements file
 └── src/
     ├── data/             # Data processing modules
     ├── pdf/              # PDF generation
