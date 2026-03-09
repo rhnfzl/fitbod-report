@@ -173,3 +173,8 @@ cython_debug/
 # Workout data
 workout_data/
 *.csv
+
+# AI agent instructions
+CLAUDE.md
+AGENTS.md
+SPECS.md

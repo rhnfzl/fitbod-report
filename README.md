@@ -2,16 +2,16 @@
 
 Try it out here: [https://fitbod-report.streamlit.app/](https://fitbod-report.streamlit.app/)
 
-A Streamlit-based web application that processes workout data exported from the [Fitbod](http://fitbod.me) app, generating detailed or summary reports in markdown and PDF formats. The tool provides weekly summaries, exercise progression tracking, and comprehensive workout analytics designed to be easily understood by both humans and AI tools.
+A Streamlit-based web application that processes workout data exported from the [Fitbod](http://fitbod.me) app, generating structured reports in Markdown, JSON, YAML, and PDF formats. The tool provides daily, weekly, monthly, quarterly, and yearly summaries with exercise progression tracking and comprehensive workout analytics.
 
-The tool was primarily created to make Fitbod data more AI-friendly. The generated markdown reports can be easily fed into tools like ChatGPT, Claude, or Gemini to:
+The tool was primarily created to make Fitbod data more AI-friendly. The structured reports (JSON, YAML, Markdown) can be fed into AI assistants like ChatGPT, Claude, or Gemini to:
 - Analyse workout patterns
 - Get personalised recommendations
 - Identify areas for improvement
 - Build new workout plans based on historical data
 - Compare/Build your routines with reference fitness books/programs
 
-**Privacy First**: No data storage - everything is processed in your browser.
+**Privacy First**: No data is stored on the server - uploaded files are processed in-memory and discarded after your session ends.
 
 ## Features
 
@@ -22,22 +22,22 @@ The tool was primarily created to make Fitbod data more AI-friendly. The generat
   - Real-time report preview
 
 - **Flexible Report Options**:
-  - Generate both detailed and summary reports
-  - Support for metric and imperial units
-  - Export to Markdown or PDF format
-  - AI-friendly structured output
+  - Summary or detailed (set-by-set) reports
+  - Metric and imperial units
+  - Export to Markdown, JSON, YAML (AI-optimized), or PDF
+  - Daily, weekly, monthly, quarterly, half-yearly, yearly grouping
+  - Calendar-aligned or rolling window aggregation
 
 - **Comprehensive Analytics**:
-  - Weekly training summaries
   - Exercise-specific breakdowns
-  - Week-over-week progress tracking
+  - Period-over-period progress tracking
   - Set-by-set progression analysis
   - Warmup vs working set distinction
-  - Exercise-specific statistics
+  - Cardio and strength session tracking
 
 ## Prerequisites
 
-- Python 3.8 or higher
+- Python 3.11 or higher
 - UV package manager (for local development)
 
 ## Installation

@@ -4,7 +4,7 @@ This guide will help you get started with the Fitbod Report Generator tool.
 
 ## Prerequisites
 
-- Python 3.8 or higher
+- Python 3.11 or higher
 - Fitbod app with workout data
 - Basic understanding of workout metrics
 
@@ -16,15 +16,9 @@ git clone https://github.com/rhnfzl/fitbod-report.git
 cd fitbod-report
 ```
 
-2. Create a virtual environment:
+2. Install dependencies:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
+uv pip install -e .
 ```
 
 ## Exporting Workout Data
@@ -39,7 +33,7 @@ pip install -r requirements.txt
 
 1. Start the application:
 ```bash
-streamlit run app.py
+uv run start
 ```
 
 2. Upload your data:
@@ -54,7 +48,7 @@ streamlit run app.py
 4. Configure report settings:
    - Unit System: Choose between metric and imperial units
    - Report Format: Select summary or detailed report
-   - Output Format: Choose between markdown and PDF
+   - Output Format: Choose between Markdown, JSON, YAML, or PDF
    - Timezone: Select your local timezone for accurate date processing
 
 5. Generate and download your report:
