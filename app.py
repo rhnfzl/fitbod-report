@@ -134,7 +134,7 @@ def detect_browser_timezone(available_timezones):
 # Page config
 st.set_page_config(
     page_title="Fitbod Report Generator",
-    page_icon="💪",
+    page_icon=":material/fitness_center:",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
@@ -144,10 +144,12 @@ st.set_page_config(
     },
 )
 
-st.title("Fitbod Workout Report Generator 💪")
+st.logo("assets/fitbod-logo.svg", link="https://fitbod.me")
+st.title(":material/fitness_center: Workout Report Generator")
 st.markdown("""
-Analyze your Fitbod workout data and generate structured reports, optimized for AI assistants
-(ChatGPT, Claude, Gemini) or your own review. Upload your exported workout data to get started!
+Analyze your [Fitbod](https://fitbod.me) workout data and generate structured reports,
+optimized for AI assistants (ChatGPT, Claude, Gemini) or your own review.
+Upload your exported workout data to get started!
 
 **Export formats**: Markdown, JSON, YAML (structured for AI tools), PDF (for printing).
 Supports metric and imperial units, daily/weekly/monthly/quarterly/yearly grouping,
