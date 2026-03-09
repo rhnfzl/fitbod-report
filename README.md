@@ -1,5 +1,9 @@
 # Fitbod Workout Data Analysis Tool
 
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/rhnfzl/fitbod-report/actions/workflows/python-package.yml/badge.svg)](https://github.com/rhnfzl/fitbod-report/actions/workflows/python-package.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Try it out here: [https://fitbod-report.streamlit.app/](https://fitbod-report.streamlit.app/)
 
 A Streamlit-based web application that processes workout data exported from the [Fitbod](http://fitbod.me) app, generating structured reports in Markdown, JSON, YAML, and PDF formats. The tool provides daily, weekly, monthly, quarterly, and yearly summaries with exercise progression tracking and comprehensive workout analytics.
