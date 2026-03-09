@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/rhnfzl/fitbod-report/actions/workflows/python-package.yml/badge.svg)](https://github.com/rhnfzl/fitbod-report/actions/workflows/python-package.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://fitbod-report.streamlit.app/)
 
 Try it out here: [https://fitbod-report.streamlit.app/](https://fitbod-report.streamlit.app/)
 
