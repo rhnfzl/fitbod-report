@@ -188,48 +188,62 @@ if uploaded_file is not None:
             # Quick-select presets
             preset = st.radio(
                 "Quick Select",
-                ["Custom", "Last 3 Months", "Last 6 Months", "Since Last Year", "All Data"],
+                [
+                    "Custom",
+                    "Last 3 Months",
+                    "Last 6 Months",
+                    "This Quarter",
+                    "This Year",
+                    "Last Year",
+                    "All Data",
+                ],
                 horizontal=True,
                 key="date_preset",
-                help="Choose a preset or use custom date pickers below",
+                help="Rolling presets count back from your latest workout. Calendar presets align to boundaries.",
             )
 
-            today = max_date.date()
-            if preset == "Last 3 Months":
-                preset_start = max(today - timedelta(days=90), min_date.date())
-                preset_end = today
-            elif preset == "Last 6 Months":
-                preset_start = max(today - timedelta(days=182), min_date.date())
-                preset_end = today
-            elif preset == "Since Last Year":
-                preset_start = max(today.replace(year=today.year - 1, month=1, day=1), min_date.date())
-                preset_end = today
-            elif preset == "All Data":
-                preset_start = min_date.date()
-                preset_end = today
-            else:
-                preset_start = min_date.date()
-                preset_end = today
+            data_start = min_date.date()
+            data_end = max_date.date()
 
-            col1, col2 = st.columns(2)
-            with col1:
-                start_date = st.date_input(
-                    "Start Date",
-                    preset_start,
-                    min_value=min_date.date(),
-                    max_value=max_date.date(),
-                    key="start_date",
-                    help="Select the start date for your workout analysis",
-                )
-            with col2:
-                end_date = st.date_input(
-                    "End Date",
-                    preset_end,
-                    min_value=min_date.date(),
-                    max_value=max_date.date(),
-                    key="end_date",
-                    help="Select the end date for your workout analysis",
-                )
+            if preset == "Custom":
+                col1, col2 = st.columns(2)
+                with col1:
+                    start_date = st.date_input(
+                        "Start Date",
+                        data_start,
+                        min_value=data_start,
+                        max_value=data_end,
+                        help="Select the start date for your workout analysis",
+                    )
+                with col2:
+                    end_date = st.date_input(
+                        "End Date",
+                        data_end,
+                        min_value=data_start,
+                        max_value=data_end,
+                        help="Select the end date for your workout analysis",
+                    )
+            else:
+                if preset == "Last 3 Months":
+                    start_date = max(data_end - timedelta(days=90), data_start)
+                    end_date = data_end
+                elif preset == "Last 6 Months":
+                    start_date = max(data_end - timedelta(days=182), data_start)
+                    end_date = data_end
+                elif preset == "This Quarter":
+                    q_month = ((data_end.month - 1) // 3) * 3 + 1
+                    start_date = max(data_end.replace(month=q_month, day=1), data_start)
+                    end_date = data_end
+                elif preset == "This Year":
+                    start_date = max(data_end.replace(month=1, day=1), data_start)
+                    end_date = data_end
+                elif preset == "Last Year":
+                    start_date = max(data_end.replace(year=data_end.year - 1, month=1, day=1), data_start)
+                    end_date = min(data_end.replace(year=data_end.year - 1, month=12, day=31), data_end)
+                else:  # All Data
+                    start_date = data_start
+                    end_date = data_end
+                st.caption(f"{start_date.strftime('%b %d, %Y')} to {end_date.strftime('%b %d, %Y')}")
 
             # Filter data
             filtered_df = prepare_date_filtered_data(df, start_date, end_date)
