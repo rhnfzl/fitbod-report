@@ -361,12 +361,20 @@ if uploaded_file is not None:
                     help="Summary: Key metrics only. Detailed: Includes set-by-set breakdown",
                 )
             with col5:
+                _format_labels = {
+                    "gpt": "GPT-optimized",
+                    "markdown": "Markdown",
+                    "json": "JSON",
+                    "yaml": "YAML",
+                    "pdf": "PDF",
+                }
                 output_format = st.selectbox(
                     "Output Format",
-                    ["gpt", "markdown", "json", "yaml", "pdf"],
+                    list(_format_labels),
                     index=0,
+                    format_func=lambda x: _format_labels[x],
                     key="output_format",
-                    help="GPT: Token-efficient for FitbodGPT. Markdown/JSON/YAML: Text. PDF: Formatted document",
+                    help="GPT-optimized: compact weekly format for FitbodGPT. Others: general-purpose text or PDF.",
                 )
             with col6:
                 available_timezones, formatted_timezones = get_timezone_options()
@@ -517,8 +525,19 @@ if uploaded_file is not None:
                 gen_format = gen_settings.get("output_format", output_format)
                 ext, mime = get_download_config(gen_format)
 
+                # FitbodGPT steps (shown for all text formats, not PDF)
+                if gen_format != "pdf":
+                    st.markdown("---")
+                    st.subheader("Use with FitbodGPT")
+                    render_fitbodgpt_steps(report_content)
+
+                # Download
+                st.markdown("---")
                 if gen_format == "pdf":
-                    pdf_path = os.path.join(tempfile.gettempdir(), f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf")
+                    pdf_path = os.path.join(
+                        tempfile.gettempdir(),
+                        f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
+                    )
                     convert_to_pdf(report_content, pdf_path)
                     with open(pdf_path, "rb") as f:
                         st.download_button(
@@ -535,10 +554,6 @@ if uploaded_file is not None:
                         file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
                         mime=mime,
                     )
-                    if gen_format == "gpt":
-                        st.markdown("---")
-                        st.subheader("Use with FitbodGPT")
-                        render_fitbodgpt_steps(report_content)
 
                 # Report preview
                 st.subheader("Report Preview")
