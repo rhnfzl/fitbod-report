@@ -170,7 +170,7 @@ def render_fitbodgpt_steps(report_content):
         "});"
         "</script>"
     )
-    components.html(css + html_body + js, height=100)
+    components.html(css + html_body + js, height=160)
 
 
 def handle_file_processing(uploaded_file):
