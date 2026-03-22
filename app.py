@@ -15,6 +15,7 @@ from src.report.generator import (
     PeriodType,
     detect_timezone,
     format_timezone_display,
+    generate_gpt_report,
     generate_json_report,
     generate_markdown_report,
     generate_yaml_report,
@@ -94,6 +95,8 @@ def generate_report_content(summaries, unit_system, report_format, output_format
         return generate_json_report(summaries, use_metric, report_format, period_type, calendar_aligned)
     elif output_format == "yaml":
         return generate_yaml_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+    elif output_format == "gpt":
+        return generate_gpt_report(summaries, use_metric, report_format, period_type, calendar_aligned)
     else:
         return generate_markdown_report(summaries, use_metric, report_format, period_type, calendar_aligned)
 
@@ -104,6 +107,7 @@ def get_download_config(output_format):
         "markdown": ("md", "text/markdown"),
         "json": ("json", "application/json"),
         "yaml": ("yaml", "text/yaml"),
+        "gpt": ("txt", "text/plain"),
         "pdf": ("pdf", "application/pdf"),
     }
     return configs.get(output_format, ("md", "text/markdown"))
@@ -191,13 +195,13 @@ if uploaded_file is not None:
             preset = st.radio(
                 "Quick Select",
                 [
-                    "Custom",
                     "Last 3 Months",
                     "Last 6 Months",
                     "This Quarter",
                     "This Year",
                     "Last Year",
                     "All Data",
+                    "Custom",
                 ],
                 horizontal=True,
                 key="date_preset",
@@ -276,10 +280,10 @@ if uploaded_file is not None:
             with col5:
                 output_format = st.selectbox(
                     "Output Format",
-                    ["markdown", "json", "yaml", "pdf"],
+                    ["gpt", "markdown", "json", "yaml", "pdf"],
                     index=0,
                     key="output_format",
-                    help="Markdown/JSON/YAML: Text formats ideal for AI tools. PDF: Formatted document for printing",
+                    help="GPT: Token-efficient format for FitbodGPT. Markdown/JSON/YAML: Text formats. PDF: Formatted document",
                 )
             with col6:
                 available_timezones, formatted_timezones = get_timezone_options()
@@ -430,16 +434,22 @@ if uploaded_file is not None:
                         )
                     os.unlink(pdf_path)
                 else:
-                    st.download_button(
-                        "Download Report",
-                        report_content,
-                        file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
-                        mime=mime,
-                    )
+                    dl_col, clip_col = st.columns([1, 1]) if gen_format == "gpt" else (st.container(), None)
+                    with dl_col:
+                        st.download_button(
+                            "Download Report",
+                            report_content,
+                            file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
+                            mime=mime,
+                        )
+                    if gen_format == "gpt" and clip_col is not None:
+                        with clip_col:
+                            st.code(report_content, language=None)
+                            st.info("Copy the text above and paste it into FitbodGPT in ChatGPT.")
 
                 # Report preview
                 st.subheader("Report Preview")
-                preview_lang = {"json": "json", "yaml": "yaml"}.get(gen_format, "markdown")
+                preview_lang = {"json": "json", "yaml": "yaml", "gpt": None}.get(gen_format, "markdown")
                 st.code(report_content, language=preview_lang, line_numbers=True)
 
     except Exception as e:

@@ -7,14 +7,16 @@
 
 Try it out here: [https://fitbod-report.streamlit.app/](https://fitbod-report.streamlit.app/)
 
-A Streamlit-based web application that processes workout data exported from the [Fitbod](http://fitbod.me) app, generating structured reports in Markdown, JSON, YAML, and PDF formats. The tool provides daily, weekly, monthly, quarterly, and yearly summaries with exercise progression tracking and comprehensive workout analytics.
+A Streamlit-based web application that processes workout data exported from the [Fitbod](http://fitbod.me) app, generating structured reports in GPT, Markdown, JSON, YAML, and PDF formats. The tool provides daily, weekly, monthly, quarterly, and yearly summaries with exercise progression tracking and comprehensive workout analytics.
 
-The tool was primarily created to make Fitbod data more AI-friendly. The structured reports (JSON, YAML, Markdown) can be fed into AI assistants like ChatGPT, Claude, or Gemini to:
+The tool was primarily created to make Fitbod data more AI-friendly. The structured reports can be fed into AI assistants like ChatGPT, Claude, or Gemini to:
 - Analyse workout patterns
 - Get personalised recommendations
 - Identify areas for improvement
 - Build new workout plans based on historical data
 - Compare/Build your routines with reference fitness books/programs
+
+**FitbodGPT Integration**: The default "GPT" export format is optimized for [FitbodGPT](https://github.com/rhnfzl/fitbod-gpt), a custom ChatGPT GPT that analyzes your Fitbod data and builds personalized workout plans. Export your report in GPT format, paste it into FitbodGPT, and get science-backed training recommendations.
 
 **Privacy First**: No data is stored on the server - uploaded files are processed in-memory and discarded after your session ends.
 
@@ -29,7 +31,7 @@ The tool was primarily created to make Fitbod data more AI-friendly. The structu
 - **Flexible Report Options**:
   - Summary or detailed (set-by-set) reports
   - Metric and imperial units
-  - Export to Markdown, JSON, YAML (AI-optimized), or PDF
+  - Export to GPT (default, token-efficient for FitbodGPT), Markdown, JSON, YAML, or PDF
   - Daily, weekly, monthly, quarterly, half-yearly, yearly grouping
   - Calendar-aligned or rolling window aggregation
 

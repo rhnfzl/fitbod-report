@@ -1157,3 +1157,254 @@ def generate_yaml_report(summaries, use_metric=True, report_format="summary", pe
     """
     data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned)
     return yaml.safe_dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+
+
+def generate_gpt_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False):
+    """Generate a GPT-optimized compact report for FitbodGPT consumption.
+
+    Outputs a token-efficient TSV format with pre-computed analytics.
+    Working sets only (warmups excluded). Includes muscle group volume
+    analysis and exercise trend data.
+
+    Args:
+        summaries (dict): Summaries from summarize_workouts()
+        use_metric (bool): Whether to use metric units
+        report_format (str): 'summary' or 'detailed' (detailed adds recent sessions)
+        period_type (str): Period grouping type
+        calendar_aligned (bool): Use calendar boundaries vs rolling windows
+
+    Returns:
+        str: GPT-optimized compact report
+    """
+    from ..data.exercise_db import get_exercise_muscles, get_unknown_exercises, clear_unknown_exercises
+
+    clear_unknown_exercises()
+
+    weight_unit = "kg" if use_metric else "lbs"
+    distance_unit = "km" if use_metric else "miles"
+
+    # Build structured data first (reuse existing logic)
+    data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+    periods = data["periods"]
+    overall = data["overall"]
+
+    # --- Header ---
+    date_range = overall.get("date_range", {})
+    start = date_range.get("start", "unknown")
+    end = date_range.get("end", "unknown")
+
+    # Count weeks and unique exercises
+    num_weeks = len(periods) if periods else 0
+    all_exercises = set()
+    total_sessions = 0
+    for p in periods:
+        for ex in p.get("exercises", []):
+            all_exercises.add(ex["name"])
+        # Estimate sessions from the period (use stats if available)
+        total_sessions += 1  # Each period is at least one session block
+
+    # Better session count: count from original summaries
+    total_sessions = len(summaries)
+
+    lines = [
+        f"@fitbodgpt v1",
+        f"date_range: {start} to {end}",
+        f"weeks: {num_weeks}",
+        f"sessions: {total_sessions}",
+        f"unit: {'metric' if use_metric else 'imperial'}",
+        f"exercises: {len(all_exercises)}",
+        "",
+    ]
+
+    # --- Weekly Summary ---
+    lines.append("## weekly_summary")
+    lines.append(f"week\tsessions\tstrength_min\tcardio_min\tvolume_{weight_unit}\treps\tdistance_{distance_unit}")
+
+    for p in periods:
+        stats = p.get("stats", {})
+        week_label = p.get("date", "")
+        # Count exercises as a proxy for sessions within the period
+        strength_sec = 0
+        cardio_sec = 0
+        if "strength_time" in stats:
+            strength_sec = stats.get("total_workout_seconds", 0) - _time_to_seconds(stats.get("cardio_time", "0:00:00"))
+        cardio_sec = _time_to_seconds(stats.get("cardio_time", "0:00:00"))
+
+        volume = stats.get("total_volume", 0)
+        reps = stats.get("total_reps", 0)
+        distance = stats.get("total_distance", 0)
+
+        lines.append(
+            f"{week_label}\t1\t{int(strength_sec // 60)}\t{int(cardio_sec // 60)}"
+            f"\t{round(volume, 1)}\t{reps}\t{round(distance, 2)}"
+        )
+
+    lines.append("")
+
+    # --- Exercise Stats ---
+    # Aggregate per-exercise data across all periods
+    exercise_data = {}
+    exercise_first_period = {}
+    exercise_last_period = {}
+
+    for i, p in enumerate(periods):
+        for ex in p.get("exercises", []):
+            name = ex["name"]
+            if ex.get("is_cardio", False):
+                continue  # Skip cardio for exercise_stats (tracked in weekly_summary)
+            if name not in exercise_data:
+                exercise_data[name] = {
+                    "sessions": 0,
+                    "working_sets": 0,
+                    "total_reps": 0,
+                    "max_weight": 0,
+                    "total_volume": 0,
+                    "weight_sum": 0,
+                    "weight_count": 0,
+                }
+                exercise_first_period[name] = i
+            exercise_last_period[name] = i
+
+            d = exercise_data[name]
+            d["sessions"] += 1
+            d["working_sets"] += ex.get("working_sets", 0)
+            d["total_reps"] += ex.get("total_reps", 0)
+            d["max_weight"] = max(d["max_weight"], ex.get("max_weight", 0))
+            d["total_volume"] += ex.get("total_volume", 0)
+            if ex.get("max_weight", 0) > 0:
+                d["weight_sum"] += ex.get("max_weight", 0)
+                d["weight_count"] += 1
+
+    # Calculate per-exercise trends (first half avg vs second half avg of max_weight)
+    exercise_trends = {}
+    for name in exercise_data:
+        first_half_weights = []
+        second_half_weights = []
+        midpoint = len(periods) // 2
+        for i, p in enumerate(periods):
+            for ex in p.get("exercises", []):
+                if ex["name"] == name and not ex.get("is_cardio", False) and ex.get("max_weight", 0) > 0:
+                    if i < midpoint:
+                        first_half_weights.append(ex["max_weight"])
+                    else:
+                        second_half_weights.append(ex["max_weight"])
+
+        if first_half_weights and second_half_weights:
+            first_avg = sum(first_half_weights) / len(first_half_weights)
+            second_avg = sum(second_half_weights) / len(second_half_weights)
+            if first_avg > 0:
+                trend = ((second_avg - first_avg) / first_avg) * 100
+                exercise_trends[name] = f"{trend:+.1f}%"
+            else:
+                exercise_trends[name] = "N/A"
+        else:
+            exercise_trends[name] = "N/A"
+
+    lines.append("## exercise_stats")
+    lines.append(f"exercise\tsessions\tworking_sets\ttotal_reps\tmax_{weight_unit}\tavg_{weight_unit}\ttotal_volume\ttrend")
+
+    for name in sorted(exercise_data.keys()):
+        d = exercise_data[name]
+        avg_weight = round(d["weight_sum"] / d["weight_count"], 1) if d["weight_count"] > 0 else 0
+        lines.append(
+            f"{name}\t{d['sessions']}\t{d['working_sets']}\t{d['total_reps']}"
+            f"\t{round(d['max_weight'], 1)}\t{avg_weight}\t{round(d['total_volume'], 1)}"
+            f"\t{exercise_trends.get(name, 'N/A')}"
+        )
+
+    lines.append("")
+
+    # --- Muscle Volume ---
+    # Aggregate weekly muscle group sets using exercise_db
+    muscle_weekly_sets = {}  # muscle -> list of weekly set counts
+    for p in periods:
+        period_muscles = {}
+        for ex in p.get("exercises", []):
+            if ex.get("is_cardio", False):
+                continue
+            muscles = get_exercise_muscles(ex["name"])
+            working = ex.get("working_sets", 0)
+            for m in muscles:
+                period_muscles[m] = period_muscles.get(m, 0) + working
+        for m, sets in period_muscles.items():
+            if m not in muscle_weekly_sets:
+                muscle_weekly_sets[m] = []
+            muscle_weekly_sets[m].append(sets)
+
+    # Calculate muscle trends (first half avg vs second half avg)
+    lines.append("## muscle_volume")
+    lines.append("muscle\tweekly_avg_sets\ttrend")
+
+    for muscle in sorted(muscle_weekly_sets.keys()):
+        if muscle == "unknown":
+            continue  # Skip unknown muscle group in summary
+        weekly = muscle_weekly_sets[muscle]
+        avg = round(sum(weekly) / len(weekly), 1) if weekly else 0
+        midpoint = len(weekly) // 2
+        if midpoint > 0 and len(weekly) > midpoint:
+            first_avg = sum(weekly[:midpoint]) / midpoint
+            second_avg = sum(weekly[midpoint:]) / (len(weekly) - midpoint)
+            if first_avg > 0:
+                trend = ((second_avg - first_avg) / first_avg) * 100
+                trend_str = f"{trend:+.1f}%"
+            else:
+                trend_str = "N/A"
+        else:
+            trend_str = "N/A"
+        lines.append(f"{muscle}\t{avg}\t{trend_str}")
+
+    lines.append("")
+
+    # --- Recent Sessions (last 14) ---
+    lines.append("## recent_sessions")
+    lines.append("date\texercises")
+
+    # Get the last 14 periods with compact exercise notation
+    recent = periods[-14:] if len(periods) > 14 else periods
+    for p in reversed(recent):  # Most recent first
+        date = p.get("date", "")
+        exercises_compact = []
+        for ex in p.get("exercises", []):
+            name = ex["name"]
+            ws = ex.get("working_sets", 0)
+            reps = ex.get("total_reps", 0)
+            max_w = ex.get("max_weight", 0)
+            if ex.get("is_cardio", False):
+                dur_s = ex.get("total_duration_seconds", 0)
+                if dur_s > 0:
+                    dur_min = int(dur_s // 60)
+                    exercises_compact.append(f"{name}:{dur_min}min")
+                else:
+                    exercises_compact.append(name)
+            elif ws > 0 and reps > 0:
+                reps_per_set = reps // ws if ws > 0 else reps
+                if max_w > 0:
+                    exercises_compact.append(f"{name}:{ws}x{reps_per_set}@{round(max_w, 1)}{weight_unit}")
+                else:
+                    exercises_compact.append(f"{name}:{ws}x{reps_per_set}")
+            else:
+                exercises_compact.append(name)
+        lines.append(f"{date}\t{','.join(exercises_compact)}")
+
+    # --- Unknown Exercises ---
+    unknown = get_unknown_exercises()
+    if unknown:
+        lines.append("")
+        lines.append("## unknown_exercises")
+        for name in sorted(unknown):
+            lines.append(name)
+
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _time_to_seconds(time_str):
+    """Convert a time string like '1:30:00' or '0:29:37' to seconds."""
+    if not time_str or time_str == "0":
+        return 0
+    parts = time_str.split(":")
+    if len(parts) == 3:
+        return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+    if len(parts) == 2:
+        return int(parts[0]) * 60 + int(parts[1])
+    return 0
