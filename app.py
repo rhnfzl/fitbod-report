@@ -484,6 +484,11 @@ if uploaded_file is not None:
                     )
                     if gen_format == "gpt":
                         render_copy_for_fitbod_gpt(report_content)
+                        st.link_button(
+                            "Open FitbodGPT in ChatGPT",
+                            "https://chatgpt.com/g/g-69bfd1becff08191b3b93c1d0312fda9-fitbodgpt",
+                            type="primary",
+                        )
 
                 # Report preview
                 st.subheader("Report Preview")
