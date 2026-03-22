@@ -3,7 +3,6 @@
 import json
 import os
 import tempfile
-import time
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -28,12 +27,6 @@ from src.utils.converters import seconds_to_time
 
 # Period types that support calendar-aligned grouping (vs rolling windows)
 _CALENDAR_TYPES = frozenset({PeriodType.MONTHLY, PeriodType.QUARTERLY, PeriodType.HALF_YEARLY, PeriodType.YEARLY})
-
-
-def monitor_performance(operation_name):
-    """Monitor performance of operations."""
-    start_time = time.time()
-    return lambda: time.time() - start_time
 
 
 @st.cache_data
@@ -413,129 +406,79 @@ if uploaded_file is not None:
                         " Consider using summary format or reducing the date range."
                     )
 
-            # Generate button
-            if st.button("Generate Report", key="generate_btn", help="Click to generate your workout report"):
-                with st.spinner("Generating report..."):
-                    try:
-                        timer = monitor_performance("Report Generation")
+            # Generate report
+            try:
+                summaries = process_and_summarize(
+                    filtered_df, unit_system, selected_timezone, effective_period_type, effective_calendar_aligned
+                )
+                effective_format = "markdown" if output_format == "pdf" else output_format
+                report_content = generate_report_content(
+                    summaries, unit_system, report_format, effective_format, effective_period_type, effective_calendar_aligned
+                )
+            except Exception as e:
+                st.error(f"Error generating report: {e!s}")
+                st.stop()
 
-                        # Process and summarize
-                        summaries = process_and_summarize(
-                            filtered_df, unit_system, selected_timezone, effective_period_type, effective_calendar_aligned
-                        )
+            st.markdown("---")
 
-                        # Store summaries and precomputed totals
-                        st.session_state.summaries = summaries
-                        st.session_state.summary_totals = {
-                            "cardio": sum(s.get("cardio_duration", 0) for s in summaries.values()),
-                            "strength": sum(s.get("strength_duration", 0) for s in summaries.values()),
-                            "reps": sum(s.get("Reps", 0) for s in summaries.values()),
-                            "volume": sum(s.get("Volume", 0) for s in summaries.values()),
-                        }
+            # Summary metrics
+            totals = {
+                "cardio": sum(s.get("cardio_duration", 0) for s in summaries.values()),
+                "strength": sum(s.get("strength_duration", 0) for s in summaries.values()),
+                "reps": sum(s.get("Reps", 0) for s in summaries.values()),
+                "volume": sum(s.get("Volume", 0) for s in summaries.values()),
+            }
+            weight_unit = "kg" if unit_system == "metric" else "lbs"
+            num_periods = len(summaries)
 
-                        # Generate report content (PDF uses markdown as intermediate)
-                        effective_format = "markdown" if output_format == "pdf" else output_format
-                        st.session_state.report_content = generate_report_content(
-                            summaries,
-                            unit_system,
-                            report_format,
-                            effective_format,
-                            effective_period_type,
-                            effective_calendar_aligned,
-                        )
-                        # Store generation settings to detect stale reports
-                        st.session_state.report_settings = {
-                            "output_format": output_format,
-                            "unit_system": unit_system,
-                            "report_format": report_format,
-                            "period_type": effective_period_type,
-                            "calendar_aligned": effective_calendar_aligned,
-                        }
+            m1, m2, m3, m4 = st.columns(4)
+            if effective_period_type == PeriodType.DAILY or (
+                effective_calendar_aligned and effective_period_type in _CALENDAR_TYPES
+            ):
+                period_label = f"{num_periods} days"
+            else:
+                period_label = f"{num_periods} weeks"
+            m1.metric("Workout Periods", period_label)
+            m2.metric("Total Time", seconds_to_time(totals["cardio"] + totals["strength"]))
+            m3.metric("Total Reps", f"{totals['reps']:,}")
+            m4.metric("Total Volume", f"{totals['volume']:,.0f} {weight_unit}")
 
-                        duration = timer()
-                        if duration > 5:
-                            st.warning(
-                                f"Report generation took {duration:.2f}s. Consider summary format or a shorter date range."
-                            )
+            ext, mime = get_download_config(output_format)
 
-                    except Exception as e:
-                        st.error(f"Error generating report: {e!s}")
-                        st.stop()
-
-            # Display results after generation
-            if st.session_state.get("report_content") is not None:
-                # Check if settings changed since generation
-                gen_settings = st.session_state.get("report_settings", {})
-                current_settings = {
-                    "output_format": output_format,
-                    "unit_system": unit_system,
-                    "report_format": report_format,
-                    "period_type": effective_period_type,
-                    "calendar_aligned": effective_calendar_aligned,
-                }
-                if gen_settings != current_settings:
-                    st.warning("Report settings have changed since last generation. Click 'Generate Report' to update.")
-
+            # FitbodGPT steps (shown for all text formats, not PDF)
+            if output_format != "pdf":
                 st.markdown("---")
+                st.subheader("Use with FitbodGPT")
+                render_fitbodgpt_steps(report_content)
 
-                # Summary metrics (use precomputed totals with stored unit system)
-                totals = st.session_state.get("summary_totals")
-                gen_unit = gen_settings.get("unit_system", unit_system)
-                if totals:
-                    weight_unit = "kg" if gen_unit == "metric" else "lbs"
-                    num_periods = len(st.session_state.get("summaries", {}))
-                    gen_period = gen_settings.get("period_type", period_type)
-
-                    m1, m2, m3, m4 = st.columns(4)
-                    gen_cal = gen_settings.get("calendar_aligned", False)
-                    if gen_period == PeriodType.DAILY or (gen_cal and gen_period in _CALENDAR_TYPES):
-                        period_label = f"{num_periods} days"
-                    else:
-                        period_label = f"{num_periods} weeks"
-                    m1.metric("Workout Periods", period_label)
-                    m2.metric("Total Time", seconds_to_time(totals["cardio"] + totals["strength"]))
-                    m3.metric("Total Reps", f"{totals['reps']:,}")
-                    m4.metric("Total Volume", f"{totals['volume']:,.0f} {weight_unit}")
-
-                # Download button (use stored format to match content)
-                report_content = st.session_state.report_content
-                gen_format = gen_settings.get("output_format", output_format)
-                ext, mime = get_download_config(gen_format)
-
-                # FitbodGPT steps (shown for all text formats, not PDF)
-                if gen_format != "pdf":
-                    st.markdown("---")
-                    st.subheader("Use with FitbodGPT")
-                    render_fitbodgpt_steps(report_content)
-
-                # Download
-                st.markdown("---")
-                if gen_format == "pdf":
-                    pdf_path = os.path.join(
-                        tempfile.gettempdir(),
-                        f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                    )
-                    convert_to_pdf(report_content, pdf_path)
-                    with open(pdf_path, "rb") as f:
-                        st.download_button(
-                            "Download Report",
-                            f.read(),
-                            file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                            mime="application/pdf",
-                        )
-                    os.unlink(pdf_path)
-                else:
+            # Download
+            st.markdown("---")
+            if output_format == "pdf":
+                pdf_path = os.path.join(
+                    tempfile.gettempdir(),
+                    f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
+                )
+                convert_to_pdf(report_content, pdf_path)
+                with open(pdf_path, "rb") as f:
                     st.download_button(
                         "Download Report",
-                        report_content,
-                        file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
-                        mime=mime,
+                        f.read(),
+                        file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
+                        mime="application/pdf",
                     )
+                os.unlink(pdf_path)
+            else:
+                st.download_button(
+                    "Download Report",
+                    report_content,
+                    file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
+                    mime=mime,
+                )
 
-                # Report preview
-                st.subheader("Report Preview")
-                preview_lang = {"json": "json", "yaml": "yaml", "gpt": None}.get(gen_format, "markdown")
-                st.code(report_content, language=preview_lang, line_numbers=True)
+            # Report preview
+            st.subheader("Report Preview")
+            preview_lang = {"json": "json", "yaml": "yaml", "gpt": None}.get(output_format, "markdown")
+            st.code(report_content, language=preview_lang, line_numbers=True)
 
     except Exception as e:
         st.error(f"Error processing file: {e!s}")
