@@ -51,7 +51,6 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Sit Up": ["abs"],
     "Toe Touchers": ["abs"],
     "Vertical Knee Raise": ["abs", "hip_flexors"],
-
     # ----- Chest -----
     "Barbell Bench Press": ["chest"],
     "Barbell Incline Bench Press": ["upper_chest", "chest"],
@@ -76,7 +75,6 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Smith Machine Incline Bench Press": ["upper_chest", "chest"],
     "Tricep Push Up": ["triceps", "chest"],
     "Walkout to Push Up": ["chest", "abs"],
-
     # ----- Back -----
     "Assisted Chin Up": ["lats", "biceps"],
     "Assisted Neutral Grip Pull Up": ["lats", "upper_back"],
@@ -100,7 +98,6 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "T-Bar Row": ["lats", "upper_back"],
     "V-Bar Pulldown": ["lats"],
     "Wide Grip Lat Pulldown": ["lats"],
-
     # ----- Lower back / posterior chain -----
     "Back Extensions": ["lower_back", "glutes"],
     "Deadlift": ["hamstrings", "glutes", "lower_back"],
@@ -115,7 +112,6 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Superman": ["lower_back", "glutes"],
     "Superman Hold": ["lower_back", "glutes"],
     "Superman with Scaption": ["lower_back", "glutes"],
-
     # ----- Shoulders -----
     "Arnold Dumbbell Press": ["front_delts", "side_delts"],
     "Barbell Shoulder Press": ["front_delts", "side_delts"],
@@ -137,12 +133,10 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Machine Shoulder Press": ["front_delts", "side_delts"],
     "Push Press": ["front_delts", "side_delts"],
     "Upright Row": ["side_delts", "traps"],
-
     # ----- Traps / neck -----
     "Barbell Shrug": ["traps"],
     "Dumbbell Shrug": ["traps"],
     "Face Down Plate Neck Resistance": ["neck"],
-
     # ----- Biceps -----
     "Barbell Curl": ["biceps"],
     "Cable Bicep Curl": ["biceps"],
@@ -164,7 +158,6 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Zottman Curl": ["biceps", "forearms"],
     "Zottman Preacher Curl": ["biceps", "forearms"],
     "EZ-Bar Reverse Grip Curl": ["forearms", "biceps"],
-
     # ----- Triceps -----
     "Assisted Dip": ["triceps", "chest"],
     "Bench Dip": ["triceps"],
@@ -184,11 +177,9 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Single Arm Dumbbell Tricep Extension": ["triceps"],
     "Skullcrusher": ["triceps"],
     "Tricep Extension": ["triceps"],
-
     # ----- Forearms -----
     "Palms-Down Dumbbell Wrist Curl": ["forearms"],
     "Palms-Up Dumbbell Wrist Curl": ["forearms"],
-
     # ----- Quads / legs -----
     "Air Squats": ["quads", "glutes"],
     "Back Squat": ["quads", "glutes"],
@@ -209,12 +200,10 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Single Leg Leg Extension": ["quads"],
     "Smith Machine Squat": ["quads", "glutes"],
     "Step Up": ["quads", "glutes"],
-
     # ----- Hamstrings -----
     "Leg Curl": ["hamstrings"],
     "Lying Hamstrings Curl": ["hamstrings"],
     "Seated Leg Curl": ["hamstrings"],
-
     # ----- Glutes / hips -----
     "Barbell Hip Thrust": ["glutes", "hamstrings"],
     "Cable Hip Abduction": ["glutes"],
@@ -226,14 +215,12 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Single Leg Cable Kickback": ["glutes"],
     "Single Leg Glute Bridge": ["glutes", "hamstrings"],
     "Stability Ball Hip Bridge": ["glutes", "hamstrings"],
-
     # ----- Calves -----
     "Calf Press": ["calves"],
     "Seated Machine Calf Press": ["calves"],
     "Smith Machine Calf Raise": ["calves"],
     "Standing Leg Side Hold": ["calves"],
     "Standing Machine Calf Press": ["calves"],
-
     # ----- Cardio -----
     "Burpee": ["quads", "chest"],
     "Cycling": ["quads", "hamstrings"],
@@ -246,15 +233,12 @@ EXERCISE_MUSCLES: Final[dict[str, list[str]]] = {
     "Sled Push": ["quads", "glutes"],
     "Stair Stepper": ["quads", "glutes"],
     "Walking": ["quads", "glutes"],
-
     # ----- Kettlebell -----
     "Kettlebell Single Arm Farmer Walk": ["forearms", "traps"],
     "Kettlebell Swing": ["glutes", "hamstrings"],
     "Kettlebell Swing American": ["glutes", "hamstrings"],
-
     # ----- Carries -----
     "Farmer's Walk": ["forearms", "traps"],
-
     # ----- Mobility / flexibility -----
     "Backward Arm Circle": ["shoulders"],
     "Bench T-Spine Stretch": ["upper_back", "shoulders"],
@@ -299,7 +283,6 @@ EXERCISE_EQUIPMENT: Final[dict[str, str]] = {
     "Skullcrusher": "barbell",
     "Stiff-Legged Barbell Good Morning": "barbell",
     "Upright Row": "barbell",
-
     # ----- Dumbbell -----
     "Arnold Dumbbell Press": "dumbbell",
     "Cross Body Hammer Curls": "dumbbell",
@@ -342,7 +325,6 @@ EXERCISE_EQUIPMENT: Final[dict[str, str]] = {
     "Tricep Extension": "dumbbell",
     "Zottman Curl": "dumbbell",
     "Zottman Preacher Curl": "dumbbell",
-
     # ----- Cable -----
     "Cable Bicep Curl": "cable",
     "Cable Crossover Fly": "cable",
@@ -362,7 +344,6 @@ EXERCISE_EQUIPMENT: Final[dict[str, str]] = {
     "Seated Cable Row": "cable",
     "Single Arm Cable Bicep Curl": "cable",
     "Single Leg Cable Kickback": "cable",
-
     # ----- Machine -----
     "Ab Crunch Machine": "machine",
     "Calf Press": "machine",
@@ -399,33 +380,28 @@ EXERCISE_EQUIPMENT: Final[dict[str, str]] = {
     "Standing Machine Calf Press": "machine",
     "V-Bar Pulldown": "machine",
     "Wide Grip Lat Pulldown": "machine",
-
     # ----- EZ bar -----
     "EZ-Bar Curl": "ez_bar",
     "EZ-Bar Overhead Tricep Extension": "ez_bar",
     "EZ-Bar Reverse Grip Curl": "ez_bar",
     "Incline EZ-Bar Curl": "ez_bar",
     "Preacher Curl": "ez_bar",
-
     # ----- Smith machine -----
     "Smith Machine Bench Press": "smith_machine",
     "Smith Machine Calf Raise": "smith_machine",
     "Smith Machine Incline Bench Press": "smith_machine",
     "Smith Machine Squat": "smith_machine",
-
     # ----- Kettlebell -----
     "Kettlebell Single Arm Farmer Walk": "kettlebell",
     "Kettlebell Swing": "kettlebell",
     "Kettlebell Swing American": "kettlebell",
     "Single Leg Overhead Kettlebell Hold": "kettlebell",
-
     # ----- Other equipment -----
     "Face Down Plate Neck Resistance": "plate",
     "Medicine Ball Russian Twist": "medicine_ball",
     "PVC Around the World": "other",
     "Sled Push": "sled",
     "Stability Ball Hip Bridge": "stability_ball",
-
     # ----- Bodyweight -----
     "Air Squats": "bodyweight",
     "Assisted Chin Up": "bodyweight",
@@ -502,7 +478,6 @@ EXERCISE_EQUIPMENT: Final[dict[str, str]] = {
     "Vertical Knee Raise": "bodyweight",
     "Walking": "bodyweight",
     "Walkout to Push Up": "bodyweight",
-
     # Note: Barbell Lunge already in barbell section above
 }
 
