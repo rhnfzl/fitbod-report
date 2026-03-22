@@ -344,7 +344,7 @@ if uploaded_file is not None:
                     index=0,
                     format_func=lambda x: _format_labels[x],
                     key="output_format",
-                    help="GPT-optimized: compact weekly format for FitbodGPT. Others: general-purpose text or PDF.",
+                    help="GPT-optimized: compact format for FitbodGPT. Others: general-purpose text or PDF.",
                 )
             with col6:
                 available_timezones, formatted_timezones = get_timezone_options()
@@ -387,10 +387,6 @@ if uploaded_file is not None:
 
             effective_period_type = period_type
             effective_calendar_aligned = calendar_aligned
-            if output_format == "gpt":
-                effective_period_type = PeriodType.WEEKLY
-                effective_calendar_aligned = False
-                st.info("GPT export is weekly-only for FitbodGPT. Non-weekly summary selections are ignored for this format.")
 
             # Performance warning
             if report_format == "detailed":
