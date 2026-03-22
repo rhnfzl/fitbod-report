@@ -283,7 +283,7 @@ if uploaded_file is not None:
                     ["gpt", "markdown", "json", "yaml", "pdf"],
                     index=0,
                     key="output_format",
-                    help="GPT: Token-efficient format for FitbodGPT. Markdown/JSON/YAML: Text formats. PDF: Formatted document",
+                    help="GPT: Token-efficient for FitbodGPT. Markdown/JSON/YAML: Text. PDF: Formatted document",
                 )
             with col6:
                 available_timezones, formatted_timezones = get_timezone_options()

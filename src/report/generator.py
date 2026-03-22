@@ -1176,7 +1176,7 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
     Returns:
         str: GPT-optimized compact report
     """
-    from ..data.exercise_db import get_exercise_muscles, get_unknown_exercises, clear_unknown_exercises
+    from ..data.exercise_db import clear_unknown_exercises, get_exercise_muscles, get_unknown_exercises
 
     clear_unknown_exercises()
 
