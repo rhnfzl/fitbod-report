@@ -119,81 +119,58 @@ FITBODGPT_URL = "https://chatgpt.com/g/g-69bfd1becff08191b3b93c1d0312fda9-fitbod
 
 
 def render_fitbodgpt_steps(report_content):
-    """Render a numbered step flow for GPT exports, mobile-friendly."""
+    """Render FitbodGPT copy + open flow. Instruction first, buttons below."""
     escaped = json.dumps(report_content)
-    # Build HTML without f-string to avoid brace conflicts with CSS/JS.
-    # Use string concatenation for the dynamic parts only.
     css = """
     <style>
       *{box-sizing:border-box;margin:0;padding:0}
-      .steps{font-family:system-ui,-apple-system,sans-serif}
-      .step{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #e5e7eb}
-      .step:last-child{border-bottom:none}
-      .num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:#111827;color:#fff;
-           display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
-      .num.done{background:#16a34a}
-      .body{flex:1;min-width:0}
-      .body h4{font-size:15px;margin-bottom:4px;color:#111827}
-      .body p{font-size:13px;color:#6b7280;margin:0}
-      .btn{display:inline-block;margin-top:8px;padding:10px 20px;border:none;border-radius:8px;
-           font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .15s}
+      .fg{font-family:system-ui,-apple-system,sans-serif}
+      .fg p{font-size:14px;color:#374151;line-height:1.5;margin:0 0 16px}
+      .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+      .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;
+           border:none;border-radius:8px;font-size:14px;font-weight:600;
+           cursor:pointer;text-decoration:none;transition:opacity .15s}
       .btn:hover{opacity:.85}
       .btn-dark{background:#111827;color:#fff}
       .btn-blue{background:#2563eb;color:#fff}
-      .status{display:inline-block;margin-left:10px;font-size:13px;color:#16a34a;font-weight:600}
+      .status{font-size:13px;color:#16a34a;font-weight:600}
+      .status.err{color:#dc2626}
       @media(max-width:480px){
-        .btn{display:block;width:100%;text-align:center}
-        .status{display:block;margin:6px 0 0 0}
+        .actions{flex-direction:column}
+        .btn{width:100%;justify-content:center}
       }
     </style>
     """
     html_body = (
-        '<div class="steps">'
-        '  <div class="step">'
-        '    <div class="num" id="num1">1</div>'
-        '    <div class="body">'
-        "      <h4>Copy your report</h4>"
-        "      <p>Copies the full report to your clipboard.</p>"
-        '      <button class="btn btn-dark" id="copy-btn">Copy to Clipboard</button>'
-        '      <span class="status" id="s1"></span>'
-        "    </div>"
-        "  </div>"
-        '  <div class="step">'
-        '    <div class="num">2</div>'
-        '    <div class="body">'
-        "      <h4>Open FitbodGPT</h4>"
-        "      <p>Opens FitbodGPT in ChatGPT in a new tab.</p>"
-        '      <a class="btn btn-blue" href="' + FITBODGPT_URL + '"'
-        '         target="_blank" rel="noopener">Open FitbodGPT</a>'
-        "    </div>"
-        "  </div>"
-        '  <div class="step">'
-        '    <div class="num">3</div>'
-        '    <div class="body">'
-        "      <h4>Paste and go</h4>"
-        "      <p>Paste the report into the ChatGPT message box and send it."
-        "         FitbodGPT will analyze your data and build a plan.</p>"
-        "    </div>"
+        '<div class="fg">'
+        "  <p>Copy your report, open FitbodGPT in ChatGPT, "
+        "paste it in the message box, and press send.</p>"
+        '  <div class="actions">'
+        '    <button class="btn btn-dark" id="copy-btn">'
+        "      Copy to Clipboard</button>"
+        '    <a class="btn btn-blue" href="' + FITBODGPT_URL + '"'
+        '       target="_blank" rel="noopener">'
+        "      Open FitbodGPT</a>"
+        '    <span class="status" id="s1"></span>'
         "  </div>"
         "</div>"
     )
-    # JS kept separate so curly braces don't fight with Python f-strings
     js = (
         "<script>"
         "var reportData=" + escaped + ";"
         "document.getElementById('copy-btn').addEventListener('click',function(){"
         "  navigator.clipboard.writeText(reportData).then(function(){"
-        "    document.getElementById('num1').className='num done';"
+        "    document.getElementById('s1').className='status';"
         "    document.getElementById('s1').textContent='Copied!';"
         "  }).catch(function(){"
         "    var s=document.getElementById('s1');"
+        "    s.className='status err';"
         "    s.textContent='Copy failed. Use the preview below.';"
-        "    s.style.color='#dc2626';"
         "  });"
         "});"
         "</script>"
     )
-    components.html(css + html_body + js, height=320)
+    components.html(css + html_body + js, height=100)
 
 
 def handle_file_processing(uploaded_file):
