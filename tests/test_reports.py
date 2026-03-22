@@ -4,6 +4,7 @@ import csv
 import json
 from pathlib import Path
 
+import pytest
 import yaml
 from conftest import make_entry as _make_entry
 
@@ -351,6 +352,8 @@ class TestMarkdownReport:
         weekly = summarize_workouts(entries, use_metric=True, tz_name="UTC", group_by="week")
         report = generate_markdown_report(weekly, True, "summary", PeriodType.WEEKLY)
         guide_path = Path(__file__).resolve().parents[2] / "fitbod-gpt" / "knowledge" / "report-format-guide.md"
+        if not guide_path.exists():
+            pytest.skip("fitbod-gpt repo not available (CI)")
         guide = guide_path.read_text()
 
         assert "# Workout Summary Report" in guide
