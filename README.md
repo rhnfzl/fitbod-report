@@ -126,6 +126,14 @@ fitbod-report/
     └── report/           # Report generation logic
 ```
 
+## Use with FitbodGPT
+
+Once you generate a report, you can paste it into [FitbodGPT](https://chatgpt.com/g/g-69bfd1becff08191b3b93c1d0312fda9-fitbodgpt) to get personalized training analysis and workout plans based on your data. It detects your experience level, identifies muscle group imbalances, infers your available equipment, and builds structured plans you can add as custom workouts back into Fitbod.
+
+The GPT export format is designed for this. Generate your report, copy it, and paste it into the chat.
+
+Source code: [fitbod-gpt on GitHub](https://github.com/rhnfzl/fitbod-gpt)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
