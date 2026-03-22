@@ -434,21 +434,17 @@ if uploaded_file is not None:
                         )
                     os.unlink(pdf_path)
                 else:
-                    dl_col, clip_col = st.columns([1, 1]) if gen_format == "gpt" else (st.container(), None)
-                    with dl_col:
-                        st.download_button(
-                            "Download Report",
-                            report_content,
-                            file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
-                            mime=mime,
-                        )
-                    if gen_format == "gpt" and clip_col is not None:
-                        with clip_col:
-                            st.code(report_content, language=None)
-                            st.info("Copy the text above and paste it into FitbodGPT in ChatGPT.")
+                    st.download_button(
+                        "Download Report",
+                        report_content,
+                        file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
+                        mime=mime,
+                    )
 
                 # Report preview
                 st.subheader("Report Preview")
+                if gen_format == "gpt":
+                    st.info("Copy the report below and paste it into FitbodGPT in ChatGPT.")
                 preview_lang = {"json": "json", "yaml": "yaml", "gpt": None}.get(gen_format, "markdown")
                 st.code(report_content, language=preview_lang, line_numbers=True)
 

@@ -1207,7 +1207,6 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
     total_sessions = len(summaries)
 
     lines = [
-        f"@fitbodgpt v1",
         f"date_range: {start} to {end}",
         f"weeks: {num_weeks}",
         f"sessions: {total_sessions}",
