@@ -215,10 +215,10 @@ and detailed set-by-set or summary views.
 
 # File uploader
 uploaded_file = st.file_uploader(
-    "Upload your Fitbod export (CSV file)",
-    type=["csv"],
+    "Upload your Fitbod export (CSV or TXT file)",
+    type=["csv", "txt"],
     key="fitbod_upload",
-    help="Upload the CSV file exported from your Fitbod app. "
+    help="Upload the CSV or TXT file exported from your Fitbod app. "
     "To export: Open Fitbod app > Log > Settings > Export Workout Data",
 )
 
