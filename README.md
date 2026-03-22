@@ -16,7 +16,7 @@ The tool was primarily created to make Fitbod data more AI-friendly. The structu
 - Build new workout plans based on historical data
 - Compare/Build your routines with reference fitness books/programs
 
-**FitbodGPT Integration**: The default "GPT" export format is optimized for [FitbodGPT](https://github.com/rhnfzl/fitbod-gpt), a custom ChatGPT GPT that analyzes your Fitbod data and builds personalized workout plans. Export your report in GPT format, paste it into FitbodGPT, and get science-backed training recommendations.
+**FitbodGPT Integration**: The default "GPT" export format is optimized for [FitbodGPT](https://github.com/rhnfzl/fitbod-gpt), a custom ChatGPT GPT that analyzes your Fitbod data and builds personalized workout plans. GPT exports stay weekly for FitbodGPT so coaching stays week-based. Export your report in GPT format, use the copy button or download it, then paste/upload it into FitbodGPT for science-backed training recommendations.
 
 **Privacy First**: No data is stored on the server - uploaded files are processed in-memory and discarded after your session ends.
 
@@ -31,7 +31,7 @@ The tool was primarily created to make Fitbod data more AI-friendly. The structu
 - **Flexible Report Options**:
   - Summary or detailed (set-by-set) reports
   - Metric and imperial units
-  - Export to GPT (default, token-efficient for FitbodGPT), Markdown, JSON, YAML, or PDF
+  - Export to GPT (default, token-efficient weekly export for FitbodGPT), Markdown, JSON, YAML, or PDF
   - Daily, weekly, monthly, quarterly, half-yearly, yearly grouping
   - Calendar-aligned or rolling window aggregation
 

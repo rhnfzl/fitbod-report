@@ -1067,7 +1067,9 @@ def _build_structured_report(summaries, use_metric=True, report_format="summary"
         # Stats
         cardio_dur = summary.get("cardio_duration", 0)
         strength_dur = summary.get("strength_duration", 0)
+        session_count = len(summary.get("Workouts", {}))
         period_entry["stats"] = {
+            "session_count": session_count,
             "total_workout_time": seconds_to_time(cardio_dur + strength_dur),
             "total_workout_seconds": round(cardio_dur + strength_dur, 1),
             "strength_time": seconds_to_time(strength_dur),
@@ -1091,9 +1093,11 @@ def _build_structured_report(summaries, use_metric=True, report_format="summary"
     total_distance = sum(s.get("Distance", 0) for s in summaries.values())
     total_reps = sum(s.get("Reps", 0) for s in summaries.values())
     total_volume = sum(s.get("Volume", 0) for s in summaries.values())
+    total_sessions = sum(len(s.get("Workouts", {})) for s in summaries.values())
 
     overall = {
         "date_range": {"start": overall_start, "end": overall_end},
+        "total_sessions": total_sessions,
         "total_workout_time": seconds_to_time(total_cardio + total_strength),
         "total_strength_time": seconds_to_time(total_strength),
         "total_cardio_time": seconds_to_time(total_cardio),
@@ -1187,54 +1191,60 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
     data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned)
     periods = data["periods"]
     overall = data["overall"]
+    report_type = data.get("report_type", "weekly")
+    grouping_mode = data.get("grouping_mode", "rolling")
 
     # --- Header ---
     date_range = overall.get("date_range", {})
     start = date_range.get("start", "unknown")
     end = date_range.get("end", "unknown")
 
-    # Count weeks and unique exercises
-    num_weeks = len(periods) if periods else 0
+    # Count periods and unique exercises
+    period_count = len(periods) if periods else 0
     all_exercises = set()
-    total_sessions = 0
     for p in periods:
         for ex in p.get("exercises", []):
             all_exercises.add(ex["name"])
-        # Estimate sessions from the period (use stats if available)
-        total_sessions += 1  # Each period is at least one session block
 
-    # Better session count: count from original summaries
-    total_sessions = len(summaries)
+    total_sessions = overall.get("total_sessions", sum(len(s.get("Workouts", {})) for s in summaries.values()))
 
     lines = [
         f"date_range: {start} to {end}",
-        f"weeks: {num_weeks}",
+        f"report_type: {report_type}",
+        f"grouping_mode: {grouping_mode}",
+        f"period_count: {period_count}",
         f"sessions: {total_sessions}",
         f"unit: {'metric' if use_metric else 'imperial'}",
         f"exercises: {len(all_exercises)}",
         "",
     ]
 
-    # --- Weekly Summary ---
-    lines.append("## weekly_summary")
-    lines.append(f"week\tsessions\tstrength_min\tcardio_min\tvolume_{weight_unit}\treps\tdistance_{distance_unit}")
+    # --- Period Summary ---
+    lines.append("## period_summary")
+    lines.append(f"period\tsessions\tstrength_min\tcardio_min\tvolume_{weight_unit}\treps\tdistance_{distance_unit}")
 
     for p in periods:
         stats = p.get("stats", {})
-        week_label = p.get("date", "")
-        # Count exercises as a proxy for sessions within the period
+        period_label = p.get("period")
+        if not period_label:
+            period_end = p.get("end_date")
+            if period_end and period_end != p.get("date", ""):
+                period_label = f"{p.get('date', '')} to {period_end}"
+            else:
+                period_label = p.get("date", "")
         strength_sec = 0
         cardio_sec = 0
         if "strength_time" in stats:
             strength_sec = stats.get("total_workout_seconds", 0) - _time_to_seconds(stats.get("cardio_time", "0:00:00"))
         cardio_sec = _time_to_seconds(stats.get("cardio_time", "0:00:00"))
 
+        session_count = stats.get("session_count", 0)
         volume = stats.get("total_volume", 0)
         reps = stats.get("total_reps", 0)
         distance = stats.get("total_distance", 0)
 
         lines.append(
-            f"{week_label}\t1\t{int(strength_sec // 60)}\t{int(cardio_sec // 60)}"
+            f"{period_label}\t{session_count}\t{int(strength_sec // 60)}\t{int(cardio_sec // 60)}"
             f"\t{round(volume, 1)}\t{reps}\t{round(distance, 2)}"
         )
 

@@ -1,6 +1,8 @@
 """Tests for report output - aggregation semantics and format consistency."""
 
+import csv
 import json
+from pathlib import Path
 
 import yaml
 from conftest import make_entry as _make_entry
@@ -8,6 +10,7 @@ from conftest import make_entry as _make_entry
 from src.report.generator import (
     PeriodType,
     aggregate_summaries,
+    generate_gpt_report,
     generate_json_report,
     generate_markdown_report,
     generate_yaml_report,
@@ -92,6 +95,44 @@ def _make_multi_month_entries():
     for i, d in enumerate(dates):
         entries.append(_make_entry(date_str=d, reps=10 + i, weight_kg=50 + i * 5))
     return entries
+
+
+def _make_same_week_entries():
+    """Create multiple workouts in the same week to test session counts."""
+    return [
+        _make_entry(date_str="2024-01-15 10:00:00", reps=10, weight_kg=50),
+        _make_entry(date_str="2024-01-17 18:00:00", reps=12, weight_kg=55),
+    ]
+
+
+def _parse_gpt_report(report):
+    """Parse the compact GPT report into header and TSV sections."""
+    header = {}
+    sections = {}
+    current = None
+
+    for raw_line in report.splitlines():
+        line = raw_line.strip("\n")
+        if not line:
+            continue
+        if line.startswith("## "):
+            current = line[3:].strip()
+            sections[current] = []
+            continue
+        if current is None and ":" in line:
+            key, value = line.split(":", 1)
+            header[key.strip()] = value.strip()
+            continue
+        if current is not None:
+            sections[current].append(line)
+
+    parsed_sections = {}
+    for name, rows in sections.items():
+        if rows and "\t" in rows[0]:
+            parsed_sections[name] = list(csv.DictReader(rows, delimiter="\t"))
+        else:
+            parsed_sections[name] = rows
+    return header, parsed_sections
 
 
 class TestCalendarAggregation:
@@ -239,6 +280,59 @@ class TestStringPeriodType:
         assert data["report_type"] == "weekly"
 
 
+class TestGptReport:
+    def test_gpt_weekly_counts_real_sessions(self):
+        entries = _make_same_week_entries()
+        weekly = summarize_workouts(entries, use_metric=True, tz_name="UTC", group_by="week")
+
+        report = generate_gpt_report(weekly, True, "summary", PeriodType.WEEKLY)
+        header, sections = _parse_gpt_report(report)
+
+        assert header["report_type"] == "weekly"
+        assert header["period_count"] == "1"
+        assert "period_summary" in sections
+        assert int(sections["period_summary"][0]["sessions"]) == 2
+
+    def test_gpt_monthly_rolling_uses_period_summary_and_session_totals(self):
+        entries = _make_multi_week_entries()
+        weekly = summarize_workouts(entries, use_metric=True, tz_name="UTC", group_by="week")
+
+        report = generate_gpt_report(weekly, True, "summary", PeriodType.MONTHLY)
+        header, sections = _parse_gpt_report(report)
+
+        assert header["report_type"] == "monthly"
+        assert header["grouping_mode"] == "rolling"
+        assert header["period_count"] == "2"
+        assert "period_summary" in sections
+        assert int(sections["period_summary"][0]["sessions"]) == 3
+
+    def test_gpt_monthly_calendar_uses_period_summary_and_session_totals(self):
+        entries = _make_multi_week_entries()
+        daily = summarize_workouts(entries, use_metric=True, tz_name="UTC", group_by="day")
+
+        report = generate_gpt_report(daily, True, "summary", PeriodType.MONTHLY, calendar_aligned=True)
+        header, sections = _parse_gpt_report(report)
+
+        assert header["report_type"] == "monthly"
+        assert header["grouping_mode"] == "calendar"
+        assert header["period_count"] == "2"
+        assert int(sections["period_summary"][0]["sessions"]) == 2
+        assert sections["period_summary"][0]["period"] == "January 2024"
+
+    def test_gpt_quarterly_uses_period_summary_and_session_totals(self):
+        entries = _make_multi_month_entries()
+        weekly = summarize_workouts(entries, use_metric=True, tz_name="UTC", group_by="week")
+
+        report = generate_gpt_report(weekly, True, "summary", PeriodType.QUARTERLY)
+        header, sections = _parse_gpt_report(report)
+        session_counts = [int(row["sessions"]) for row in sections["period_summary"]]
+
+        assert header["report_type"] == "quarterly"
+        assert header["grouping_mode"] == "rolling"
+        assert int(header["period_count"]) == len(sections["period_summary"])
+        assert sum(session_counts) == 6
+
+
 class TestMarkdownReport:
     def test_markdown_not_empty(self):
         entries = [_make_entry()]
@@ -251,3 +345,20 @@ class TestMarkdownReport:
         weekly = summarize_workouts(entries, use_metric=True, tz_name="UTC", group_by="week")
         report = generate_markdown_report(weekly, True, "detailed", PeriodType.WEEKLY)
         assert "| Set |" in report
+
+    def test_markdown_contract_matches_fitbod_gpt_guide(self):
+        entries = [_make_entry()]
+        weekly = summarize_workouts(entries, use_metric=True, tz_name="UTC", group_by="week")
+        report = generate_markdown_report(weekly, True, "summary", PeriodType.WEEKLY)
+        guide_path = Path(__file__).resolve().parents[2] / "fitbod-gpt" / "knowledge" / "report-format-guide.md"
+        guide = guide_path.read_text()
+
+        assert "# Workout Summary Report" in guide
+        assert "### Summary Statistics" in guide
+        assert "# Overall Summary for" in guide
+        assert "### Overall Summary Statistics" in guide
+        assert "**Report Type:**" not in guide
+
+        assert "# Workout Summary Report" in report
+        assert "### Summary Statistics" in report
+        assert "# Overall Summary for" in report

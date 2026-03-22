@@ -1,5 +1,6 @@
 """Streamlit web application for Fitbod workout report generation."""
 
+import json
 import os
 import tempfile
 import time
@@ -7,6 +8,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 from src.data.processor import process_data_from_df
 from src.data.validator import validate_data_structure
@@ -111,6 +113,34 @@ def get_download_config(output_format):
         "pdf": ("pdf", "application/pdf"),
     }
     return configs.get(output_format, ("md", "text/markdown"))
+
+
+def render_copy_for_fitbod_gpt(report_content):  # noqa: E501
+    """Render a lightweight clipboard button for GPT exports."""
+    btn_style = "background:#111827;color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;font-size:14px;"
+    escaped = json.dumps(report_content)
+    components.html(
+        f"""
+        <div style="display:flex;align-items:center;gap:12px;
+                    font-family:system-ui,sans-serif;">
+          <button id="copy-fitbod-gpt" style="{btn_style}"
+            onclick='navigator.clipboard.writeText({escaped})
+              .then(()=>{{
+                document.getElementById("copy-fitbod-gpt-status")
+                  .textContent="Copied to clipboard.";
+              }})
+              .catch(()=>{{
+                document.getElementById("copy-fitbod-gpt-status")
+                  .textContent="Copy failed. Use the preview below.";
+              }});'>
+            Copy for FitbodGPT
+          </button>
+          <span id="copy-fitbod-gpt-status"
+                style="font-size:13px;color:#374151;"></span>
+        </div>
+        """,
+        height=54,
+    )
 
 
 def handle_file_processing(uploaded_file):
@@ -324,6 +354,13 @@ if uploaded_file is not None:
                 else:
                     calendar_aligned = False
 
+            effective_period_type = period_type
+            effective_calendar_aligned = calendar_aligned
+            if output_format == "gpt":
+                effective_period_type = PeriodType.WEEKLY
+                effective_calendar_aligned = False
+                st.info("GPT export is weekly-only for FitbodGPT. Non-weekly summary selections are ignored for this format.")
+
             # Performance warning
             if report_format == "detailed":
                 days_count = (end_date - start_date).days
@@ -346,7 +383,7 @@ if uploaded_file is not None:
 
                         # Process and summarize
                         summaries = process_and_summarize(
-                            filtered_df, unit_system, selected_timezone, period_type, calendar_aligned
+                            filtered_df, unit_system, selected_timezone, effective_period_type, effective_calendar_aligned
                         )
 
                         # Store summaries and precomputed totals
@@ -361,15 +398,20 @@ if uploaded_file is not None:
                         # Generate report content (PDF uses markdown as intermediate)
                         effective_format = "markdown" if output_format == "pdf" else output_format
                         st.session_state.report_content = generate_report_content(
-                            summaries, unit_system, report_format, effective_format, period_type, calendar_aligned
+                            summaries,
+                            unit_system,
+                            report_format,
+                            effective_format,
+                            effective_period_type,
+                            effective_calendar_aligned,
                         )
                         # Store generation settings to detect stale reports
                         st.session_state.report_settings = {
                             "output_format": output_format,
                             "unit_system": unit_system,
                             "report_format": report_format,
-                            "period_type": period_type,
-                            "calendar_aligned": calendar_aligned,
+                            "period_type": effective_period_type,
+                            "calendar_aligned": effective_calendar_aligned,
                         }
 
                         duration = timer()
@@ -390,8 +432,8 @@ if uploaded_file is not None:
                     "output_format": output_format,
                     "unit_system": unit_system,
                     "report_format": report_format,
-                    "period_type": period_type,
-                    "calendar_aligned": calendar_aligned,
+                    "period_type": effective_period_type,
+                    "calendar_aligned": effective_calendar_aligned,
                 }
                 if gen_settings != current_settings:
                     st.warning("Report settings have changed since last generation. Click 'Generate Report' to update.")
@@ -440,6 +482,8 @@ if uploaded_file is not None:
                         file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
                         mime=mime,
                     )
+                    if gen_format == "gpt":
+                        render_copy_for_fitbod_gpt(report_content)
 
                 # Report preview
                 st.subheader("Report Preview")
