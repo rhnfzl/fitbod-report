@@ -126,7 +126,7 @@ def render_fitbodgpt_steps(report_content):
       *{box-sizing:border-box;margin:0;padding:0}
       .fg{font-family:system-ui,-apple-system,sans-serif}
       .fg p{font-size:14px;color:#374151;line-height:1.5;margin:0 0 16px}
-      .actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+      .actions{display:flex;gap:32px;align-items:center;flex-wrap:wrap}
       .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;
            border:none;border-radius:8px;font-size:14px;font-weight:600;
            cursor:pointer;text-decoration:none;transition:opacity .15s}
