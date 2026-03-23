@@ -1720,7 +1720,7 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
 
     # --- Precomputed Analysis (when enabled) ---
     if analysis:
-        lines.append("## gpt_analysis")
+        lines.append("## analysis")
         lines.append("metric\tvalue")
         for key in (
             "push_pull_ratio", "upper_lower_ratio", "lower_share_pct",
