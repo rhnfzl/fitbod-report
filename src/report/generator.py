@@ -1792,9 +1792,21 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
 
 
 def _time_to_seconds(time_str):
-    """Convert a time string like '1:30:00' or '0:29:37' to seconds."""
+    """Convert a time string to seconds.
+
+    Supports formats:
+      - '1:30:00' or '0:29:37' (H:MM:SS colon-separated)
+      - '1h 30m 0s' or '0h 29m 37s' (human-readable from seconds_to_time)
+    """
     if not time_str or time_str == "0":
         return 0
+    time_str = str(time_str).strip()
+    # Try human-readable format: '0h 30m 2s'
+    import re
+    match = re.match(r"(\d+)h\s*(\d+)m\s*(\d+)s", time_str)
+    if match:
+        return int(match.group(1)) * 3600 + int(match.group(2)) * 60 + int(match.group(3))
+    # Try colon format: 'H:MM:SS' or 'MM:SS'
     parts = time_str.split(":")
     if len(parts) == 3:
         return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
