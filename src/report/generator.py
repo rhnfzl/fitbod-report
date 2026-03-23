@@ -276,22 +276,31 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
     stalled_compounds.sort()
     stalled_isolations.sort()
 
-    # --- Training gaps ---
+    # --- Training gaps (weekly reports only) ---
     gap_weeks_list = []
-    if start_date and end_date:
-        period_dates = set()
+    if start_date and end_date and len(periods) >= 2:
+        # Infer period interval from actual data
+        period_dates_sorted = []
         for p in periods:
             date_str = p.get("date", "")
             if date_str:
                 try:
-                    period_dates.add(datetime.strptime(date_str, "%Y-%m-%d").date())
+                    period_dates_sorted.append(datetime.strptime(date_str, "%Y-%m-%d").date())
                 except ValueError:
                     pass
-        d = start_date
-        while d <= end_date:
-            if d not in period_dates:
-                gap_weeks_list.append(d.isoformat())
-            d += timedelta(days=7)
+        period_dates_sorted.sort()
+        period_dates_set = set(period_dates_sorted)
+
+        # Only detect gaps for weekly-ish periods (5-9 day intervals)
+        if len(period_dates_sorted) >= 2:
+            intervals = [(period_dates_sorted[i+1] - period_dates_sorted[i]).days for i in range(min(5, len(period_dates_sorted)-1))]
+            avg_interval = sum(intervals) / len(intervals)
+            if 5 <= avg_interval <= 9:  # Weekly
+                d = start_date
+                while d <= end_date:
+                    if d not in period_dates_set:
+                        gap_weeks_list.append(d.isoformat())
+                    d += timedelta(days=7)
 
     # --- Volume drop (first half vs second half) ---
     half = len(periods) // 2
@@ -1107,7 +1116,7 @@ def generate_period_summary(period_name, period_summary, use_metric, previous_pe
     return lines
 
 
-def generate_markdown_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False):
+def generate_markdown_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
     """Generate markdown report from workout summaries.
 
     Args:
@@ -1116,6 +1125,7 @@ def generate_markdown_report(summaries, use_metric=True, report_format="summary"
         report_format (str): Type of report to generate ('summary' or 'detailed')
         period_type (str): Type of period to aggregate into (None, 'monthly', '4-weeks', etc.)
         calendar_aligned (bool): Use calendar boundaries vs rolling windows
+        include_analysis (bool): Whether to include precomputed analysis summary
 
     Returns:
         str: Markdown formatted report containing workout statistics and analysis
@@ -1272,7 +1282,8 @@ def generate_markdown_report(summaries, use_metric=True, report_format="summary"
             previous_week_summary = summary
 
     # Analysis Summary (computed from structured report data)
-    try:
+    if include_analysis:
+      try:
         structured = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis=True)
         analysis = structured.get("analysis")
         if analysis:
@@ -1311,8 +1322,8 @@ def generate_markdown_report(summaries, use_metric=True, report_format="summary"
             if gap_weeks != "none":
                 report.append(f"### Training Gaps\nWeeks with no data: {gap_weeks}")
                 report.append("")
-    except Exception:
-        pass  # Analysis is optional; don't break the report if it fails
+      except Exception as e:
+        report.append(f"\n*Analysis could not be computed: {e}*\n")
 
     # Add overall summary at the end with clear separation
     report.append(f"\n# Overall Summary for {overall_summary['start_date']} to {overall_summary['end_date']}\n")

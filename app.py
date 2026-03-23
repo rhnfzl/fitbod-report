@@ -93,7 +93,7 @@ def generate_report_content(summaries, unit_system, report_format, output_format
     elif output_format == "gpt":
         return generate_gpt_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
     else:
-        return generate_markdown_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+        return generate_markdown_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
 
 
 def get_download_config(output_format):
