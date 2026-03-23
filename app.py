@@ -82,16 +82,16 @@ def process_and_summarize(filtered_df, unit_system, tz_name, period_type, calend
     return summarize_workouts(processed_data, use_metric=(unit_system == "metric"), tz_name=tz_name, group_by=group_by)
 
 
-def generate_report_content(summaries, unit_system, report_format, output_format, period_type, calendar_aligned=False):
+def generate_report_content(summaries, unit_system, report_format, output_format, period_type, calendar_aligned=False, include_analysis=True):
     """Generate report in the requested output format."""
     use_metric = unit_system == "metric"
 
     if output_format == "json":
-        return generate_json_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+        return generate_json_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
     elif output_format == "yaml":
-        return generate_yaml_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+        return generate_yaml_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
     elif output_format == "gpt":
-        return generate_gpt_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+        return generate_gpt_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
     else:
         return generate_markdown_report(summaries, use_metric, report_format, period_type, calendar_aligned)
 
@@ -388,6 +388,16 @@ if uploaded_file is not None:
             effective_period_type = period_type
             effective_calendar_aligned = calendar_aligned
 
+            # Analysis toggle
+            include_analysis = st.toggle(
+                "Include precomputed analysis",
+                value=True,
+                key="include_analysis",
+                help="Adds push:pull ratio, experience level, training gaps, volume trends, "
+                "and equipment inference to the report. Reduces GPT processing time from "
+                "~10 minutes to near-instant for FitbodGPT users.",
+            )
+
             # Performance warning
             if report_format == "detailed":
                 days_count = (end_date - start_date).days
@@ -409,7 +419,8 @@ if uploaded_file is not None:
                 )
                 effective_format = "markdown" if output_format == "pdf" else output_format
                 report_content = generate_report_content(
-                    summaries, unit_system, report_format, effective_format, effective_period_type, effective_calendar_aligned
+                    summaries, unit_system, report_format, effective_format, effective_period_type, effective_calendar_aligned,
+                    include_analysis=include_analysis,
                 )
             except Exception as e:
                 st.error(f"Error generating report: {e!s}")

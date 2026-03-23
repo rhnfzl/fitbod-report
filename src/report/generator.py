@@ -32,6 +32,335 @@ class PeriodType(StrEnum):
     TWENTY_FOUR_WEEKS = "24-weeks"
 
 
+# ---------------------------------------------------------------------------
+# Analysis constants
+# ---------------------------------------------------------------------------
+
+UPPER_MUSCLES = frozenset({
+    "chest", "upper_chest", "lats", "upper_back", "shoulders",
+    "front_delts", "side_delts", "rear_delts", "biceps", "triceps",
+    "traps", "forearms",
+})
+
+LOWER_MUSCLES = frozenset({
+    "quads", "hamstrings", "glutes", "calves", "adductors", "hip_flexors",
+})
+
+PUSH_PATTERNS = frozenset({"horizontal_push", "vertical_push", "isolation_push"})
+PULL_PATTERNS = frozenset({"horizontal_pull", "vertical_pull", "isolation_pull"})
+FREE_WEIGHT_EQUIPMENT = frozenset({"barbell", "dumbbell", "kettlebell", "ez_bar"})
+
+EQUIPMENT_DISPLAY_NAMES: dict[str, str] = {
+    "barbell": "barbell", "dumbbell": "dumbbells", "cable": "cable station",
+    "machine": "machines", "pull_up_bar": "pull-up bar", "ez_bar": "EZ-bar",
+    "sled": "sled", "kettlebell": "kettlebell", "smith_machine": "Smith machine",
+    "trap_bar": "trap bar", "resistance_band": "resistance band",
+    "bodyweight": "bodyweight", "trx": "TRX", "medicine_ball": "medicine ball",
+    "box": "box", "plate": "plate", "stability_ball": "stability ball",
+    "rings": "rings", "foam_roller": "foam roller", "bosu": "BOSU",
+    "battle_ropes": "battle ropes", "other": "other",
+}
+
+
+# ---------------------------------------------------------------------------
+# Analysis helper functions
+# ---------------------------------------------------------------------------
+
+def _aggregate_exercise_stats(periods):
+    """Aggregate per-exercise statistics across all periods.
+
+    Returns:
+        tuple: (exercise_data, exercise_trends, muscle_weekly_sets)
+    """
+    from ..data.exercise_db import get_exercise_muscles, get_exercise_category
+
+    exercise_data = {}
+    exercise_first_period = {}
+    exercise_last_period = {}
+
+    for i, p in enumerate(periods):
+        for ex in p.get("exercises", []):
+            name = ex["name"]
+            if ex.get("is_cardio", False):
+                continue
+            if name not in exercise_data:
+                exercise_data[name] = {
+                    "sessions": 0,
+                    "working_sets": 0,
+                    "total_reps": 0,
+                    "max_weight": 0,
+                    "total_volume": 0,
+                    "weight_sum": 0,
+                    "weight_count": 0,
+                }
+                exercise_first_period[name] = i
+            exercise_last_period[name] = i
+
+            d = exercise_data[name]
+            d["sessions"] += 1
+            d["working_sets"] += ex.get("working_sets", 0)
+            d["total_reps"] += ex.get("total_reps", 0)
+            d["max_weight"] = max(d["max_weight"], ex.get("max_weight", 0))
+            d["total_volume"] += ex.get("total_volume", 0)
+            if ex.get("max_weight", 0) > 0:
+                d["weight_sum"] += ex.get("max_weight", 0)
+                d["weight_count"] += 1
+
+    # Calculate per-exercise trends (first half avg vs second half avg of max_weight)
+    exercise_trends = {}
+    midpoint = len(periods) // 2
+    for name in exercise_data:
+        first_half_weights = []
+        second_half_weights = []
+        for i, p in enumerate(periods):
+            for ex in p.get("exercises", []):
+                if ex["name"] == name and not ex.get("is_cardio", False) and ex.get("max_weight", 0) > 0:
+                    if i < midpoint:
+                        first_half_weights.append(ex["max_weight"])
+                    else:
+                        second_half_weights.append(ex["max_weight"])
+
+        if first_half_weights and second_half_weights:
+            first_avg = sum(first_half_weights) / len(first_half_weights)
+            second_avg = sum(second_half_weights) / len(second_half_weights)
+            if first_avg > 0:
+                trend = ((second_avg - first_avg) / first_avg) * 100
+                exercise_trends[name] = trend
+            else:
+                exercise_trends[name] = None
+        else:
+            exercise_trends[name] = None
+
+    # Muscle weekly sets
+    muscle_weekly_sets: dict[str, list[int]] = {}
+    for p in periods:
+        period_muscles: dict[str, int] = {}
+        for ex in p.get("exercises", []):
+            if ex.get("is_cardio", False):
+                continue
+            muscles = get_exercise_muscles(ex["name"])
+            working = ex.get("working_sets", 0)
+            for m in muscles:
+                period_muscles[m] = period_muscles.get(m, 0) + working
+        for m, sets in period_muscles.items():
+            if m not in muscle_weekly_sets:
+                muscle_weekly_sets[m] = []
+            muscle_weekly_sets[m].append(sets)
+
+    return exercise_data, exercise_trends, muscle_weekly_sets
+
+
+def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, periods, total_sessions, overall):
+    """Compute all analysis metrics from aggregated exercise data.
+
+    Returns:
+        dict: Analysis results with push:pull ratio, level score, gaps, etc.
+    """
+    from ..data.exercise_db import (
+        get_exercise_category, get_exercise_equipment,
+        get_exercise_movement_pattern, is_compound, is_unilateral,
+    )
+
+    # --- Date range and weeks ---
+    date_range = overall.get("date_range", {})
+    start_str = date_range.get("start", "")
+    end_str = date_range.get("end", "")
+    try:
+        start_date = datetime.strptime(start_str, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_str, "%Y-%m-%d").date()
+        weeks = ((end_date - start_date).days + 1) / 7.0
+    except (ValueError, TypeError):
+        weeks = max(len(periods), 1)
+        start_date = None
+        end_date = None
+
+    sessions_per_week = total_sessions / weeks if weeks > 0 else 0
+
+    # --- Filter strength exercises ---
+    strength_exercises = {
+        name: data for name, data in exercise_data.items()
+        if get_exercise_category(name) in ("strength", "plyometric")
+    }
+    total_working_sets = sum(d["working_sets"] for d in strength_exercises.values())
+
+    # --- Push:pull ratio ---
+    push_sets = 0
+    pull_sets = 0
+    for name, data in strength_exercises.items():
+        pattern = get_exercise_movement_pattern(name)
+        if pattern in PUSH_PATTERNS:
+            push_sets += data["working_sets"]
+        elif pattern in PULL_PATTERNS:
+            pull_sets += data["working_sets"]
+
+    push_pull_ratio = round(push_sets / pull_sets, 2) if pull_sets > 0 else None
+
+    # --- Upper:lower ratio ---
+    upper_sets_total = 0.0
+    lower_sets_total = 0.0
+    for muscle, weekly in muscle_weekly_sets.items():
+        if muscle == "unknown":
+            continue
+        avg = sum(weekly) / len(weekly) if weekly else 0
+        if muscle in UPPER_MUSCLES:
+            upper_sets_total += avg
+        elif muscle in LOWER_MUSCLES:
+            lower_sets_total += avg
+
+    upper_lower_ratio = round(upper_sets_total / lower_sets_total, 2) if lower_sets_total > 0 else None
+    lower_share_pct = round(100 * lower_sets_total / (upper_sets_total + lower_sets_total), 1) if (upper_sets_total + lower_sets_total) > 0 else None
+
+    # --- Level score (7-axis weighted) ---
+    # Exercise variety (15%)
+    unique_strength = len(strength_exercises)
+    variety_score = 0 if unique_strength < 6 else (5 if unique_strength <= 15 else 10)
+
+    # Training frequency (15%)
+    freq_score = 0 if sessions_per_week < 2 else (5 if sessions_per_week <= 4 else 10)
+
+    # Compound lift count (15%)
+    compound_names = {name for name in strength_exercises if is_compound(name)}
+    compound_count = len(compound_names)
+    compound_score = 0 if compound_count <= 1 else (5 if compound_count <= 4 else 10)
+
+    # Overload evidence (20%)
+    compounds_with_trend = [
+        exercise_trends[name] for name in compound_names
+        if exercise_trends.get(name) is not None
+    ]
+    if compounds_with_trend:
+        positive_pct = sum(1 for t in compounds_with_trend if t > 0) / len(compounds_with_trend) * 100
+        overload_score = min(10, positive_pct / 10)
+    else:
+        overload_score = 0
+
+    # Volume per session (15%)
+    avg_sets_session = total_working_sets / total_sessions if total_sessions > 0 else 0
+    vol_session_score = 0 if avg_sets_session < 8 else (5 if avg_sets_session < 16 else 10)
+
+    # Data depth (10%)
+    depth_score = 0 if weeks < 4 else (5 if weeks <= 26 else 10)
+
+    # Sophistication (10%)
+    free_or_uni_sets = sum(
+        data["working_sets"] for name, data in strength_exercises.items()
+        if get_exercise_equipment(name) in FREE_WEIGHT_EQUIPMENT or is_unilateral(name)
+    )
+    soph_pct = (free_or_uni_sets / total_working_sets * 100) if total_working_sets > 0 else 0
+    soph_score = min(10, soph_pct / 10)
+
+    level_score = round(
+        (variety_score * 0.15 + freq_score * 0.15 + compound_score * 0.15 +
+         overload_score * 0.20 + vol_session_score * 0.15 +
+         depth_score * 0.10 + soph_score * 0.10) * 10,
+        1,
+    )
+    if level_score <= 33:
+        level = "Beginner"
+    elif level_score <= 66:
+        level = "Intermediate"
+    else:
+        level = "Advanced"
+
+    # --- Stalled exercises ---
+    stalled_compounds = []
+    stalled_isolations = []
+    for name, data in strength_exercises.items():
+        trend = exercise_trends.get(name)
+        if trend is not None and trend <= 0 and data["sessions"] >= 4:
+            entry = f"{name}:{trend:+.1f}%"
+            if is_compound(name):
+                stalled_compounds.append((trend, entry))
+            else:
+                stalled_isolations.append((trend, entry))
+    stalled_compounds.sort()
+    stalled_isolations.sort()
+
+    # --- Training gaps ---
+    gap_weeks_list = []
+    if start_date and end_date:
+        period_dates = set()
+        for p in periods:
+            date_str = p.get("date", "")
+            if date_str:
+                try:
+                    period_dates.add(datetime.strptime(date_str, "%Y-%m-%d").date())
+                except ValueError:
+                    pass
+        d = start_date
+        while d <= end_date:
+            if d not in period_dates:
+                gap_weeks_list.append(d.isoformat())
+            d += timedelta(days=7)
+
+    # --- Volume drop (first half vs second half) ---
+    half = len(periods) // 2
+    if half > 0 and len(periods) > half:
+        first_half = periods[:half]
+        second_half = periods[half:]
+
+        def _avg_stat(period_list, stat_key):
+            vals = []
+            for p in period_list:
+                stats = p.get("stats", {})
+                vals.append(stats.get(stat_key, 0))
+            return sum(vals) / len(vals) if vals else 0
+
+        first_half_sessions = _avg_stat(first_half, "session_count")
+        second_half_sessions = _avg_stat(second_half, "session_count")
+        first_half_vol = _avg_stat(first_half, "total_volume")
+        second_half_vol = _avg_stat(second_half, "total_volume")
+        vol_drop_pct = round(((second_half_vol - first_half_vol) / first_half_vol) * 100, 1) if first_half_vol > 0 else None
+    else:
+        first_half_sessions = None
+        second_half_sessions = None
+        first_half_vol = None
+        second_half_vol = None
+        vol_drop_pct = None
+
+    # --- Equipment list ---
+    equip_counts: dict[str, int] = {}
+    for name, data in strength_exercises.items():
+        eq = get_exercise_equipment(name)
+        if eq and eq != "unknown":
+            equip_counts[eq] = equip_counts.get(eq, 0) + data["working_sets"]
+    equipment_list = [
+        EQUIPMENT_DISPLAY_NAMES.get(eq, eq)
+        for eq, _ in sorted(equip_counts.items(), key=lambda x: -x[1])
+    ]
+
+    # --- Cardio undercount ---
+    all_cardio_zero = all(
+        p.get("stats", {}).get("cardio_time", "0h 0m 0s") in ("0h 0m 0s", "0:00:00", "")
+        for p in periods
+    )
+    recent_has_cardio = False
+    for p in periods[-5:]:
+        for ex in p.get("exercises", []):
+            if ex.get("is_cardio", False):
+                recent_has_cardio = True
+                break
+    cardio_undercount = all_cardio_zero and recent_has_cardio
+
+    return {
+        "push_pull_ratio": push_pull_ratio,
+        "upper_lower_ratio": upper_lower_ratio,
+        "lower_share_pct": lower_share_pct,
+        "level_score": level_score,
+        "level": level,
+        "stalled_compounds": ",".join(e for _, e in stalled_compounds) or "none",
+        "stalled_isolations": ",".join(e for _, e in stalled_isolations) or "none",
+        "first_half_sessions_pw": round(first_half_sessions, 2) if first_half_sessions is not None else None,
+        "second_half_sessions_pw": round(second_half_sessions, 2) if second_half_sessions is not None else None,
+        "first_half_vol_pw": round(first_half_vol, 0) if first_half_vol is not None else None,
+        "second_half_vol_pw": round(second_half_vol, 0) if second_half_vol is not None else None,
+        "volume_drop_pct": vol_drop_pct,
+        "gap_weeks": ",".join(gap_weeks_list) or "none",
+        "equipment": equipment_list,
+        "cardio_undercount": cardio_undercount,
+    }
+
+
 def _get_timezone_groups():
     """Get timezone groups mapping primary zones to their aliases.
 
@@ -942,6 +1271,49 @@ def generate_markdown_report(summaries, use_metric=True, report_format="summary"
             report.append("\n---\n")
             previous_week_summary = summary
 
+    # Analysis Summary (computed from structured report data)
+    try:
+        structured = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis=True)
+        analysis = structured.get("analysis")
+        if analysis:
+            report.append("\n# Analysis Summary\n")
+            report.append(f"- **Experience Level**: {analysis['level']} (score: {analysis['level_score']}/100)")
+            if analysis.get("push_pull_ratio") is not None:
+                report.append(f"- **Push:Pull Ratio**: {analysis['push_pull_ratio']}:1 (target: 1:1 to 1:1.5)")
+            if analysis.get("upper_lower_ratio") is not None:
+                report.append(f"- **Upper:Lower Ratio**: {analysis['upper_lower_ratio']}:1 (lower body: {analysis['lower_share_pct']}%)")
+            equipment = analysis.get("equipment", [])
+            if equipment:
+                report.append(f"- **Equipment Used**: {', '.join(equipment)}")
+            report.append("")
+            stalled_c = analysis.get("stalled_compounds", "none")
+            stalled_i = analysis.get("stalled_isolations", "none")
+            if stalled_c != "none" or stalled_i != "none":
+                report.append("### Stalled Exercises")
+                report.append("| Exercise | Trend | Type |")
+                report.append("|----------|-------|------|")
+                for entry in (stalled_c.split(",") if stalled_c != "none" else []):
+                    name, trend = entry.rsplit(":", 1)
+                    report.append(f"| {name} | {trend} | Compound |")
+                for entry in (stalled_i.split(",") if stalled_i != "none" else []):
+                    name, trend = entry.rsplit(":", 1)
+                    report.append(f"| {name} | {trend} | Isolation |")
+                report.append("")
+            vol_drop = analysis.get("volume_drop_pct")
+            if analysis.get("first_half_sessions_pw") is not None:
+                report.append("### Volume Trend")
+                report.append(f"- First half: {analysis['first_half_sessions_pw']} sessions/week, {analysis['first_half_vol_pw']:,.0f} volume/week")
+                report.append(f"- Second half: {analysis['second_half_sessions_pw']} sessions/week, {analysis['second_half_vol_pw']:,.0f} volume/week")
+                if vol_drop is not None:
+                    report.append(f"- Change: {vol_drop:+.1f}%")
+                report.append("")
+            gap_weeks = analysis.get("gap_weeks", "none")
+            if gap_weeks != "none":
+                report.append(f"### Training Gaps\nWeeks with no data: {gap_weeks}")
+                report.append("")
+    except Exception:
+        pass  # Analysis is optional; don't break the report if it fails
+
     # Add overall summary at the end with clear separation
     report.append(f"\n# Overall Summary for {overall_summary['start_date']} to {overall_summary['end_date']}\n")
 
@@ -980,7 +1352,7 @@ def generate_markdown_report(summaries, use_metric=True, report_format="summary"
     return "\n".join(report)
 
 
-def _build_structured_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False):
+def _build_structured_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
     """Build a structured dict suitable for JSON/YAML serialization.
 
     Args:
@@ -989,6 +1361,7 @@ def _build_structured_report(summaries, use_metric=True, report_format="summary"
         report_format (str): 'summary' or 'detailed'
         period_type (str): Period grouping type
         calendar_aligned (bool): Use calendar boundaries vs rolling windows
+        include_analysis (bool): Whether to compute and include analysis metrics
 
     Returns:
         dict: Structured report data
@@ -1119,6 +1492,22 @@ def _build_structured_report(summaries, use_metric=True, report_format="summary"
             "avg_volume": round(total_volume / num_periods, 2),
         }
 
+    # Compute analysis if requested
+    analysis = None
+    exercise_stats_agg = None
+    exercise_trends_agg = None
+    muscle_weekly_sets_agg = None
+    if include_analysis and periods:
+        from ..data.exercise_db import clear_unknown_exercises, get_unknown_exercises
+        clear_unknown_exercises()
+        exercise_stats_agg, exercise_trends_agg, muscle_weekly_sets_agg = _aggregate_exercise_stats(periods)
+        total_sess = overall.get("total_sessions", 0)
+        analysis = _compute_analysis(
+            exercise_stats_agg, exercise_trends_agg, muscle_weekly_sets_agg,
+            periods, total_sess, overall,
+        )
+        analysis["unknown_exercise_count"] = len(get_unknown_exercises())
+
     return {
         "report_type": str(period_type) if period_type else "weekly",
         "grouping_mode": "calendar" if calendar_aligned else "rolling",
@@ -1126,10 +1515,14 @@ def _build_structured_report(summaries, use_metric=True, report_format="summary"
         "format": report_format,
         "periods": periods,
         "overall": overall,
+        "analysis": analysis,
+        "exercise_stats_agg": exercise_stats_agg,
+        "exercise_trends_agg": exercise_trends_agg,
+        "muscle_weekly_sets_agg": muscle_weekly_sets_agg,
     }
 
 
-def generate_json_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False):
+def generate_json_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
     """Generate a JSON report from workout summaries.
 
     Args:
@@ -1138,15 +1531,19 @@ def generate_json_report(summaries, use_metric=True, report_format="summary", pe
         report_format (str): 'summary' or 'detailed'
         period_type (str): Period grouping type
         calendar_aligned (bool): Use calendar boundaries vs rolling windows
+        include_analysis (bool): Whether to include precomputed analysis
 
     Returns:
         str: JSON formatted report
     """
-    data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+    data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
+    # Remove internal aggregation data from JSON output
+    for key in ("exercise_stats_agg", "exercise_trends_agg", "muscle_weekly_sets_agg"):
+        data.pop(key, None)
     return json.dumps(data, indent=2, ensure_ascii=False)
 
 
-def generate_yaml_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False):
+def generate_yaml_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
     """Generate a YAML report from workout summaries.
 
     Args:
@@ -1155,20 +1552,24 @@ def generate_yaml_report(summaries, use_metric=True, report_format="summary", pe
         report_format (str): 'summary' or 'detailed'
         period_type (str): Period grouping type
         calendar_aligned (bool): Use calendar boundaries vs rolling windows
+        include_analysis (bool): Whether to include precomputed analysis
 
     Returns:
         str: YAML formatted report
     """
-    data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+    data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
+    # Remove internal aggregation data from YAML output
+    for key in ("exercise_stats_agg", "exercise_trends_agg", "muscle_weekly_sets_agg"):
+        data.pop(key, None)
     return yaml.safe_dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
 
-def generate_gpt_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False):
+def generate_gpt_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
     """Generate a GPT-optimized compact report for FitbodGPT consumption.
 
     Outputs a token-efficient TSV format with pre-computed analytics.
     Working sets only (warmups excluded). Includes muscle group volume
-    analysis and exercise trend data.
+    analysis, exercise trend data, and optional precomputed analysis.
 
     Args:
         summaries (dict): Summaries from summarize_workouts()
@@ -1176,30 +1577,39 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
         report_format (str): 'summary' or 'detailed' (detailed adds recent sessions)
         period_type (str): Period grouping type
         calendar_aligned (bool): Use calendar boundaries vs rolling windows
+        include_analysis (bool): Whether to include precomputed analysis sections
 
     Returns:
         str: GPT-optimized compact report
     """
-    from ..data.exercise_db import clear_unknown_exercises, get_exercise_muscles, get_unknown_exercises
-
-    clear_unknown_exercises()
+    from ..data.exercise_db import get_exercise_muscles, get_unknown_exercises
 
     weight_unit = "kg" if use_metric else "lbs"
     distance_unit = "km" if use_metric else "miles"
 
-    # Build structured data first (reuse existing logic)
-    data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned)
+    # Build structured data (includes analysis computation when enabled)
+    data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
     periods = data["periods"]
     overall = data["overall"]
     report_type = data.get("report_type", "weekly")
     grouping_mode = data.get("grouping_mode", "rolling")
+    analysis = data.get("analysis")
+
+    # Use shared aggregated data from _build_structured_report
+    exercise_data = data.get("exercise_stats_agg") or {}
+    exercise_trends = data.get("exercise_trends_agg") or {}
+    muscle_weekly_sets = data.get("muscle_weekly_sets_agg") or {}
+
+    # If analysis was not computed (include_analysis=False), we still need
+    # exercise_data and muscle_weekly_sets for the exercise_stats and muscle_volume sections
+    if not exercise_data:
+        exercise_data, exercise_trends, muscle_weekly_sets = _aggregate_exercise_stats(periods)
 
     # --- Header ---
     date_range = overall.get("date_range", {})
     start = date_range.get("start", "unknown")
     end = date_range.get("end", "unknown")
 
-    # Count periods and unique exercises
     period_count = len(periods) if periods else 0
     all_exercises = set()
     for p in periods:
@@ -1251,63 +1661,13 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
     lines.append("")
 
     # --- Exercise Stats ---
-    # Aggregate per-exercise data across all periods
-    exercise_data = {}
-    exercise_first_period = {}
-    exercise_last_period = {}
-
-    for i, p in enumerate(periods):
-        for ex in p.get("exercises", []):
-            name = ex["name"]
-            if ex.get("is_cardio", False):
-                continue  # Skip cardio for exercise_stats (tracked in weekly_summary)
-            if name not in exercise_data:
-                exercise_data[name] = {
-                    "sessions": 0,
-                    "working_sets": 0,
-                    "total_reps": 0,
-                    "max_weight": 0,
-                    "total_volume": 0,
-                    "weight_sum": 0,
-                    "weight_count": 0,
-                }
-                exercise_first_period[name] = i
-            exercise_last_period[name] = i
-
-            d = exercise_data[name]
-            d["sessions"] += 1
-            d["working_sets"] += ex.get("working_sets", 0)
-            d["total_reps"] += ex.get("total_reps", 0)
-            d["max_weight"] = max(d["max_weight"], ex.get("max_weight", 0))
-            d["total_volume"] += ex.get("total_volume", 0)
-            if ex.get("max_weight", 0) > 0:
-                d["weight_sum"] += ex.get("max_weight", 0)
-                d["weight_count"] += 1
-
-    # Calculate per-exercise trends (first half avg vs second half avg of max_weight)
-    exercise_trends = {}
-    for name in exercise_data:
-        first_half_weights = []
-        second_half_weights = []
-        midpoint = len(periods) // 2
-        for i, p in enumerate(periods):
-            for ex in p.get("exercises", []):
-                if ex["name"] == name and not ex.get("is_cardio", False) and ex.get("max_weight", 0) > 0:
-                    if i < midpoint:
-                        first_half_weights.append(ex["max_weight"])
-                    else:
-                        second_half_weights.append(ex["max_weight"])
-
-        if first_half_weights and second_half_weights:
-            first_avg = sum(first_half_weights) / len(first_half_weights)
-            second_avg = sum(second_half_weights) / len(second_half_weights)
-            if first_avg > 0:
-                trend = ((second_avg - first_avg) / first_avg) * 100
-                exercise_trends[name] = f"{trend:+.1f}%"
-            else:
-                exercise_trends[name] = "N/A"
+    # Format exercise trends as strings for TSV output
+    exercise_trend_strs = {}
+    for name, trend in exercise_trends.items():
+        if trend is not None:
+            exercise_trend_strs[name] = f"{trend:+.1f}%"
         else:
-            exercise_trends[name] = "N/A"
+            exercise_trend_strs[name] = "N/A"
 
     lines.append("## exercise_stats")
     lines.append(f"exercise\tsessions\tworking_sets\ttotal_reps\tmax_{weight_unit}\tavg_{weight_unit}\ttotal_volume\ttrend")
@@ -1318,35 +1678,18 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
         lines.append(
             f"{name}\t{d['sessions']}\t{d['working_sets']}\t{d['total_reps']}"
             f"\t{round(d['max_weight'], 1)}\t{avg_weight}\t{round(d['total_volume'], 1)}"
-            f"\t{exercise_trends.get(name, 'N/A')}"
+            f"\t{exercise_trend_strs.get(name, 'N/A')}"
         )
 
     lines.append("")
 
     # --- Muscle Volume ---
-    # Aggregate weekly muscle group sets using exercise_db
-    muscle_weekly_sets = {}  # muscle -> list of weekly set counts
-    for p in periods:
-        period_muscles = {}
-        for ex in p.get("exercises", []):
-            if ex.get("is_cardio", False):
-                continue
-            muscles = get_exercise_muscles(ex["name"])
-            working = ex.get("working_sets", 0)
-            for m in muscles:
-                period_muscles[m] = period_muscles.get(m, 0) + working
-        for m, sets in period_muscles.items():
-            if m not in muscle_weekly_sets:
-                muscle_weekly_sets[m] = []
-            muscle_weekly_sets[m].append(sets)
-
-    # Calculate muscle trends (first half avg vs second half avg)
     lines.append("## muscle_volume")
     lines.append("muscle\tweekly_avg_sets\ttrend")
 
     for muscle in sorted(muscle_weekly_sets.keys()):
         if muscle == "unknown":
-            continue  # Skip unknown muscle group in summary
+            continue
         weekly = muscle_weekly_sets[muscle]
         avg = round(sum(weekly) / len(weekly), 1) if weekly else 0
         midpoint = len(weekly) // 2
@@ -1364,11 +1707,41 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
 
     lines.append("")
 
+    # --- Precomputed Analysis (when enabled) ---
+    if analysis:
+        lines.append("## gpt_analysis")
+        lines.append("metric\tvalue")
+        for key in (
+            "push_pull_ratio", "upper_lower_ratio", "lower_share_pct",
+            "level_score", "level",
+            "stalled_compounds", "stalled_isolations",
+            "first_half_sessions_pw", "second_half_sessions_pw",
+            "first_half_vol_pw", "second_half_vol_pw", "volume_drop_pct",
+            "gap_weeks", "unknown_exercise_count", "cardio_undercount",
+        ):
+            val = analysis.get(key)
+            if val is None:
+                val = "N/A"
+            elif isinstance(val, bool):
+                val = str(val).lower()
+            elif isinstance(val, float):
+                val = str(round(val, 2)) if val != int(val) else str(int(val))
+            lines.append(f"{key}\t{val}")
+
+        lines.append("")
+
+        # --- Equipment ---
+        equipment = analysis.get("equipment", [])
+        if equipment:
+            lines.append("## equipment")
+            for eq in equipment:
+                lines.append(eq)
+            lines.append("")
+
     # --- Recent Sessions (last 14) ---
     lines.append("## recent_sessions")
     lines.append("date\texercises")
 
-    # Get the last 14 periods with compact exercise notation
     recent = periods[-14:] if len(periods) > 14 else periods
     for p in reversed(recent):  # Most recent first
         date = p.get("date", "")
