@@ -36,29 +36,61 @@ class PeriodType(StrEnum):
 # Analysis constants
 # ---------------------------------------------------------------------------
 
-UPPER_MUSCLES = frozenset({
-    "chest", "upper_chest", "lats", "upper_back", "shoulders",
-    "front_delts", "side_delts", "rear_delts", "biceps", "triceps",
-    "traps", "forearms",
-})
+UPPER_MUSCLES = frozenset(
+    {
+        "chest",
+        "upper_chest",
+        "lats",
+        "upper_back",
+        "shoulders",
+        "front_delts",
+        "side_delts",
+        "rear_delts",
+        "biceps",
+        "triceps",
+        "traps",
+        "forearms",
+    }
+)
 
-LOWER_MUSCLES = frozenset({
-    "quads", "hamstrings", "glutes", "calves", "adductors", "hip_flexors",
-})
+LOWER_MUSCLES = frozenset(
+    {
+        "quads",
+        "hamstrings",
+        "glutes",
+        "calves",
+        "adductors",
+        "hip_flexors",
+    }
+)
 
 PUSH_PATTERNS = frozenset({"horizontal_push", "vertical_push", "isolation_push"})
 PULL_PATTERNS = frozenset({"horizontal_pull", "vertical_pull", "isolation_pull"})
 FREE_WEIGHT_EQUIPMENT = frozenset({"barbell", "dumbbell", "kettlebell", "ez_bar"})
 
 EQUIPMENT_DISPLAY_NAMES: dict[str, str] = {
-    "barbell": "barbell", "dumbbell": "dumbbells", "cable": "cable station",
-    "machine": "machines", "pull_up_bar": "pull-up bar", "ez_bar": "EZ-bar",
-    "sled": "sled", "kettlebell": "kettlebell", "smith_machine": "Smith machine",
-    "trap_bar": "trap bar", "resistance_band": "resistance band",
-    "bodyweight": "bodyweight", "trx": "TRX", "medicine_ball": "medicine ball",
-    "box": "box", "plate": "plate", "stability_ball": "stability ball",
-    "rings": "rings", "foam_roller": "foam roller", "bosu": "BOSU",
-    "battle_ropes": "battle ropes", "other": "other",
+    "barbell": "barbell",
+    "dumbbell": "dumbbells",
+    "cable": "cable station",
+    "machine": "machines",
+    "pull_up_bar": "pull-up bar",
+    "ez_bar": "EZ-bar",
+    "sled": "sled",
+    "kettlebell": "kettlebell",
+    "smith_machine": "Smith machine",
+    "trap_bar": "trap bar",
+    "resistance_band": "resistance band",
+    "bodyweight": "bodyweight",
+    "trx": "TRX",
+    "medicine_ball": "medicine ball",
+    "box": "box",
+    "plate": "plate",
+    "stability_ball": "stability ball",
+    "rings": "rings",
+    "foam_roller": "foam roller",
+    "bosu": "BOSU",
+    "battle_ropes": "battle ropes",
+    "other": "other",
 }
 
 
@@ -66,13 +98,14 @@ EQUIPMENT_DISPLAY_NAMES: dict[str, str] = {
 # Analysis helper functions
 # ---------------------------------------------------------------------------
 
+
 def _aggregate_exercise_stats(periods):
     """Aggregate per-exercise statistics across all periods.
 
     Returns:
         tuple: (exercise_data, exercise_trends, muscle_weekly_sets)
     """
-    from ..data.exercise_db import get_exercise_muscles, get_exercise_category
+    from ..data.exercise_db import get_exercise_muscles
 
     exercise_data = {}
     exercise_first_period = {}
@@ -157,8 +190,11 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
         dict: Analysis results with push:pull ratio, level score, gaps, etc.
     """
     from ..data.exercise_db import (
-        get_exercise_category, get_exercise_equipment,
-        get_exercise_movement_pattern, is_compound, is_unilateral,
+        get_exercise_category,
+        get_exercise_equipment,
+        get_exercise_movement_pattern,
+        is_compound,
+        is_unilateral,
     )
 
     # --- Date range and weeks ---
@@ -178,8 +214,7 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
 
     # --- Filter strength exercises ---
     strength_exercises = {
-        name: data for name, data in exercise_data.items()
-        if get_exercise_category(name) in ("strength", "plyometric")
+        name: data for name, data in exercise_data.items() if get_exercise_category(name) in ("strength", "plyometric")
     }
     total_working_sets = sum(d["working_sets"] for d in strength_exercises.values())
 
@@ -208,7 +243,8 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
             lower_sets_total += avg
 
     upper_lower_ratio = round(upper_sets_total / lower_sets_total, 2) if lower_sets_total > 0 else None
-    lower_share_pct = round(100 * lower_sets_total / (upper_sets_total + lower_sets_total), 1) if (upper_sets_total + lower_sets_total) > 0 else None
+    total_sets = upper_sets_total + lower_sets_total
+    lower_share_pct = round(100 * lower_sets_total / total_sets, 1) if total_sets > 0 else None
 
     # --- Level score (7-axis weighted) ---
     # Exercise variety (15%)
@@ -224,10 +260,7 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
     compound_score = 0 if compound_count <= 1 else (5 if compound_count <= 4 else 10)
 
     # Overload evidence (20%)
-    compounds_with_trend = [
-        exercise_trends[name] for name in compound_names
-        if exercise_trends.get(name) is not None
-    ]
+    compounds_with_trend = [exercise_trends[name] for name in compound_names if exercise_trends.get(name) is not None]
     if compounds_with_trend:
         positive_pct = sum(1 for t in compounds_with_trend if t > 0) / len(compounds_with_trend) * 100
         overload_score = min(10, positive_pct / 10)
@@ -243,16 +276,24 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
 
     # Sophistication (10%)
     free_or_uni_sets = sum(
-        data["working_sets"] for name, data in strength_exercises.items()
+        data["working_sets"]
+        for name, data in strength_exercises.items()
         if get_exercise_equipment(name) in FREE_WEIGHT_EQUIPMENT or is_unilateral(name)
     )
     soph_pct = (free_or_uni_sets / total_working_sets * 100) if total_working_sets > 0 else 0
     soph_score = min(10, soph_pct / 10)
 
     level_score = round(
-        (variety_score * 0.15 + freq_score * 0.15 + compound_score * 0.15 +
-         overload_score * 0.20 + vol_session_score * 0.15 +
-         depth_score * 0.10 + soph_score * 0.10) * 10,
+        (
+            variety_score * 0.15
+            + freq_score * 0.15
+            + compound_score * 0.15
+            + overload_score * 0.20
+            + vol_session_score * 0.15
+            + depth_score * 0.10
+            + soph_score * 0.10
+        )
+        * 10,
         1,
     )
     if level_score <= 33:
@@ -293,7 +334,8 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
 
         # Only detect gaps for weekly-ish periods (5-9 day intervals)
         if len(period_dates_sorted) >= 2:
-            intervals = [(period_dates_sorted[i+1] - period_dates_sorted[i]).days for i in range(min(5, len(period_dates_sorted)-1))]
+            n = min(5, len(period_dates_sorted) - 1)
+            intervals = [(period_dates_sorted[i + 1] - period_dates_sorted[i]).days for i in range(n)]
             avg_interval = sum(intervals) / len(intervals)
             if 5 <= avg_interval <= 9:  # Weekly
                 d = start_date
@@ -333,16 +375,10 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
         eq = get_exercise_equipment(name)
         if eq and eq != "unknown":
             equip_counts[eq] = equip_counts.get(eq, 0) + data["working_sets"]
-    equipment_list = [
-        EQUIPMENT_DISPLAY_NAMES.get(eq, eq)
-        for eq, _ in sorted(equip_counts.items(), key=lambda x: -x[1])
-    ]
+    equipment_list = [EQUIPMENT_DISPLAY_NAMES.get(eq, eq) for eq, _ in sorted(equip_counts.items(), key=lambda x: -x[1])]
 
     # --- Cardio undercount ---
-    all_cardio_zero = all(
-        p.get("stats", {}).get("cardio_time", "0h 0m 0s") in ("0h 0m 0s", "0:00:00", "")
-        for p in periods
-    )
+    all_cardio_zero = all(p.get("stats", {}).get("cardio_time", "0h 0m 0s") in ("0h 0m 0s", "0:00:00", "") for p in periods)
     recent_has_cardio = False
     for p in periods[-5:]:
         for ex in p.get("exercises", []):
@@ -1116,7 +1152,14 @@ def generate_period_summary(period_name, period_summary, use_metric, previous_pe
     return lines
 
 
-def generate_markdown_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
+def generate_markdown_report(
+    summaries,
+    use_metric=True,
+    report_format="summary",
+    period_type=None,
+    calendar_aligned=False,
+    include_analysis=True,
+):
     """Generate markdown report from workout summaries.
 
     Args:
@@ -1283,47 +1326,60 @@ def generate_markdown_report(summaries, use_metric=True, report_format="summary"
 
     # Analysis Summary (computed from structured report data)
     if include_analysis:
-      try:
-        structured = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis=True)
-        analysis = structured.get("analysis")
-        if analysis:
-            report.append("\n# Analysis Summary\n")
-            report.append(f"- **Experience Level**: {analysis['level']} (score: {analysis['level_score']}/100)")
-            if analysis.get("push_pull_ratio") is not None:
-                report.append(f"- **Push:Pull Ratio**: {analysis['push_pull_ratio']}:1 (target: 1:1 to 1:1.5)")
-            if analysis.get("upper_lower_ratio") is not None:
-                report.append(f"- **Upper:Lower Ratio**: {analysis['upper_lower_ratio']}:1 (lower body: {analysis['lower_share_pct']}%)")
-            equipment = analysis.get("equipment", [])
-            if equipment:
-                report.append(f"- **Equipment Used**: {', '.join(equipment)}")
-            report.append("")
-            stalled_c = analysis.get("stalled_compounds", "none")
-            stalled_i = analysis.get("stalled_isolations", "none")
-            if stalled_c != "none" or stalled_i != "none":
-                report.append("### Stalled Exercises")
-                report.append("| Exercise | Trend | Type |")
-                report.append("|----------|-------|------|")
-                for entry in (stalled_c.split(",") if stalled_c != "none" else []):
-                    name, trend = entry.rsplit(":", 1)
-                    report.append(f"| {name} | {trend} | Compound |")
-                for entry in (stalled_i.split(",") if stalled_i != "none" else []):
-                    name, trend = entry.rsplit(":", 1)
-                    report.append(f"| {name} | {trend} | Isolation |")
+        try:
+            structured = _build_structured_report(
+                summaries,
+                use_metric,
+                report_format,
+                period_type,
+                calendar_aligned,
+                include_analysis=True,
+            )
+            analysis = structured.get("analysis")
+            if analysis:
+                report.append("\n# Analysis Summary\n")
+                report.append(f"- **Experience Level**: {analysis['level']} (score: {analysis['level_score']}/100)")
+                if analysis.get("push_pull_ratio") is not None:
+                    report.append(f"- **Push:Pull Ratio**: {analysis['push_pull_ratio']}:1 (target: 1:1 to 1:1.5)")
+                if analysis.get("upper_lower_ratio") is not None:
+                    ul_ratio = analysis["upper_lower_ratio"]
+                    lower_pct = analysis["lower_share_pct"]
+                    report.append(f"- **Upper:Lower Ratio**: {ul_ratio}:1 (lower body: {lower_pct}%)")
+                equipment = analysis.get("equipment", [])
+                if equipment:
+                    report.append(f"- **Equipment Used**: {', '.join(equipment)}")
                 report.append("")
-            vol_drop = analysis.get("volume_drop_pct")
-            if analysis.get("first_half_sessions_pw") is not None:
-                report.append("### Volume Trend")
-                report.append(f"- First half: {analysis['first_half_sessions_pw']} sessions/week, {analysis['first_half_vol_pw']:,.0f} volume/week")
-                report.append(f"- Second half: {analysis['second_half_sessions_pw']} sessions/week, {analysis['second_half_vol_pw']:,.0f} volume/week")
-                if vol_drop is not None:
-                    report.append(f"- Change: {vol_drop:+.1f}%")
-                report.append("")
-            gap_weeks = analysis.get("gap_weeks", "none")
-            if gap_weeks != "none":
-                report.append(f"### Training Gaps\nWeeks with no data: {gap_weeks}")
-                report.append("")
-      except Exception as e:
-        report.append(f"\n*Analysis could not be computed: {e}*\n")
+                stalled_c = analysis.get("stalled_compounds", "none")
+                stalled_i = analysis.get("stalled_isolations", "none")
+                if stalled_c != "none" or stalled_i != "none":
+                    report.append("### Stalled Exercises")
+                    report.append("| Exercise | Trend | Type |")
+                    report.append("|----------|-------|------|")
+                    for entry in stalled_c.split(",") if stalled_c != "none" else []:
+                        name, trend = entry.rsplit(":", 1)
+                        report.append(f"| {name} | {trend} | Compound |")
+                    for entry in stalled_i.split(",") if stalled_i != "none" else []:
+                        name, trend = entry.rsplit(":", 1)
+                        report.append(f"| {name} | {trend} | Isolation |")
+                    report.append("")
+                vol_drop = analysis.get("volume_drop_pct")
+                if analysis.get("first_half_sessions_pw") is not None:
+                    report.append("### Volume Trend")
+                    fh_sess = analysis["first_half_sessions_pw"]
+                    fh_vol = analysis["first_half_vol_pw"]
+                    sh_sess = analysis["second_half_sessions_pw"]
+                    sh_vol = analysis["second_half_vol_pw"]
+                    report.append(f"- First half: {fh_sess} sessions/week, {fh_vol:,.0f} volume/week")
+                    report.append(f"- Second half: {sh_sess} sessions/week, {sh_vol:,.0f} volume/week")
+                    if vol_drop is not None:
+                        report.append(f"- Change: {vol_drop:+.1f}%")
+                    report.append("")
+                gap_weeks = analysis.get("gap_weeks", "none")
+                if gap_weeks != "none":
+                    report.append(f"### Training Gaps\nWeeks with no data: {gap_weeks}")
+                    report.append("")
+        except Exception as e:
+            report.append(f"\n*Analysis could not be computed: {e}*\n")
 
     # Add overall summary at the end with clear separation
     report.append(f"\n# Overall Summary for {overall_summary['start_date']} to {overall_summary['end_date']}\n")
@@ -1363,7 +1419,14 @@ def generate_markdown_report(summaries, use_metric=True, report_format="summary"
     return "\n".join(report)
 
 
-def _build_structured_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
+def _build_structured_report(
+    summaries,
+    use_metric=True,
+    report_format="summary",
+    period_type=None,
+    calendar_aligned=False,
+    include_analysis=True,
+):
     """Build a structured dict suitable for JSON/YAML serialization.
 
     Args:
@@ -1510,12 +1573,17 @@ def _build_structured_report(summaries, use_metric=True, report_format="summary"
     muscle_weekly_sets_agg = None
     if include_analysis and periods:
         from ..data.exercise_db import clear_unknown_exercises, get_unknown_exercises
+
         clear_unknown_exercises()
         exercise_stats_agg, exercise_trends_agg, muscle_weekly_sets_agg = _aggregate_exercise_stats(periods)
         total_sess = overall.get("total_sessions", 0)
         analysis = _compute_analysis(
-            exercise_stats_agg, exercise_trends_agg, muscle_weekly_sets_agg,
-            periods, total_sess, overall,
+            exercise_stats_agg,
+            exercise_trends_agg,
+            muscle_weekly_sets_agg,
+            periods,
+            total_sess,
+            overall,
         )
         analysis["unknown_exercise_count"] = len(get_unknown_exercises())
 
@@ -1533,7 +1601,14 @@ def _build_structured_report(summaries, use_metric=True, report_format="summary"
     }
 
 
-def generate_json_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
+def generate_json_report(
+    summaries,
+    use_metric=True,
+    report_format="summary",
+    period_type=None,
+    calendar_aligned=False,
+    include_analysis=True,
+):
     """Generate a JSON report from workout summaries.
 
     Args:
@@ -1554,7 +1629,14 @@ def generate_json_report(summaries, use_metric=True, report_format="summary", pe
     return json.dumps(data, indent=2, ensure_ascii=False)
 
 
-def generate_yaml_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
+def generate_yaml_report(
+    summaries,
+    use_metric=True,
+    report_format="summary",
+    period_type=None,
+    calendar_aligned=False,
+    include_analysis=True,
+):
     """Generate a YAML report from workout summaries.
 
     Args:
@@ -1575,7 +1657,14 @@ def generate_yaml_report(summaries, use_metric=True, report_format="summary", pe
     return yaml.safe_dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
 
-def generate_gpt_report(summaries, use_metric=True, report_format="summary", period_type=None, calendar_aligned=False, include_analysis=True):
+def generate_gpt_report(
+    summaries,
+    use_metric=True,
+    report_format="summary",
+    period_type=None,
+    calendar_aligned=False,
+    include_analysis=True,
+):
     """Generate a GPT-optimized compact report for FitbodGPT consumption.
 
     Outputs a token-efficient TSV format with pre-computed analytics.
@@ -1593,7 +1682,7 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
     Returns:
         str: GPT-optimized compact report
     """
-    from ..data.exercise_db import get_exercise_muscles, get_unknown_exercises
+    from ..data.exercise_db import get_unknown_exercises
 
     weight_unit = "kg" if use_metric else "lbs"
     distance_unit = "km" if use_metric else "miles"
@@ -1723,12 +1812,21 @@ def generate_gpt_report(summaries, use_metric=True, report_format="summary", per
         lines.append("## analysis")
         lines.append("metric\tvalue")
         for key in (
-            "push_pull_ratio", "upper_lower_ratio", "lower_share_pct",
-            "level_score", "level",
-            "stalled_compounds", "stalled_isolations",
-            "first_half_sessions_pw", "second_half_sessions_pw",
-            "first_half_vol_pw", "second_half_vol_pw", "volume_drop_pct",
-            "gap_weeks", "unknown_exercise_count", "cardio_undercount",
+            "push_pull_ratio",
+            "upper_lower_ratio",
+            "lower_share_pct",
+            "level_score",
+            "level",
+            "stalled_compounds",
+            "stalled_isolations",
+            "first_half_sessions_pw",
+            "second_half_sessions_pw",
+            "first_half_vol_pw",
+            "second_half_vol_pw",
+            "volume_drop_pct",
+            "gap_weeks",
+            "unknown_exercise_count",
+            "cardio_undercount",
         ):
             val = analysis.get(key)
             if val is None:
@@ -1803,6 +1901,7 @@ def _time_to_seconds(time_str):
     time_str = str(time_str).strip()
     # Try human-readable format: '0h 30m 2s'
     import re
+
     match = re.match(r"(\d+)h\s*(\d+)m\s*(\d+)s", time_str)
     if match:
         return int(match.group(1)) * 3600 + int(match.group(2)) * 60 + int(match.group(3))
