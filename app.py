@@ -82,7 +82,15 @@ def process_and_summarize(filtered_df, unit_system, tz_name, period_type, calend
     return summarize_workouts(processed_data, use_metric=(unit_system == "metric"), tz_name=tz_name, group_by=group_by)
 
 
-def generate_report_content(summaries, unit_system, report_format, output_format, period_type, calendar_aligned=False, include_analysis=True):
+def generate_report_content(
+    summaries,
+    unit_system,
+    report_format,
+    output_format,
+    period_type,
+    calendar_aligned=False,
+    include_analysis=True,
+):
     """Generate report in the requested output format."""
     use_metric = unit_system == "metric"
 
@@ -419,7 +427,12 @@ if uploaded_file is not None:
                 )
                 effective_format = "markdown" if output_format == "pdf" else output_format
                 report_content = generate_report_content(
-                    summaries, unit_system, report_format, effective_format, effective_period_type, effective_calendar_aligned,
+                    summaries,
+                    unit_system,
+                    report_format,
+                    effective_format,
+                    effective_period_type,
+                    effective_calendar_aligned,
                     include_analysis=include_analysis,
                 )
             except Exception as e:
