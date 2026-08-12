@@ -1,9 +1,7 @@
 """Streamlit web application for Fitbod workout report generation."""
 
-import json
-import os
-import tempfile
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import streamlit as st
@@ -11,7 +9,7 @@ import streamlit.components.v1 as components
 
 from src.data.processor import process_data_from_df
 from src.data.validator import validate_data_structure
-from src.pdf.generator import convert_to_pdf
+from src.pdf.generator import convert_to_pdf_bytes
 from src.report.generator import (
     PeriodType,
     detect_timezone,
@@ -24,22 +22,29 @@ from src.report.generator import (
     summarize_workouts,
 )
 from src.utils.converters import seconds_to_time
+from src.utils.web import js_string_literal
 
 # Period types that support calendar-aligned grouping (vs rolling windows)
 _CALENDAR_TYPES = frozenset({PeriodType.MONTHLY, PeriodType.QUARTERLY, PeriodType.HALF_YEARLY, PeriodType.YEARLY})
 
 
-@st.cache_data
+# Uploaded workout data is cached per session and evicted on disconnect.
+# st.cache_data defaults to process-wide scope with no expiry, which would keep
+# every user's data in memory until the container restarts.
+_USER_DATA_CACHE = {"scope": "session", "ttl": 1800, "max_entries": 3}
+
+
+@st.cache_data(**_USER_DATA_CACHE)
 def load_and_validate_data(file_data):
     """Cache the data loading and validation process."""
     df = pd.read_csv(file_data)
     is_valid, missing_cols = validate_data_structure(df, is_dataframe=True)
     if not is_valid:
-        raise ValueError(f"Invalid CSV structure. Missing columns: {', '.join(missing_cols)}")
+        raise ValueError(f"Invalid CSV structure. Missing columns: {', '.join(sorted(missing_cols))}")
     return df
 
 
-@st.cache_data
+@st.cache_data(**_USER_DATA_CACHE)
 def prepare_date_filtered_data(df, start_date, end_date):
     """Cache the date filtering process."""
     date_series = pd.to_datetime(df["Date"])
@@ -61,19 +66,21 @@ def get_timezone_options():
     return available, formatted
 
 
-@st.cache_data
+@st.cache_data(**_USER_DATA_CACHE)
 def _process_data(filtered_df):
     """Cache the DataFrame-to-records conversion (independent of report settings)."""
     return process_data_from_df(filtered_df)
 
 
-@st.cache_data
+@st.cache_data(**_USER_DATA_CACHE)
 def process_and_summarize(filtered_df, unit_system, tz_name, period_type, calendar_aligned=False):
     """Process data and generate summaries with caching."""
     processed_data = _process_data(filtered_df)
 
     # Use daily granularity for calendar-aligned periods to prevent cross-boundary bleed
-    if period_type == PeriodType.DAILY:
+    if period_type == PeriodType.PER_WORKOUT:
+        group_by = "session"
+    elif period_type == PeriodType.DAILY:
         group_by = "day"
     elif calendar_aligned and period_type in _CALENDAR_TYPES:
         group_by = "day"
@@ -118,10 +125,47 @@ def get_download_config(output_format):
 
 FITBODGPT_URL = "https://chatgpt.com/g/g-69bfd1becff08191b3b93c1d0312fda9-fitbodgpt"
 
+# A detailed report over several years runs to ~1 MB and 45,000 lines. Syntax
+# highlighting that with line numbers, on every rerun, is what locks up the
+# browser tab - the report itself takes under half a second to build.
+PREVIEW_MAX_LINES = 500
+PREVIEW_MAX_CHARS = 60_000
+
+# Above this the report is too large to paste into a chat message anyway, and
+# embedding it in the clipboard iframe is a second copy in the DOM.
+CLIPBOARD_MAX_CHARS = 200_000
+
+
+def render_report_preview(report_content, output_format):
+    """Show the report, truncated when it is too large for the browser."""
+    language = {"json": "json", "yaml": "yaml", "gpt": None}.get(output_format, "markdown")
+    lines = report_content.split("\n")
+
+    if len(lines) <= PREVIEW_MAX_LINES and len(report_content) <= PREVIEW_MAX_CHARS:
+        st.code(report_content, language=language, line_numbers=True)
+        return
+
+    head = "\n".join(lines[:PREVIEW_MAX_LINES])[:PREVIEW_MAX_CHARS]
+    st.caption(
+        f"Preview truncated to the first {min(PREVIEW_MAX_LINES, len(lines)):,} of {len(lines):,} lines "
+        f"({len(report_content):,} characters). Download the report for the full version."
+    )
+    # Line numbers are dropped here: they are the expensive part at this size.
+    st.code(head, language=language)
+
 
 def render_fitbodgpt_steps(report_content):
     """Render FitbodGPT copy + open flow. Instruction first, buttons below."""
-    escaped = json.dumps(report_content)
+    if len(report_content) > CLIPBOARD_MAX_CHARS:
+        # Large reports are still copyable - the size is worth knowing, not
+        # worth blocking on.
+        st.caption(
+            f"This report is {len(report_content):,} characters. Copying still works, but it may "
+            "exceed what a chat message accepts - uploading the downloaded file, or switching to "
+            "the GPT-optimized format, is usually easier."
+        )
+
+    escaped = js_string_literal(report_content)
     css = """
     <style>
       *{box-sizing:border-box;margin:0;padding:0}
@@ -373,12 +417,14 @@ if uploaded_file is not None:
             st.subheader("Summary Options")
             col_period, col_grouping = st.columns([3, 2])
             with col_period:
+                _period_options = [pt.value for pt in PeriodType]
                 period_type = st.selectbox(
                     "Summary Period",
-                    [pt.value for pt in PeriodType],
-                    index=1,
+                    _period_options,
+                    index=_period_options.index(PeriodType.WEEKLY.value),
                     key="period_type",
-                    help="Daily: day-by-day. Weekly: week-by-week. Others: broader trends",
+                    help="Per-workout: one section per logged session, in the order you trained. "
+                    "Daily: day-by-day. Weekly: week-by-week. Others: broader trends",
                 )
                 period_type = PeriodType(period_type)
             with col_grouping:
@@ -452,7 +498,9 @@ if uploaded_file is not None:
             num_periods = len(summaries)
 
             m1, m2, m3, m4 = st.columns(4)
-            if effective_period_type == PeriodType.DAILY or (
+            if effective_period_type == PeriodType.PER_WORKOUT:
+                period_label = f"{num_periods} workouts"
+            elif effective_period_type == PeriodType.DAILY or (
                 effective_calendar_aligned and effective_period_type in _CALENDAR_TYPES
             ):
                 period_label = f"{num_periods} days"
@@ -471,34 +519,22 @@ if uploaded_file is not None:
                 st.subheader("Use with FitbodGPT")
                 render_fitbodgpt_steps(report_content)
 
-            # Download
+            # Download. The report is built in memory and never written to disk:
+            # one process serves every session, so a shared temp path would let
+            # one user read another's report.
             st.markdown("---")
-            if output_format == "pdf":
-                pdf_path = os.path.join(
-                    tempfile.gettempdir(),
-                    f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                )
-                convert_to_pdf(report_content, pdf_path)
-                with open(pdf_path, "rb") as f:
-                    st.download_button(
-                        "Download Report",
-                        f.read(),
-                        file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                        mime="application/pdf",
-                    )
-                os.unlink(pdf_path)
-            else:
-                st.download_button(
-                    "Download Report",
-                    report_content,
-                    file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
-                    mime=mime,
-                )
+            report_date = datetime.now(ZoneInfo(selected_timezone)).strftime("%Y%m%d")
+            payload = convert_to_pdf_bytes(report_content) if output_format == "pdf" else report_content
+            st.download_button(
+                "Download Report",
+                payload,
+                file_name=f"workout_report_{report_date}.{ext}",
+                mime=mime,
+            )
 
             # Report preview
             st.subheader("Report Preview")
-            preview_lang = {"json": "json", "yaml": "yaml", "gpt": None}.get(output_format, "markdown")
-            st.code(report_content, language=preview_lang, line_numbers=True)
+            render_report_preview(report_content, output_format)
 
     except Exception as e:
         st.error(f"Error processing file: {e!s}")

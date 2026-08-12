@@ -178,3 +178,5 @@ workout_data/
 CLAUDE.md
 AGENTS.md
 SPECS.md
+# Generated reports contain personal workout data
+output/

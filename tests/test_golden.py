@@ -1,0 +1,202 @@
+"""End-to-end golden-file tests: CSV bytes in, report text out.
+
+These run the same pipeline the Streamlit app does and compare the result
+against checked-in files under tests/golden/. They exist to make every change
+to the reported numbers visible and deliberate.
+
+The goldens record current behaviour, bugs included. When a fix legitimately
+changes the output, regenerate and read the diff before committing it:
+
+    REGEN_GOLDEN=1 uv run pytest tests/test_golden.py
+"""
+
+import json
+import os
+import re
+from pathlib import Path
+
+import pandas as pd
+import pytest
+
+from src.data.processor import process_data_from_df
+from src.data.validator import validate_data_structure
+from src.report.generator import (
+    PeriodType,
+    generate_gpt_report,
+    generate_json_report,
+    generate_markdown_report,
+    generate_yaml_report,
+    summarize_workouts,
+)
+
+FIXTURE = Path(__file__).parent / "fixtures" / "sample_fitbod.csv"
+GOLDEN_DIR = Path(__file__).parent / "golden"
+
+
+def _load_summaries(tz_name="UTC", group_by="week"):
+    """Reproduce app.py's load path exactly."""
+    df = pd.read_csv(FIXTURE)
+    is_valid, missing = validate_data_structure(df, is_dataframe=True)
+    assert is_valid, f"fixture is missing columns: {missing}"
+
+    df["Date"] = pd.to_datetime(df["Date"])
+    if df["Date"].dt.tz is None:
+        df["Date"] = df["Date"].dt.tz_localize("UTC")
+
+    return summarize_workouts(process_data_from_df(df), use_metric=True, tz_name=tz_name, group_by=group_by)
+
+
+def _check(name, actual):
+    """Compare against the golden file, or rewrite it when regenerating."""
+    path = GOLDEN_DIR / name
+    if os.environ.get("REGEN_GOLDEN"):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(actual)
+        pytest.skip(f"regenerated {name}")
+    assert path.exists(), f"missing golden {path}; run REGEN_GOLDEN=1 pytest to create it"
+    expected = path.read_text()
+    assert actual == expected, (
+        f"{name} changed.\nIf the change is intended, regenerate with REGEN_GOLDEN=1 and review the diff."
+    )
+
+
+@pytest.mark.parametrize(
+    ("name", "fmt", "report_format"),
+    [
+        ("weekly_summary.md", generate_markdown_report, "summary"),
+        ("weekly_detailed.md", generate_markdown_report, "detailed"),
+        ("weekly_summary.json", generate_json_report, "summary"),
+        ("weekly_summary.yaml", generate_yaml_report, "summary"),
+        ("weekly_summary.gpt.txt", generate_gpt_report, "summary"),
+        ("weekly_detailed.gpt.txt", generate_gpt_report, "detailed"),
+    ],
+)
+def test_weekly_golden(name, fmt, report_format):
+    summaries = _load_summaries()
+    _check(name, fmt(summaries, True, report_format, PeriodType.WEEKLY, False, True))
+
+
+@pytest.mark.parametrize(
+    ("name", "period_type", "calendar_aligned"),
+    [
+        ("monthly_calendar.json", PeriodType.MONTHLY, True),
+        ("monthly_rolling.json", PeriodType.MONTHLY, False),
+        ("quarterly_calendar.json", PeriodType.QUARTERLY, True),
+    ],
+)
+def test_aggregated_golden(name, period_type, calendar_aligned):
+    # Calendar-aligned periods use daily granularity, as app.py does.
+    group_by = "day" if calendar_aligned else "week"
+    summaries = _load_summaries(group_by=group_by)
+    _check(name, generate_json_report(summaries, True, "summary", period_type, calendar_aligned, True))
+
+
+@pytest.mark.parametrize(
+    ("name", "period_type", "calendar_aligned"),
+    [
+        ("monthly_calendar.md", PeriodType.MONTHLY, True),
+        ("quarterly_calendar.md", PeriodType.QUARTERLY, True),
+    ],
+)
+def test_aggregated_markdown_golden(name, period_type, calendar_aligned):
+    group_by = "day" if calendar_aligned else "week"
+    summaries = _load_summaries(group_by=group_by)
+    _check(name, generate_markdown_report(summaries, True, "summary", period_type, calendar_aligned, True))
+
+
+@pytest.mark.parametrize(
+    ("period_type", "calendar_aligned"),
+    [
+        (PeriodType.WEEKLY, False),
+        (PeriodType.MONTHLY, True),
+        (PeriodType.MONTHLY, False),
+        (PeriodType.QUARTERLY, True),
+    ],
+)
+def test_markdown_and_json_averages_agree(period_type, calendar_aligned):
+    """Both renderers must divide by the same period count.
+
+    Markdown used to divide totals by the raw weekly/daily summary count while
+    the structured report divided by the aggregated period count, so the same
+    input produced averages differing by up to 15x under one heading.
+    """
+    group_by = "day" if calendar_aligned else "week"
+    summaries = _load_summaries(group_by=group_by)
+
+    structured = json.loads(generate_json_report(summaries, True, "summary", period_type, calendar_aligned, True))
+    markdown = generate_markdown_report(summaries, True, "summary", period_type, calendar_aligned, True)
+
+    averages = structured["overall"]["averages"]
+    match = re.search(r"- Average Volume: ([\d,]+\.\d+)", markdown)
+    assert match, "markdown report is missing its Average Volume line"
+    assert float(match.group(1).replace(",", "")) == pytest.approx(averages["avg_volume"])
+
+    reps = re.search(r"- Average Reps: (\d+)", markdown)
+    assert reps and int(reps.group(1)) == averages["avg_reps"]
+
+    workout_time = re.search(r"- Average Workout Time: (.+)", markdown)
+    assert workout_time and workout_time.group(1).strip() == averages["avg_workout_time"]
+
+
+def test_imperial_golden():
+    summaries = _load_summaries()
+    _check("weekly_imperial.gpt.txt", generate_gpt_report(summaries, False, "summary", PeriodType.WEEKLY, False, True))
+
+
+def test_timezone_shifts_day_buckets():
+    """A non-UTC zone must move sessions into different day buckets.
+
+    Weekly grouping is deliberately not used here: the fixture's 18:30 UTC
+    sessions shift by a day under Pacific/Auckland but stay inside the same
+    Monday-Sunday week, so a weekly report is identical and would prove nothing.
+    """
+    utc = _load_summaries(tz_name="UTC", group_by="day")
+    auckland = _load_summaries(tz_name="Pacific/Auckland", group_by="day")
+    assert sorted(utc)[0] == "2025-01-06"
+    assert sorted(auckland)[0] == "2025-01-07", "UTC+13 must push an 18:30 session to the next day"
+
+    _check("daily_auckland.gpt.txt", generate_gpt_report(auckland, True, "summary", PeriodType.DAILY, False, True))
+
+
+@pytest.mark.parametrize(
+    ("name", "fmt", "report_format"),
+    [
+        ("per_workout.gpt.txt", generate_gpt_report, "summary"),
+        ("per_workout.json", generate_json_report, "summary"),
+        ("per_workout_detailed.md", generate_markdown_report, "detailed"),
+    ],
+)
+def test_per_workout_golden(name, fmt, report_format):
+    """One section per logged workout, keeping two same-day sessions apart."""
+    summaries = _load_summaries(group_by="session")
+    _check(name, fmt(summaries, True, report_format, PeriodType.PER_WORKOUT, False, True))
+
+
+def test_per_workout_keeps_two_sessions_on_one_day_apart():
+    """Daily grouping merges a two-a-day; per-workout must keep them separate."""
+    from datetime import datetime
+
+    from src.report.generator import summarize_workouts as summarize
+
+    def entry(at, exercise):
+        return {
+            "Date": datetime.strptime(at, "%Y-%m-%d %H:%M:%S"),
+            "Exercise": exercise,
+            "Weight(kg)": 100.0,
+            "Reps": 5,
+            "Distance(m)": 0.0,
+            "Duration(s)": 0.0,
+            "isWarmup": "false",
+        }
+
+    two_a_day = [entry("2025-01-06 07:00:00", "Back Squat"), entry("2025-01-06 18:00:00", "Deadlift")]
+
+    assert len(summarize(two_a_day, True, "UTC", "day")) == 1
+    per_workout = summarize(two_a_day, True, "UTC", "session")
+    assert len(per_workout) == 2
+    assert sorted(per_workout) == ["2025-01-06 07:00", "2025-01-06 18:00"]
+
+
+def test_analysis_can_be_disabled():
+    summaries = _load_summaries()
+    _check("weekly_no_analysis.gpt.txt", generate_gpt_report(summaries, True, "summary", PeriodType.WEEKLY, False, False))

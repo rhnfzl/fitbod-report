@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "streamlit>=1.55.0",
+    "pandas>=2.0.0",
     "markdown-pdf>=1.13.1",
     "watchdog>=6.0.0",
     "tzlocal>=5.3.1",
@@ -15,7 +16,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=9.0.2",
-    "ruff>=0.15.7"
+    # Pinned exactly: ruff's formatter output changes between minor releases
+    # (0.16 began formatting Python blocks inside Markdown), which silently
+    # turns CI red without a commit.
+    "ruff==0.15.7"
 ]
 
 [tool.pytest.ini_options]
