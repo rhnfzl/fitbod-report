@@ -54,8 +54,7 @@ def _check(name, actual):
     assert path.exists(), f"missing golden {path}; run REGEN_GOLDEN=1 pytest to create it"
     expected = path.read_text()
     assert actual == expected, (
-        f"{name} changed.\n"
-        f"If the change is intended, regenerate with REGEN_GOLDEN=1 and review the diff."
+        f"{name} changed.\nIf the change is intended, regenerate with REGEN_GOLDEN=1 and review the diff."
     )
 
 

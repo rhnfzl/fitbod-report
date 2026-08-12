@@ -6605,15 +6605,22 @@ EXERCISE_IS_UNILATERAL: Final[dict[str, bool]] = {
 # Helper functions
 # ---------------------------------------------------------------------------
 
-_unknown_exercises: set[str] = set()
-
 
 def get_exercise_muscles(name: str) -> list[str]:
-    """Return primary muscles for an exercise, tracking unknowns."""
+    """Return primary muscles for an exercise, or ["unknown"] if absent."""
     if name in EXERCISE_MUSCLES:
         return EXERCISE_MUSCLES[name]
-    _unknown_exercises.add(name)
     return ["unknown"]
+
+
+def is_known_exercise(name: str) -> bool:
+    """Return whether the exercise is present in the database.
+
+    Callers that need to report unrecognised exercises collect them
+    themselves; this module deliberately keeps no mutable state, because it
+    is imported once per process and shared by every Streamlit session.
+    """
+    return name in EXERCISE_MUSCLES
 
 
 def get_exercise_equipment(name: str) -> str:
@@ -6639,13 +6646,3 @@ def is_compound(name: str) -> bool:
 def is_unilateral(name: str) -> bool:
     """Return whether an exercise is unilateral (single-limb)."""
     return EXERCISE_IS_UNILATERAL.get(name, False)
-
-
-def get_unknown_exercises() -> set[str]:
-    """Return set of exercise names not found in the database."""
-    return _unknown_exercises.copy()
-
-
-def clear_unknown_exercises() -> None:
-    """Reset the unknown exercises tracker."""
-    _unknown_exercises.clear()

@@ -1,5 +1,6 @@
 """PDF generation utilities for workout reports."""
 
+import io
 import re
 
 from markdown_pdf import MarkdownPdf, Section
@@ -30,13 +31,38 @@ def _fix_heading_hierarchy(md):
     return "\n".join(result)
 
 
+def _build_pdf(markdown_content):
+    pdf = MarkdownPdf()
+    pdf.add_section(Section(_fix_heading_hierarchy(markdown_content)))
+    return pdf
+
+
+def convert_to_pdf_bytes(markdown_content):
+    """Convert markdown content to PDF and return the bytes.
+
+    Kept in memory deliberately.  The web app serves every user from one
+    process, so writing reports to a shared temp path let one session read
+    another's file.
+
+    Args:
+        markdown_content: Markdown formatted string
+
+    Returns:
+        bytes: the rendered PDF
+    """
+    buffer = io.BytesIO()
+    _build_pdf(markdown_content).save_bytes(buffer)
+    return buffer.getvalue()
+
+
 def convert_to_pdf(markdown_content, output_path):
-    """Convert markdown content to PDF.
+    """Convert markdown content to PDF and write it to output_path.
+
+    Retained for command-line and test use.  The web app uses
+    convert_to_pdf_bytes so that no report ever touches disk.
 
     Args:
         markdown_content: Markdown formatted string
         output_path: Path where to save the PDF file
     """
-    pdf = MarkdownPdf()
-    pdf.add_section(Section(_fix_heading_hierarchy(markdown_content)))
-    pdf.save(output_path)
+    _build_pdf(markdown_content).save(output_path)

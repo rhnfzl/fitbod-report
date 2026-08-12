@@ -1,9 +1,7 @@
 """Streamlit web application for Fitbod workout report generation."""
 
-import json
-import os
-import tempfile
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import streamlit as st
@@ -11,7 +9,7 @@ import streamlit.components.v1 as components
 
 from src.data.processor import process_data_from_df
 from src.data.validator import validate_data_structure
-from src.pdf.generator import convert_to_pdf
+from src.pdf.generator import convert_to_pdf_bytes
 from src.report.generator import (
     PeriodType,
     detect_timezone,
@@ -24,22 +22,29 @@ from src.report.generator import (
     summarize_workouts,
 )
 from src.utils.converters import seconds_to_time
+from src.utils.web import js_string_literal
 
 # Period types that support calendar-aligned grouping (vs rolling windows)
 _CALENDAR_TYPES = frozenset({PeriodType.MONTHLY, PeriodType.QUARTERLY, PeriodType.HALF_YEARLY, PeriodType.YEARLY})
 
 
-@st.cache_data
+# Uploaded workout data is cached per session and evicted on disconnect.
+# st.cache_data defaults to process-wide scope with no expiry, which would keep
+# every user's data in memory until the container restarts.
+_USER_DATA_CACHE = {"scope": "session", "ttl": 1800, "max_entries": 3}
+
+
+@st.cache_data(**_USER_DATA_CACHE)
 def load_and_validate_data(file_data):
     """Cache the data loading and validation process."""
     df = pd.read_csv(file_data)
     is_valid, missing_cols = validate_data_structure(df, is_dataframe=True)
     if not is_valid:
-        raise ValueError(f"Invalid CSV structure. Missing columns: {', '.join(missing_cols)}")
+        raise ValueError(f"Invalid CSV structure. Missing columns: {', '.join(sorted(missing_cols))}")
     return df
 
 
-@st.cache_data
+@st.cache_data(**_USER_DATA_CACHE)
 def prepare_date_filtered_data(df, start_date, end_date):
     """Cache the date filtering process."""
     date_series = pd.to_datetime(df["Date"])
@@ -61,13 +66,13 @@ def get_timezone_options():
     return available, formatted
 
 
-@st.cache_data
+@st.cache_data(**_USER_DATA_CACHE)
 def _process_data(filtered_df):
     """Cache the DataFrame-to-records conversion (independent of report settings)."""
     return process_data_from_df(filtered_df)
 
 
-@st.cache_data
+@st.cache_data(**_USER_DATA_CACHE)
 def process_and_summarize(filtered_df, unit_system, tz_name, period_type, calendar_aligned=False):
     """Process data and generate summaries with caching."""
     processed_data = _process_data(filtered_df)
@@ -121,7 +126,7 @@ FITBODGPT_URL = "https://chatgpt.com/g/g-69bfd1becff08191b3b93c1d0312fda9-fitbod
 
 def render_fitbodgpt_steps(report_content):
     """Render FitbodGPT copy + open flow. Instruction first, buttons below."""
-    escaped = json.dumps(report_content)
+    escaped = js_string_literal(report_content)
     css = """
     <style>
       *{box-sizing:border-box;margin:0;padding:0}
@@ -471,29 +476,18 @@ if uploaded_file is not None:
                 st.subheader("Use with FitbodGPT")
                 render_fitbodgpt_steps(report_content)
 
-            # Download
+            # Download. The report is built in memory and never written to disk:
+            # one process serves every session, so a shared temp path would let
+            # one user read another's report.
             st.markdown("---")
-            if output_format == "pdf":
-                pdf_path = os.path.join(
-                    tempfile.gettempdir(),
-                    f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                )
-                convert_to_pdf(report_content, pdf_path)
-                with open(pdf_path, "rb") as f:
-                    st.download_button(
-                        "Download Report",
-                        f.read(),
-                        file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.pdf",
-                        mime="application/pdf",
-                    )
-                os.unlink(pdf_path)
-            else:
-                st.download_button(
-                    "Download Report",
-                    report_content,
-                    file_name=f"workout_report_{datetime.now().strftime('%Y%m%d')}.{ext}",
-                    mime=mime,
-                )
+            report_date = datetime.now(ZoneInfo(selected_timezone)).strftime("%Y%m%d")
+            payload = convert_to_pdf_bytes(report_content) if output_format == "pdf" else report_content
+            st.download_button(
+                "Download Report",
+                payload,
+                file_name=f"workout_report_{report_date}.{ext}",
+                mime=mime,
+            )
 
             # Report preview
             st.subheader("Report Preview")

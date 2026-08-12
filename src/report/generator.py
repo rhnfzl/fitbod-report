@@ -64,6 +64,15 @@ LOWER_MUSCLES = frozenset(
     }
 )
 
+# Keys _build_structured_report shares with the GPT renderer but that must never
+# reach serialised output.
+_INTERNAL_KEYS = (
+    "exercise_stats_agg",
+    "exercise_trends_agg",
+    "muscle_weekly_sets_agg",
+    "unknown_exercises",
+)
+
 PUSH_PATTERNS = frozenset({"horizontal_push", "vertical_push", "isolation_push"})
 PULL_PATTERNS = frozenset({"horizontal_pull", "vertical_pull", "isolation_pull"})
 FREE_WEIGHT_EQUIPMENT = frozenset({"barbell", "dumbbell", "kettlebell", "ez_bar"})
@@ -103,13 +112,17 @@ def _aggregate_exercise_stats(periods):
     """Aggregate per-exercise statistics across all periods.
 
     Returns:
-        tuple: (exercise_data, exercise_trends, muscle_weekly_sets)
+        tuple: (exercise_data, exercise_trends, muscle_weekly_sets, unknown_exercises)
+
+    ``unknown_exercises`` is collected per call rather than in module state, so
+    one caller's exercise names can never appear in another's report.
     """
-    from ..data.exercise_db import get_exercise_muscles
+    from ..data.exercise_db import get_exercise_muscles, is_known_exercise
 
     exercise_data = {}
     exercise_first_period = {}
     exercise_last_period = {}
+    unknown_exercises: set[str] = set()
 
     for i, p in enumerate(periods):
         for ex in p.get("exercises", []):
@@ -171,6 +184,8 @@ def _aggregate_exercise_stats(periods):
         for ex in p.get("exercises", []):
             if ex.get("is_cardio", False):
                 continue
+            if not is_known_exercise(ex["name"]):
+                unknown_exercises.add(ex["name"])
             muscles = get_exercise_muscles(ex["name"])
             working = ex.get("working_sets", 0)
             for m in muscles:
@@ -180,7 +195,7 @@ def _aggregate_exercise_stats(periods):
                 muscle_weekly_sets[m] = []
             muscle_weekly_sets[m].append(sets)
 
-    return exercise_data, exercise_trends, muscle_weekly_sets
+    return exercise_data, exercise_trends, muscle_weekly_sets, unknown_exercises
 
 
 def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, periods, total_sessions, overall):
@@ -1571,11 +1586,14 @@ def _build_structured_report(
     exercise_stats_agg = None
     exercise_trends_agg = None
     muscle_weekly_sets_agg = None
+    unknown_exercises: set[str] = set()
     if include_analysis and periods:
-        from ..data.exercise_db import clear_unknown_exercises, get_unknown_exercises
-
-        clear_unknown_exercises()
-        exercise_stats_agg, exercise_trends_agg, muscle_weekly_sets_agg = _aggregate_exercise_stats(periods)
+        (
+            exercise_stats_agg,
+            exercise_trends_agg,
+            muscle_weekly_sets_agg,
+            unknown_exercises,
+        ) = _aggregate_exercise_stats(periods)
         total_sess = overall.get("total_sessions", 0)
         analysis = _compute_analysis(
             exercise_stats_agg,
@@ -1585,7 +1603,7 @@ def _build_structured_report(
             total_sess,
             overall,
         )
-        analysis["unknown_exercise_count"] = len(get_unknown_exercises())
+        analysis["unknown_exercise_count"] = len(unknown_exercises)
 
     return {
         "report_type": str(period_type) if period_type else "weekly",
@@ -1598,6 +1616,7 @@ def _build_structured_report(
         "exercise_stats_agg": exercise_stats_agg,
         "exercise_trends_agg": exercise_trends_agg,
         "muscle_weekly_sets_agg": muscle_weekly_sets_agg,
+        "unknown_exercises": unknown_exercises,
     }
 
 
@@ -1623,8 +1642,7 @@ def generate_json_report(
         str: JSON formatted report
     """
     data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
-    # Remove internal aggregation data from JSON output
-    for key in ("exercise_stats_agg", "exercise_trends_agg", "muscle_weekly_sets_agg"):
+    for key in _INTERNAL_KEYS:
         data.pop(key, None)
     return json.dumps(data, indent=2, ensure_ascii=False)
 
@@ -1651,8 +1669,7 @@ def generate_yaml_report(
         str: YAML formatted report
     """
     data = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis)
-    # Remove internal aggregation data from YAML output
-    for key in ("exercise_stats_agg", "exercise_trends_agg", "muscle_weekly_sets_agg"):
+    for key in _INTERNAL_KEYS:
         data.pop(key, None)
     return yaml.safe_dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
@@ -1682,8 +1699,6 @@ def generate_gpt_report(
     Returns:
         str: GPT-optimized compact report
     """
-    from ..data.exercise_db import get_unknown_exercises
-
     weight_unit = "kg" if use_metric else "lbs"
     distance_unit = "km" if use_metric else "miles"
 
@@ -1699,11 +1714,12 @@ def generate_gpt_report(
     exercise_data = data.get("exercise_stats_agg") or {}
     exercise_trends = data.get("exercise_trends_agg") or {}
     muscle_weekly_sets = data.get("muscle_weekly_sets_agg") or {}
+    unknown_exercises = data.get("unknown_exercises") or set()
 
     # If analysis was not computed (include_analysis=False), we still need
     # exercise_data and muscle_weekly_sets for the exercise_stats and muscle_volume sections
     if not exercise_data:
-        exercise_data, exercise_trends, muscle_weekly_sets = _aggregate_exercise_stats(periods)
+        exercise_data, exercise_trends, muscle_weekly_sets, unknown_exercises = _aggregate_exercise_stats(periods)
 
     # --- Header ---
     date_range = overall.get("date_range", {})
@@ -1878,7 +1894,7 @@ def generate_gpt_report(
         lines.append(f"{date}\t{','.join(exercises_compact)}")
 
     # --- Unknown Exercises ---
-    unknown = get_unknown_exercises()
+    unknown = unknown_exercises
     if unknown:
         lines.append("")
         lines.append("## unknown_exercises")
