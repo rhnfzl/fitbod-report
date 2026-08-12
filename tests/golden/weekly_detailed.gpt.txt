@@ -45,16 +45,18 @@ metric	value
 push_pull_ratio	0.57
 upper_lower_ratio	1.5
 lower_share_pct	40
+core_share_pct	9.1
 level_score	41.3
 level	Intermediate
 stalled_compounds	Back Squat:+0.0%,Barbell Bench Press:+0.0%,Barbell Shoulder Press:+0.0%,Cable Row:+0.0%,Deadlift:+0.0%
 stalled_isolations	Dumbbell Bicep Curl:+0.0%,My Custom Rehab Press:+0.0%
-first_half_sessions_pw	2
-second_half_sessions_pw	2
-first_half_vol_pw	8082
-second_half_vol_pw	8082
-volume_drop_pct	0
+first_half_sessions_pw	1.75
+second_half_sessions_pw	1.75
+first_half_vol_pw	7072
+second_half_vol_pw	7072
+volume_change_pct	0
 gap_weeks	2025-02-10
+gap_window_weeks	26
 unknown_exercise_count	1
 cardio_undercount	false
 

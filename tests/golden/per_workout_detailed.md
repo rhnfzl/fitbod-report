@@ -1550,7 +1550,7 @@ Set Progression:
 
 - **Experience Level**: Intermediate (score: 41.3/100)
 - **Push:Pull Ratio**: 0.57:1 (target: 1:1 to 1:1.5)
-- **Upper:Lower Ratio**: 2.0:1 (lower body: 33.3%)
+- **Upper:Lower Ratio**: 1.5:1 (lower body: 40.0%)
 - **Equipment Used**: barbell, bodyweight, cable station, dumbbells
 
 ### Stalled Exercises
@@ -1565,8 +1565,8 @@ Set Progression:
 | My Custom Rehab Press | +0.0% | Isolation |
 
 ### Volume Trend
-- First half: 1.0 sessions/week, 4,109 volume/week
-- Second half: 1.0 sessions/week, 3,973 volume/week
+- First half: 1.85 sessions/week, 7,599 volume/week
+- Second half: 1.85 sessions/week, 7,346 volume/week
 - Change: -3.3%
 
 

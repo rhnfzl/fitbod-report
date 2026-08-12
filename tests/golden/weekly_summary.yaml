@@ -833,17 +833,19 @@ analysis:
   push_pull_ratio: 0.57
   upper_lower_ratio: 1.5
   lower_share_pct: 40.0
+  core_share_pct: 9.1
   level_score: 41.3
   level: Intermediate
   stalled_compounds: Back Squat:+0.0%,Barbell Bench Press:+0.0%,Barbell Shoulder Press:+0.0%,Cable
     Row:+0.0%,Deadlift:+0.0%
   stalled_isolations: Dumbbell Bicep Curl:+0.0%,My Custom Rehab Press:+0.0%
-  first_half_sessions_pw: 2.0
-  second_half_sessions_pw: 2.0
-  first_half_vol_pw: 8082.0
-  second_half_vol_pw: 8082.0
-  volume_drop_pct: 0.0
+  first_half_sessions_pw: 1.75
+  second_half_sessions_pw: 1.75
+  first_half_vol_pw: 7072.0
+  second_half_vol_pw: 7072.0
+  volume_change_pct: 0.0
   gap_weeks: '2025-02-10'
+  gap_window_weeks: 26
   equipment:
   - barbell
   - bodyweight

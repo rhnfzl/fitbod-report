@@ -171,6 +171,7 @@
     "push_pull_ratio": 0.57,
     "upper_lower_ratio": 1.5,
     "lower_share_pct": 40.0,
+    "core_share_pct": 9.1,
     "level_score": 41.3,
     "level": "Intermediate",
     "stalled_compounds": "none",
@@ -179,8 +180,9 @@
     "second_half_sessions_pw": null,
     "first_half_vol_pw": null,
     "second_half_vol_pw": null,
-    "volume_drop_pct": null,
+    "volume_change_pct": null,
     "gap_weeks": "none",
+    "gap_window_weeks": 26,
     "equipment": [
       "barbell",
       "bodyweight",

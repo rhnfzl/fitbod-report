@@ -200,8 +200,8 @@
 | My Custom Rehab Press | +0.0% | Isolation |
 
 ### Volume Trend
-- First half: 2.0 sessions/week, 8,082 volume/week
-- Second half: 2.0 sessions/week, 8,082 volume/week
+- First half: 1.75 sessions/week, 7,072 volume/week
+- Second half: 1.75 sessions/week, 7,072 volume/week
 - Change: +0.0%
 
 ### Training Gaps

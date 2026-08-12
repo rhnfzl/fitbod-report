@@ -50,18 +50,20 @@ upper_back	5.0	+0.0%
 ## analysis
 metric	value
 push_pull_ratio	0.57
-upper_lower_ratio	2
-lower_share_pct	33.3
+upper_lower_ratio	1.5
+lower_share_pct	40
+core_share_pct	9.1
 level_score	41.3
 level	Intermediate
 stalled_compounds	Back Squat:+0.0%,Barbell Bench Press:+0.0%,Barbell Shoulder Press:+0.0%,Cable Row:+0.0%,Deadlift:+0.0%
 stalled_isolations	Dumbbell Bicep Curl:+0.0%,My Custom Rehab Press:+0.0%
-first_half_sessions_pw	1
-second_half_sessions_pw	1
-first_half_vol_pw	4109
-second_half_vol_pw	3973
-volume_drop_pct	-3.3
+first_half_sessions_pw	1.85
+second_half_sessions_pw	1.85
+first_half_vol_pw	7599
+second_half_vol_pw	7346
+volume_change_pct	-3.3
 gap_weeks	none
+gap_window_weeks	26
 unknown_exercise_count	1
 cardio_undercount	false
 

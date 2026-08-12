@@ -51,6 +51,19 @@ UPPER_MUSCLES = frozenset(
         "triceps",
         "traps",
         "forearms",
+        "lower_chest",
+    }
+)
+
+# Trunk work belongs to neither half. It used to fall through both sets and
+# vanish from the balance figures entirely - 15% of a real export's working
+# sets - so it is now counted and reported in its own right.
+CORE_MUSCLES = frozenset(
+    {
+        "abs",
+        "obliques",
+        "lower_back",
+        "neck",
     }
 )
 
@@ -124,6 +137,10 @@ _INTERNAL_KEYS = (
     "muscle_weekly_sets_agg",
     "unknown_exercises",
 )
+
+# How far back training-gap detection looks. Recent gaps are what coaching acts
+# on, and an unbounded list dominated the token-efficient export.
+GAP_WINDOW_WEEKS = 26
 
 # Period types that are already at their finest granularity: the summaries
 # are the periods, so aggregate_summaries must not be called for them.
@@ -308,20 +325,29 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
     push_pull_ratio = round(push_sets / pull_sets, 2) if pull_sets > 0 else None
 
     # --- Upper:lower ratio ---
+    # Averages divide by every period, not only the periods in which a muscle
+    # was trained. Dividing by trained periods reported a muscle hit once in
+    # three months at its single-session figure, as though it were a staple.
+    period_count = max(len(periods), 1)
     upper_sets_total = 0.0
     lower_sets_total = 0.0
+    core_sets_total = 0.0
     for muscle, weekly in muscle_weekly_sets.items():
         if muscle == "unknown":
             continue
-        avg = sum(weekly) / len(weekly) if weekly else 0
+        avg = sum(weekly) / period_count
         if muscle in UPPER_MUSCLES:
             upper_sets_total += avg
         elif muscle in LOWER_MUSCLES:
             lower_sets_total += avg
+        elif muscle in CORE_MUSCLES:
+            core_sets_total += avg
 
     upper_lower_ratio = round(upper_sets_total / lower_sets_total, 2) if lower_sets_total > 0 else None
     total_sets = upper_sets_total + lower_sets_total
     lower_share_pct = round(100 * lower_sets_total / total_sets, 1) if total_sets > 0 else None
+    all_sets = total_sets + core_sets_total
+    core_share_pct = round(100 * core_sets_total / all_sets, 1) if all_sets > 0 else None
 
     # --- Level score (7-axis weighted) ---
     # Exercise variety (15%)
@@ -409,42 +435,58 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
         period_dates_sorted.sort()
         period_dates_set = set(period_dates_sorted)
 
-        # Only detect gaps for weekly-ish periods (5-9 day intervals)
+        # Only detect gaps for weekly-ish periods (5-9 day cadence).
+        # The cadence comes from the median of every interval, not the mean of
+        # the first five: a gap early in the range used to drag that mean past
+        # the cutoff and switch off the very feature meant to find it.
         if len(period_dates_sorted) >= 2:
-            n = min(5, len(period_dates_sorted) - 1)
-            intervals = [(period_dates_sorted[i + 1] - period_dates_sorted[i]).days for i in range(n)]
-            avg_interval = sum(intervals) / len(intervals)
-            if 5 <= avg_interval <= 9:  # Weekly
+            intervals = sorted(
+                (period_dates_sorted[i + 1] - period_dates_sorted[i]).days for i in range(len(period_dates_sorted) - 1)
+            )
+            median_interval = intervals[len(intervals) // 2]
+            if 5 <= median_interval <= 9:  # Weekly
+                # Only recent history is actionable, and listing every missed
+                # week since the first workout dominated the export - 114
+                # entries reaching back years, in a format built for brevity.
+                window_start = max(start_date, end_date - timedelta(weeks=GAP_WINDOW_WEEKS))
                 d = start_date
                 while d <= end_date:
-                    if d not in period_dates_set:
+                    if d >= window_start and d not in period_dates_set:
                         gap_weeks_list.append(d.isoformat())
                     d += timedelta(days=7)
 
-    # --- Volume drop (first half vs second half) ---
+    # --- Volume trend (first half vs second half) ---
     half = len(periods) // 2
     if half > 0 and len(periods) > half:
         first_half = periods[:half]
         second_half = periods[half:]
 
-        def _avg_stat(period_list, stat_key):
-            vals = []
-            for p in period_list:
-                stats = p.get("stats", {})
-                vals.append(stats.get(stat_key, 0))
-            return sum(vals) / len(vals) if vals else 0
+        # Periods are not weeks: a monthly report's periods are ~4.35 weeks
+        # each. Dividing through by that keeps the reported figures per week,
+        # which is what the field names and the Markdown labels claim. Without
+        # it a monthly report announced 8.47 sessions per week.
+        weeks_per_period = weeks / period_count if period_count else 1.0
+        weeks_per_period = weeks_per_period or 1.0
 
-        first_half_sessions = _avg_stat(first_half, "session_count")
-        second_half_sessions = _avg_stat(second_half, "session_count")
-        first_half_vol = _avg_stat(first_half, "total_volume")
-        second_half_vol = _avg_stat(second_half, "total_volume")
-        vol_drop_pct = round(((second_half_vol - first_half_vol) / first_half_vol) * 100, 1) if first_half_vol > 0 else None
+        def _avg_per_week(period_list, stat_key):
+            vals = [p.get("stats", {}).get(stat_key, 0) for p in period_list]
+            per_period = sum(vals) / len(vals) if vals else 0
+            return per_period / weeks_per_period
+
+        first_half_sessions = _avg_per_week(first_half, "session_count")
+        second_half_sessions = _avg_per_week(second_half, "session_count")
+        first_half_vol = _avg_per_week(first_half, "total_volume")
+        second_half_vol = _avg_per_week(second_half, "total_volume")
+        # Signed change: positive means volume grew. The old name asserted a
+        # direction the value does not carry, so a 49.9% increase was exported
+        # as volume_drop_pct 49.9 and read as a halving.
+        vol_change_pct = round(((second_half_vol - first_half_vol) / first_half_vol) * 100, 1) if first_half_vol > 0 else None
     else:
         first_half_sessions = None
         second_half_sessions = None
         first_half_vol = None
         second_half_vol = None
-        vol_drop_pct = None
+        vol_change_pct = None
 
     # --- Equipment list ---
     equip_counts: dict[str, int] = {}
@@ -468,6 +510,7 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
         "push_pull_ratio": push_pull_ratio,
         "upper_lower_ratio": upper_lower_ratio,
         "lower_share_pct": lower_share_pct,
+        "core_share_pct": core_share_pct,
         "level_score": level_score,
         "level": level,
         "stalled_compounds": ",".join(e for _, e in stalled_compounds) or "none",
@@ -476,8 +519,9 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
         "second_half_sessions_pw": round(second_half_sessions, 2) if second_half_sessions is not None else None,
         "first_half_vol_pw": round(first_half_vol, 0) if first_half_vol is not None else None,
         "second_half_vol_pw": round(second_half_vol, 0) if second_half_vol is not None else None,
-        "volume_drop_pct": vol_drop_pct,
+        "volume_change_pct": vol_change_pct,
         "gap_weeks": ",".join(gap_weeks_list) or "none",
+        "gap_window_weeks": GAP_WINDOW_WEEKS,
         "equipment": equipment_list,
         "cardio_undercount": cardio_undercount,
     }
@@ -1495,7 +1539,7 @@ def generate_markdown_report(
                         name, trend = entry.rsplit(":", 1)
                         report.append(f"| {name} | {trend} | Isolation |")
                     report.append("")
-                vol_drop = analysis.get("volume_drop_pct")
+                vol_change = analysis.get("volume_change_pct")
                 if analysis.get("first_half_sessions_pw") is not None:
                     report.append("### Volume Trend")
                     fh_sess = analysis["first_half_sessions_pw"]
@@ -1504,8 +1548,8 @@ def generate_markdown_report(
                     sh_vol = analysis["second_half_vol_pw"]
                     report.append(f"- First half: {fh_sess} sessions/week, {fh_vol:,.0f} volume/week")
                     report.append(f"- Second half: {sh_sess} sessions/week, {sh_vol:,.0f} volume/week")
-                    if vol_drop is not None:
-                        report.append(f"- Change: {vol_drop:+.1f}%")
+                    if vol_change is not None:
+                        report.append(f"- Change: {vol_change:+.1f}%")
                     report.append("")
                 gap_weeks = analysis.get("gap_weeks", "none")
                 if gap_weeks != "none":
@@ -1963,6 +2007,7 @@ def generate_gpt_report(
             "push_pull_ratio",
             "upper_lower_ratio",
             "lower_share_pct",
+            "core_share_pct",
             "level_score",
             "level",
             "stalled_compounds",
@@ -1971,8 +2016,9 @@ def generate_gpt_report(
             "second_half_sessions_pw",
             "first_half_vol_pw",
             "second_half_vol_pw",
-            "volume_drop_pct",
+            "volume_change_pct",
             "gap_weeks",
+            "gap_window_weeks",
             "unknown_exercise_count",
             "cardio_undercount",
         ):

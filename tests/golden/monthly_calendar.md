@@ -61,8 +61,8 @@
 - **Equipment Used**: barbell, bodyweight, cable station, dumbbells
 
 ### Volume Trend
-- First half: 8.0 sessions/week, 32,328 volume/week
-- Second half: 6.0 sessions/week, 24,246 volume/week
+- First half: 2.11 sessions/week, 8,539 volume/week
+- Second half: 1.58 sessions/week, 6,405 volume/week
 - Change: -25.0%
 
 
