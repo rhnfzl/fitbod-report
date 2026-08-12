@@ -6,12 +6,28 @@
 
 #### 2025-01-06
 
+**Deadlift** (5 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 5 | 60.0 kg | Warmup |
+| 2 | 5 | 80.0 kg | Warmup |
+| 3 | 4 | 120.0 kg | Working |
+| 4 | 4 | 120.0 kg | Working |
+| 5 | 4 | 120.0 kg | Working |
+
 **Barbell Bench Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 6 | 80.0 kg | Working |
+| 1 | 8 | 40.0 kg | Warmup |
 | 2 | 6 | 80.0 kg | Working |
-| 3 | 8 | 40.0 kg | Warmup |
+| 3 | 6 | 80.0 kg | Working |
+
+**Pull Up** (3 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 8 | 0.0 kg | Working |
+| 2 | 7 | 0.0 kg | Working |
+| 3 | 6 | 0.0 kg | Working |
 
 **Cable Row** (2 sets)
 | Set | Reps | Weight | Type |
@@ -19,38 +35,22 @@
 | 1 | 10 | 55.0 kg | Working |
 | 2 | 10 | 55.0 kg | Working |
 
-**Deadlift** (5 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 4 | 120.0 kg | Working |
-| 2 | 4 | 120.0 kg | Working |
-| 3 | 4 | 120.0 kg | Working |
-| 4 | 5 | 80.0 kg | Warmup |
-| 5 | 5 | 60.0 kg | Warmup |
-
-**Pull Up** (3 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 6 | 0.0 kg | Working |
-| 2 | 7 | 0.0 kg | Working |
-| 3 | 8 | 0.0 kg | Working |
-
 #### 2025-01-09
 
 **Back Squat** (4 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 5 | 100.0 kg | Working |
+| 1 | 5 | 50.0 kg | Warmup |
 | 2 | 5 | 100.0 kg | Working |
 | 3 | 5 | 100.0 kg | Working |
-| 4 | 5 | 50.0 kg | Warmup |
+| 4 | 5 | 100.0 kg | Working |
 
 **Barbell Shoulder Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 8 | 40.0 kg | Working |
+| 1 | 10 | 20.0 kg | Warmup |
 | 2 | 8 | 40.0 kg | Working |
-| 3 | 10 | 20.0 kg | Warmup |
+| 3 | 8 | 40.0 kg | Working |
 
 **Dumbbell Bicep Curl** (2 sets)
 | Set | Reps | Weight | Type |
@@ -71,62 +71,6 @@
 
 ### Exercise Details
 
-#### Back Squat
-- Working Sets: 3
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 100.0 kg
-- Total Volume: 1750.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 100.0 kg | 5 | Working |
-| 2 | 100.0 kg | 5 | Working |
-| 3 | 100.0 kg | 5 | Working |
-| 4 | 50.0 kg | 5 | Warmup |
-
-#### Barbell Bench Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 80.0 kg
-- Total Volume: 1280.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 80.0 kg | 6 | Working |
-| 2 | 80.0 kg | 6 | Working |
-| 3 | 40.0 kg | 8 | Warmup |
-
-#### Barbell Shoulder Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 26
-- Max Weight: 40.0 kg
-- Total Volume: 840.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 40.0 kg | 8 | Working |
-| 2 | 40.0 kg | 8 | Working |
-| 3 | 20.0 kg | 10 | Warmup |
-
-#### Cable Row
-- Working Sets: 2
-- Warmup Sets: 0
-- Total Reps: 20
-- Max Weight: 55.0 kg
-- Total Volume: 1100.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 55.0 kg | 10 | Working |
-| 2 | 55.0 kg | 10 | Working |
-
 #### Deadlift
 - Working Sets: 3
 - Warmup Sets: 2
@@ -142,6 +86,76 @@ Set Progression:
 | 3 | 120.0 kg | 4 | Working |
 | 4 | 80.0 kg | 5 | Warmup |
 | 5 | 60.0 kg | 5 | Warmup |
+
+#### Barbell Bench Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 80.0 kg
+- Total Volume: 1280.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 80.0 kg | 6 | Working |
+| 2 | 80.0 kg | 6 | Working |
+| 3 | 40.0 kg | 8 | Warmup |
+
+#### Pull Up
+- Working Sets: 3
+- Warmup Sets: 0
+- Total Reps: 21
+- Max Weight: 0.0 kg
+- Total Volume: 0.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 0.0 kg | 8 | Working |
+| 2 | 0.0 kg | 7 | Working |
+| 3 | 0.0 kg | 6 | Working |
+
+#### Cable Row
+- Working Sets: 2
+- Warmup Sets: 0
+- Total Reps: 20
+- Max Weight: 55.0 kg
+- Total Volume: 1100.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 55.0 kg | 10 | Working |
+| 2 | 55.0 kg | 10 | Working |
+
+#### Back Squat
+- Working Sets: 3
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 100.0 kg
+- Total Volume: 1750.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 100.0 kg | 5 | Working |
+| 2 | 100.0 kg | 5 | Working |
+| 3 | 100.0 kg | 5 | Working |
+| 4 | 50.0 kg | 5 | Warmup |
+
+#### Barbell Shoulder Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 26
+- Max Weight: 40.0 kg
+- Total Volume: 840.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 40.0 kg | 8 | Working |
+| 2 | 40.0 kg | 8 | Working |
+| 3 | 20.0 kg | 10 | Warmup |
 
 #### Dumbbell Bicep Curl
 - Working Sets: 2
@@ -168,20 +182,6 @@ Set Progression:
 |-----|---------|------|------|
 | 1 | 10.0 kg | 15 | Working |
 | 2 | 10.0 kg | 15 | Working |
-
-#### Pull Up
-- Working Sets: 3
-- Warmup Sets: 0
-- Total Reps: 21
-- Max Weight: 0.0 kg
-- Total Volume: 0.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 0.0 kg | 6 | Working |
-| 2 | 0.0 kg | 7 | Working |
-| 3 | 0.0 kg | 8 | Working |
 
 #### Treadmill
 - Working Sets: 1
@@ -212,12 +212,28 @@ Set Progression:
 
 #### 2025-01-13
 
+**Deadlift** (5 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 5 | 60.0 kg | Warmup |
+| 2 | 5 | 80.0 kg | Warmup |
+| 3 | 4 | 120.0 kg | Working |
+| 4 | 4 | 120.0 kg | Working |
+| 5 | 4 | 120.0 kg | Working |
+
 **Barbell Bench Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 6 | 80.0 kg | Working |
+| 1 | 8 | 40.0 kg | Warmup |
 | 2 | 6 | 80.0 kg | Working |
-| 3 | 8 | 40.0 kg | Warmup |
+| 3 | 6 | 80.0 kg | Working |
+
+**Pull Up** (3 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 8 | 0.0 kg | Working |
+| 2 | 7 | 0.0 kg | Working |
+| 3 | 6 | 0.0 kg | Working |
 
 **Cable Row** (2 sets)
 | Set | Reps | Weight | Type |
@@ -225,38 +241,22 @@ Set Progression:
 | 1 | 10 | 55.0 kg | Working |
 | 2 | 10 | 55.0 kg | Working |
 
-**Deadlift** (5 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 4 | 120.0 kg | Working |
-| 2 | 4 | 120.0 kg | Working |
-| 3 | 4 | 120.0 kg | Working |
-| 4 | 5 | 80.0 kg | Warmup |
-| 5 | 5 | 60.0 kg | Warmup |
-
-**Pull Up** (3 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 6 | 0.0 kg | Working |
-| 2 | 7 | 0.0 kg | Working |
-| 3 | 8 | 0.0 kg | Working |
-
 #### 2025-01-16
 
 **Back Squat** (4 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 5 | 100.0 kg | Working |
+| 1 | 5 | 50.0 kg | Warmup |
 | 2 | 5 | 100.0 kg | Working |
 | 3 | 5 | 100.0 kg | Working |
-| 4 | 5 | 50.0 kg | Warmup |
+| 4 | 5 | 100.0 kg | Working |
 
 **Barbell Shoulder Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 8 | 40.0 kg | Working |
+| 1 | 10 | 20.0 kg | Warmup |
 | 2 | 8 | 40.0 kg | Working |
-| 3 | 10 | 20.0 kg | Warmup |
+| 3 | 8 | 40.0 kg | Working |
 
 **Dumbbell Bicep Curl** (2 sets)
 | Set | Reps | Weight | Type |
@@ -277,62 +277,6 @@ Set Progression:
 
 ### Exercise Details
 
-#### Back Squat
-- Working Sets: 3
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 100.0 kg
-- Total Volume: 1750.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 100.0 kg | 5 | Working |
-| 2 | 100.0 kg | 5 | Working |
-| 3 | 100.0 kg | 5 | Working |
-| 4 | 50.0 kg | 5 | Warmup |
-
-#### Barbell Bench Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 80.0 kg
-- Total Volume: 1280.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 80.0 kg | 6 | Working |
-| 2 | 80.0 kg | 6 | Working |
-| 3 | 40.0 kg | 8 | Warmup |
-
-#### Barbell Shoulder Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 26
-- Max Weight: 40.0 kg
-- Total Volume: 840.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 40.0 kg | 8 | Working |
-| 2 | 40.0 kg | 8 | Working |
-| 3 | 20.0 kg | 10 | Warmup |
-
-#### Cable Row
-- Working Sets: 2
-- Warmup Sets: 0
-- Total Reps: 20
-- Max Weight: 55.0 kg
-- Total Volume: 1100.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 55.0 kg | 10 | Working |
-| 2 | 55.0 kg | 10 | Working |
-
 #### Deadlift
 - Working Sets: 3
 - Warmup Sets: 2
@@ -348,6 +292,76 @@ Set Progression:
 | 3 | 120.0 kg | 4 | Working |
 | 4 | 80.0 kg | 5 | Warmup |
 | 5 | 60.0 kg | 5 | Warmup |
+
+#### Barbell Bench Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 80.0 kg
+- Total Volume: 1280.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 80.0 kg | 6 | Working |
+| 2 | 80.0 kg | 6 | Working |
+| 3 | 40.0 kg | 8 | Warmup |
+
+#### Pull Up
+- Working Sets: 3
+- Warmup Sets: 0
+- Total Reps: 21
+- Max Weight: 0.0 kg
+- Total Volume: 0.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 0.0 kg | 8 | Working |
+| 2 | 0.0 kg | 7 | Working |
+| 3 | 0.0 kg | 6 | Working |
+
+#### Cable Row
+- Working Sets: 2
+- Warmup Sets: 0
+- Total Reps: 20
+- Max Weight: 55.0 kg
+- Total Volume: 1100.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 55.0 kg | 10 | Working |
+| 2 | 55.0 kg | 10 | Working |
+
+#### Back Squat
+- Working Sets: 3
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 100.0 kg
+- Total Volume: 1750.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 100.0 kg | 5 | Working |
+| 2 | 100.0 kg | 5 | Working |
+| 3 | 100.0 kg | 5 | Working |
+| 4 | 50.0 kg | 5 | Warmup |
+
+#### Barbell Shoulder Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 26
+- Max Weight: 40.0 kg
+- Total Volume: 840.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 40.0 kg | 8 | Working |
+| 2 | 40.0 kg | 8 | Working |
+| 3 | 20.0 kg | 10 | Warmup |
 
 #### Dumbbell Bicep Curl
 - Working Sets: 2
@@ -374,20 +388,6 @@ Set Progression:
 |-----|---------|------|------|
 | 1 | 10.0 kg | 15 | Working |
 | 2 | 10.0 kg | 15 | Working |
-
-#### Pull Up
-- Working Sets: 3
-- Warmup Sets: 0
-- Total Reps: 21
-- Max Weight: 0.0 kg
-- Total Volume: 0.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 0.0 kg | 6 | Working |
-| 2 | 0.0 kg | 7 | Working |
-| 3 | 0.0 kg | 8 | Working |
 
 #### Treadmill
 - Working Sets: 1
@@ -420,12 +420,28 @@ Set Progression:
 
 #### 2025-01-20
 
+**Deadlift** (5 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 5 | 60.0 kg | Warmup |
+| 2 | 5 | 80.0 kg | Warmup |
+| 3 | 4 | 120.0 kg | Working |
+| 4 | 4 | 120.0 kg | Working |
+| 5 | 4 | 120.0 kg | Working |
+
 **Barbell Bench Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 6 | 80.0 kg | Working |
+| 1 | 8 | 40.0 kg | Warmup |
 | 2 | 6 | 80.0 kg | Working |
-| 3 | 8 | 40.0 kg | Warmup |
+| 3 | 6 | 80.0 kg | Working |
+
+**Pull Up** (3 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 8 | 0.0 kg | Working |
+| 2 | 7 | 0.0 kg | Working |
+| 3 | 6 | 0.0 kg | Working |
 
 **Cable Row** (2 sets)
 | Set | Reps | Weight | Type |
@@ -433,38 +449,22 @@ Set Progression:
 | 1 | 10 | 55.0 kg | Working |
 | 2 | 10 | 55.0 kg | Working |
 
-**Deadlift** (5 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 4 | 120.0 kg | Working |
-| 2 | 4 | 120.0 kg | Working |
-| 3 | 4 | 120.0 kg | Working |
-| 4 | 5 | 80.0 kg | Warmup |
-| 5 | 5 | 60.0 kg | Warmup |
-
-**Pull Up** (3 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 6 | 0.0 kg | Working |
-| 2 | 7 | 0.0 kg | Working |
-| 3 | 8 | 0.0 kg | Working |
-
 #### 2025-01-23
 
 **Back Squat** (4 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 5 | 100.0 kg | Working |
+| 1 | 5 | 50.0 kg | Warmup |
 | 2 | 5 | 100.0 kg | Working |
 | 3 | 5 | 100.0 kg | Working |
-| 4 | 5 | 50.0 kg | Warmup |
+| 4 | 5 | 100.0 kg | Working |
 
 **Barbell Shoulder Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 8 | 40.0 kg | Working |
+| 1 | 10 | 20.0 kg | Warmup |
 | 2 | 8 | 40.0 kg | Working |
-| 3 | 10 | 20.0 kg | Warmup |
+| 3 | 8 | 40.0 kg | Working |
 
 **Dumbbell Bicep Curl** (2 sets)
 | Set | Reps | Weight | Type |
@@ -485,62 +485,6 @@ Set Progression:
 
 ### Exercise Details
 
-#### Back Squat
-- Working Sets: 3
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 100.0 kg
-- Total Volume: 1750.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 100.0 kg | 5 | Working |
-| 2 | 100.0 kg | 5 | Working |
-| 3 | 100.0 kg | 5 | Working |
-| 4 | 50.0 kg | 5 | Warmup |
-
-#### Barbell Bench Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 80.0 kg
-- Total Volume: 1280.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 80.0 kg | 6 | Working |
-| 2 | 80.0 kg | 6 | Working |
-| 3 | 40.0 kg | 8 | Warmup |
-
-#### Barbell Shoulder Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 26
-- Max Weight: 40.0 kg
-- Total Volume: 840.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 40.0 kg | 8 | Working |
-| 2 | 40.0 kg | 8 | Working |
-| 3 | 20.0 kg | 10 | Warmup |
-
-#### Cable Row
-- Working Sets: 2
-- Warmup Sets: 0
-- Total Reps: 20
-- Max Weight: 55.0 kg
-- Total Volume: 1100.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 55.0 kg | 10 | Working |
-| 2 | 55.0 kg | 10 | Working |
-
 #### Deadlift
 - Working Sets: 3
 - Warmup Sets: 2
@@ -556,6 +500,76 @@ Set Progression:
 | 3 | 120.0 kg | 4 | Working |
 | 4 | 80.0 kg | 5 | Warmup |
 | 5 | 60.0 kg | 5 | Warmup |
+
+#### Barbell Bench Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 80.0 kg
+- Total Volume: 1280.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 80.0 kg | 6 | Working |
+| 2 | 80.0 kg | 6 | Working |
+| 3 | 40.0 kg | 8 | Warmup |
+
+#### Pull Up
+- Working Sets: 3
+- Warmup Sets: 0
+- Total Reps: 21
+- Max Weight: 0.0 kg
+- Total Volume: 0.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 0.0 kg | 8 | Working |
+| 2 | 0.0 kg | 7 | Working |
+| 3 | 0.0 kg | 6 | Working |
+
+#### Cable Row
+- Working Sets: 2
+- Warmup Sets: 0
+- Total Reps: 20
+- Max Weight: 55.0 kg
+- Total Volume: 1100.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 55.0 kg | 10 | Working |
+| 2 | 55.0 kg | 10 | Working |
+
+#### Back Squat
+- Working Sets: 3
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 100.0 kg
+- Total Volume: 1750.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 100.0 kg | 5 | Working |
+| 2 | 100.0 kg | 5 | Working |
+| 3 | 100.0 kg | 5 | Working |
+| 4 | 50.0 kg | 5 | Warmup |
+
+#### Barbell Shoulder Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 26
+- Max Weight: 40.0 kg
+- Total Volume: 840.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 40.0 kg | 8 | Working |
+| 2 | 40.0 kg | 8 | Working |
+| 3 | 20.0 kg | 10 | Warmup |
 
 #### Dumbbell Bicep Curl
 - Working Sets: 2
@@ -582,20 +596,6 @@ Set Progression:
 |-----|---------|------|------|
 | 1 | 10.0 kg | 15 | Working |
 | 2 | 10.0 kg | 15 | Working |
-
-#### Pull Up
-- Working Sets: 3
-- Warmup Sets: 0
-- Total Reps: 21
-- Max Weight: 0.0 kg
-- Total Volume: 0.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 0.0 kg | 6 | Working |
-| 2 | 0.0 kg | 7 | Working |
-| 3 | 0.0 kg | 8 | Working |
 
 #### Treadmill
 - Working Sets: 1
@@ -628,12 +628,28 @@ Set Progression:
 
 #### 2025-01-27
 
+**Deadlift** (5 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 5 | 60.0 kg | Warmup |
+| 2 | 5 | 80.0 kg | Warmup |
+| 3 | 4 | 120.0 kg | Working |
+| 4 | 4 | 120.0 kg | Working |
+| 5 | 4 | 120.0 kg | Working |
+
 **Barbell Bench Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 6 | 80.0 kg | Working |
+| 1 | 8 | 40.0 kg | Warmup |
 | 2 | 6 | 80.0 kg | Working |
-| 3 | 8 | 40.0 kg | Warmup |
+| 3 | 6 | 80.0 kg | Working |
+
+**Pull Up** (3 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 8 | 0.0 kg | Working |
+| 2 | 7 | 0.0 kg | Working |
+| 3 | 6 | 0.0 kg | Working |
 
 **Cable Row** (2 sets)
 | Set | Reps | Weight | Type |
@@ -641,38 +657,22 @@ Set Progression:
 | 1 | 10 | 55.0 kg | Working |
 | 2 | 10 | 55.0 kg | Working |
 
-**Deadlift** (5 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 4 | 120.0 kg | Working |
-| 2 | 4 | 120.0 kg | Working |
-| 3 | 4 | 120.0 kg | Working |
-| 4 | 5 | 80.0 kg | Warmup |
-| 5 | 5 | 60.0 kg | Warmup |
-
-**Pull Up** (3 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 6 | 0.0 kg | Working |
-| 2 | 7 | 0.0 kg | Working |
-| 3 | 8 | 0.0 kg | Working |
-
 #### 2025-01-30
 
 **Back Squat** (4 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 5 | 100.0 kg | Working |
+| 1 | 5 | 50.0 kg | Warmup |
 | 2 | 5 | 100.0 kg | Working |
 | 3 | 5 | 100.0 kg | Working |
-| 4 | 5 | 50.0 kg | Warmup |
+| 4 | 5 | 100.0 kg | Working |
 
 **Barbell Shoulder Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 8 | 40.0 kg | Working |
+| 1 | 10 | 20.0 kg | Warmup |
 | 2 | 8 | 40.0 kg | Working |
-| 3 | 10 | 20.0 kg | Warmup |
+| 3 | 8 | 40.0 kg | Working |
 
 **Dumbbell Bicep Curl** (2 sets)
 | Set | Reps | Weight | Type |
@@ -693,62 +693,6 @@ Set Progression:
 
 ### Exercise Details
 
-#### Back Squat
-- Working Sets: 3
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 100.0 kg
-- Total Volume: 1750.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 100.0 kg | 5 | Working |
-| 2 | 100.0 kg | 5 | Working |
-| 3 | 100.0 kg | 5 | Working |
-| 4 | 50.0 kg | 5 | Warmup |
-
-#### Barbell Bench Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 80.0 kg
-- Total Volume: 1280.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 80.0 kg | 6 | Working |
-| 2 | 80.0 kg | 6 | Working |
-| 3 | 40.0 kg | 8 | Warmup |
-
-#### Barbell Shoulder Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 26
-- Max Weight: 40.0 kg
-- Total Volume: 840.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 40.0 kg | 8 | Working |
-| 2 | 40.0 kg | 8 | Working |
-| 3 | 20.0 kg | 10 | Warmup |
-
-#### Cable Row
-- Working Sets: 2
-- Warmup Sets: 0
-- Total Reps: 20
-- Max Weight: 55.0 kg
-- Total Volume: 1100.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 55.0 kg | 10 | Working |
-| 2 | 55.0 kg | 10 | Working |
-
 #### Deadlift
 - Working Sets: 3
 - Warmup Sets: 2
@@ -764,6 +708,76 @@ Set Progression:
 | 3 | 120.0 kg | 4 | Working |
 | 4 | 80.0 kg | 5 | Warmup |
 | 5 | 60.0 kg | 5 | Warmup |
+
+#### Barbell Bench Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 80.0 kg
+- Total Volume: 1280.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 80.0 kg | 6 | Working |
+| 2 | 80.0 kg | 6 | Working |
+| 3 | 40.0 kg | 8 | Warmup |
+
+#### Pull Up
+- Working Sets: 3
+- Warmup Sets: 0
+- Total Reps: 21
+- Max Weight: 0.0 kg
+- Total Volume: 0.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 0.0 kg | 8 | Working |
+| 2 | 0.0 kg | 7 | Working |
+| 3 | 0.0 kg | 6 | Working |
+
+#### Cable Row
+- Working Sets: 2
+- Warmup Sets: 0
+- Total Reps: 20
+- Max Weight: 55.0 kg
+- Total Volume: 1100.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 55.0 kg | 10 | Working |
+| 2 | 55.0 kg | 10 | Working |
+
+#### Back Squat
+- Working Sets: 3
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 100.0 kg
+- Total Volume: 1750.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 100.0 kg | 5 | Working |
+| 2 | 100.0 kg | 5 | Working |
+| 3 | 100.0 kg | 5 | Working |
+| 4 | 50.0 kg | 5 | Warmup |
+
+#### Barbell Shoulder Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 26
+- Max Weight: 40.0 kg
+- Total Volume: 840.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 40.0 kg | 8 | Working |
+| 2 | 40.0 kg | 8 | Working |
+| 3 | 20.0 kg | 10 | Warmup |
 
 #### Dumbbell Bicep Curl
 - Working Sets: 2
@@ -790,20 +804,6 @@ Set Progression:
 |-----|---------|------|------|
 | 1 | 10.0 kg | 15 | Working |
 | 2 | 10.0 kg | 15 | Working |
-
-#### Pull Up
-- Working Sets: 3
-- Warmup Sets: 0
-- Total Reps: 21
-- Max Weight: 0.0 kg
-- Total Volume: 0.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 0.0 kg | 6 | Working |
-| 2 | 0.0 kg | 7 | Working |
-| 3 | 0.0 kg | 8 | Working |
 
 #### Treadmill
 - Working Sets: 1
@@ -836,12 +836,28 @@ Set Progression:
 
 #### 2025-02-03
 
+**Deadlift** (5 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 5 | 60.0 kg | Warmup |
+| 2 | 5 | 80.0 kg | Warmup |
+| 3 | 4 | 120.0 kg | Working |
+| 4 | 4 | 120.0 kg | Working |
+| 5 | 4 | 120.0 kg | Working |
+
 **Barbell Bench Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 6 | 80.0 kg | Working |
+| 1 | 8 | 40.0 kg | Warmup |
 | 2 | 6 | 80.0 kg | Working |
-| 3 | 8 | 40.0 kg | Warmup |
+| 3 | 6 | 80.0 kg | Working |
+
+**Pull Up** (3 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 8 | 0.0 kg | Working |
+| 2 | 7 | 0.0 kg | Working |
+| 3 | 6 | 0.0 kg | Working |
 
 **Cable Row** (2 sets)
 | Set | Reps | Weight | Type |
@@ -849,38 +865,22 @@ Set Progression:
 | 1 | 10 | 55.0 kg | Working |
 | 2 | 10 | 55.0 kg | Working |
 
-**Deadlift** (5 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 4 | 120.0 kg | Working |
-| 2 | 4 | 120.0 kg | Working |
-| 3 | 4 | 120.0 kg | Working |
-| 4 | 5 | 80.0 kg | Warmup |
-| 5 | 5 | 60.0 kg | Warmup |
-
-**Pull Up** (3 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 6 | 0.0 kg | Working |
-| 2 | 7 | 0.0 kg | Working |
-| 3 | 8 | 0.0 kg | Working |
-
 #### 2025-02-06
 
 **Back Squat** (4 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 5 | 100.0 kg | Working |
+| 1 | 5 | 50.0 kg | Warmup |
 | 2 | 5 | 100.0 kg | Working |
 | 3 | 5 | 100.0 kg | Working |
-| 4 | 5 | 50.0 kg | Warmup |
+| 4 | 5 | 100.0 kg | Working |
 
 **Barbell Shoulder Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 8 | 40.0 kg | Working |
+| 1 | 10 | 20.0 kg | Warmup |
 | 2 | 8 | 40.0 kg | Working |
-| 3 | 10 | 20.0 kg | Warmup |
+| 3 | 8 | 40.0 kg | Working |
 
 **Dumbbell Bicep Curl** (2 sets)
 | Set | Reps | Weight | Type |
@@ -901,62 +901,6 @@ Set Progression:
 
 ### Exercise Details
 
-#### Back Squat
-- Working Sets: 3
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 100.0 kg
-- Total Volume: 1750.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 100.0 kg | 5 | Working |
-| 2 | 100.0 kg | 5 | Working |
-| 3 | 100.0 kg | 5 | Working |
-| 4 | 50.0 kg | 5 | Warmup |
-
-#### Barbell Bench Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 80.0 kg
-- Total Volume: 1280.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 80.0 kg | 6 | Working |
-| 2 | 80.0 kg | 6 | Working |
-| 3 | 40.0 kg | 8 | Warmup |
-
-#### Barbell Shoulder Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 26
-- Max Weight: 40.0 kg
-- Total Volume: 840.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 40.0 kg | 8 | Working |
-| 2 | 40.0 kg | 8 | Working |
-| 3 | 20.0 kg | 10 | Warmup |
-
-#### Cable Row
-- Working Sets: 2
-- Warmup Sets: 0
-- Total Reps: 20
-- Max Weight: 55.0 kg
-- Total Volume: 1100.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 55.0 kg | 10 | Working |
-| 2 | 55.0 kg | 10 | Working |
-
 #### Deadlift
 - Working Sets: 3
 - Warmup Sets: 2
@@ -972,6 +916,76 @@ Set Progression:
 | 3 | 120.0 kg | 4 | Working |
 | 4 | 80.0 kg | 5 | Warmup |
 | 5 | 60.0 kg | 5 | Warmup |
+
+#### Barbell Bench Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 80.0 kg
+- Total Volume: 1280.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 80.0 kg | 6 | Working |
+| 2 | 80.0 kg | 6 | Working |
+| 3 | 40.0 kg | 8 | Warmup |
+
+#### Pull Up
+- Working Sets: 3
+- Warmup Sets: 0
+- Total Reps: 21
+- Max Weight: 0.0 kg
+- Total Volume: 0.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 0.0 kg | 8 | Working |
+| 2 | 0.0 kg | 7 | Working |
+| 3 | 0.0 kg | 6 | Working |
+
+#### Cable Row
+- Working Sets: 2
+- Warmup Sets: 0
+- Total Reps: 20
+- Max Weight: 55.0 kg
+- Total Volume: 1100.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 55.0 kg | 10 | Working |
+| 2 | 55.0 kg | 10 | Working |
+
+#### Back Squat
+- Working Sets: 3
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 100.0 kg
+- Total Volume: 1750.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 100.0 kg | 5 | Working |
+| 2 | 100.0 kg | 5 | Working |
+| 3 | 100.0 kg | 5 | Working |
+| 4 | 50.0 kg | 5 | Warmup |
+
+#### Barbell Shoulder Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 26
+- Max Weight: 40.0 kg
+- Total Volume: 840.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 40.0 kg | 8 | Working |
+| 2 | 40.0 kg | 8 | Working |
+| 3 | 20.0 kg | 10 | Warmup |
 
 #### Dumbbell Bicep Curl
 - Working Sets: 2
@@ -998,20 +1012,6 @@ Set Progression:
 |-----|---------|------|------|
 | 1 | 10.0 kg | 15 | Working |
 | 2 | 10.0 kg | 15 | Working |
-
-#### Pull Up
-- Working Sets: 3
-- Warmup Sets: 0
-- Total Reps: 21
-- Max Weight: 0.0 kg
-- Total Volume: 0.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 0.0 kg | 6 | Working |
-| 2 | 0.0 kg | 7 | Working |
-| 3 | 0.0 kg | 8 | Working |
 
 #### Treadmill
 - Working Sets: 1
@@ -1044,12 +1044,28 @@ Set Progression:
 
 #### 2025-02-17
 
+**Deadlift** (5 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 5 | 60.0 kg | Warmup |
+| 2 | 5 | 80.0 kg | Warmup |
+| 3 | 4 | 120.0 kg | Working |
+| 4 | 4 | 120.0 kg | Working |
+| 5 | 4 | 120.0 kg | Working |
+
 **Barbell Bench Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 6 | 80.0 kg | Working |
+| 1 | 8 | 40.0 kg | Warmup |
 | 2 | 6 | 80.0 kg | Working |
-| 3 | 8 | 40.0 kg | Warmup |
+| 3 | 6 | 80.0 kg | Working |
+
+**Pull Up** (3 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 8 | 0.0 kg | Working |
+| 2 | 7 | 0.0 kg | Working |
+| 3 | 6 | 0.0 kg | Working |
 
 **Cable Row** (2 sets)
 | Set | Reps | Weight | Type |
@@ -1057,38 +1073,22 @@ Set Progression:
 | 1 | 10 | 55.0 kg | Working |
 | 2 | 10 | 55.0 kg | Working |
 
-**Deadlift** (5 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 4 | 120.0 kg | Working |
-| 2 | 4 | 120.0 kg | Working |
-| 3 | 4 | 120.0 kg | Working |
-| 4 | 5 | 80.0 kg | Warmup |
-| 5 | 5 | 60.0 kg | Warmup |
-
-**Pull Up** (3 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 6 | 0.0 kg | Working |
-| 2 | 7 | 0.0 kg | Working |
-| 3 | 8 | 0.0 kg | Working |
-
 #### 2025-02-20
 
 **Back Squat** (4 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 5 | 100.0 kg | Working |
+| 1 | 5 | 50.0 kg | Warmup |
 | 2 | 5 | 100.0 kg | Working |
 | 3 | 5 | 100.0 kg | Working |
-| 4 | 5 | 50.0 kg | Warmup |
+| 4 | 5 | 100.0 kg | Working |
 
 **Barbell Shoulder Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 8 | 40.0 kg | Working |
+| 1 | 10 | 20.0 kg | Warmup |
 | 2 | 8 | 40.0 kg | Working |
-| 3 | 10 | 20.0 kg | Warmup |
+| 3 | 8 | 40.0 kg | Working |
 
 **Dumbbell Bicep Curl** (2 sets)
 | Set | Reps | Weight | Type |
@@ -1109,62 +1109,6 @@ Set Progression:
 
 ### Exercise Details
 
-#### Back Squat
-- Working Sets: 3
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 100.0 kg
-- Total Volume: 1750.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 100.0 kg | 5 | Working |
-| 2 | 100.0 kg | 5 | Working |
-| 3 | 100.0 kg | 5 | Working |
-| 4 | 50.0 kg | 5 | Warmup |
-
-#### Barbell Bench Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 80.0 kg
-- Total Volume: 1280.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 80.0 kg | 6 | Working |
-| 2 | 80.0 kg | 6 | Working |
-| 3 | 40.0 kg | 8 | Warmup |
-
-#### Barbell Shoulder Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 26
-- Max Weight: 40.0 kg
-- Total Volume: 840.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 40.0 kg | 8 | Working |
-| 2 | 40.0 kg | 8 | Working |
-| 3 | 20.0 kg | 10 | Warmup |
-
-#### Cable Row
-- Working Sets: 2
-- Warmup Sets: 0
-- Total Reps: 20
-- Max Weight: 55.0 kg
-- Total Volume: 1100.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 55.0 kg | 10 | Working |
-| 2 | 55.0 kg | 10 | Working |
-
 #### Deadlift
 - Working Sets: 3
 - Warmup Sets: 2
@@ -1180,6 +1124,76 @@ Set Progression:
 | 3 | 120.0 kg | 4 | Working |
 | 4 | 80.0 kg | 5 | Warmup |
 | 5 | 60.0 kg | 5 | Warmup |
+
+#### Barbell Bench Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 80.0 kg
+- Total Volume: 1280.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 80.0 kg | 6 | Working |
+| 2 | 80.0 kg | 6 | Working |
+| 3 | 40.0 kg | 8 | Warmup |
+
+#### Pull Up
+- Working Sets: 3
+- Warmup Sets: 0
+- Total Reps: 21
+- Max Weight: 0.0 kg
+- Total Volume: 0.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 0.0 kg | 8 | Working |
+| 2 | 0.0 kg | 7 | Working |
+| 3 | 0.0 kg | 6 | Working |
+
+#### Cable Row
+- Working Sets: 2
+- Warmup Sets: 0
+- Total Reps: 20
+- Max Weight: 55.0 kg
+- Total Volume: 1100.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 55.0 kg | 10 | Working |
+| 2 | 55.0 kg | 10 | Working |
+
+#### Back Squat
+- Working Sets: 3
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 100.0 kg
+- Total Volume: 1750.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 100.0 kg | 5 | Working |
+| 2 | 100.0 kg | 5 | Working |
+| 3 | 100.0 kg | 5 | Working |
+| 4 | 50.0 kg | 5 | Warmup |
+
+#### Barbell Shoulder Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 26
+- Max Weight: 40.0 kg
+- Total Volume: 840.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 40.0 kg | 8 | Working |
+| 2 | 40.0 kg | 8 | Working |
+| 3 | 20.0 kg | 10 | Warmup |
 
 #### Dumbbell Bicep Curl
 - Working Sets: 2
@@ -1206,20 +1220,6 @@ Set Progression:
 |-----|---------|------|------|
 | 1 | 10.0 kg | 15 | Working |
 | 2 | 10.0 kg | 15 | Working |
-
-#### Pull Up
-- Working Sets: 3
-- Warmup Sets: 0
-- Total Reps: 21
-- Max Weight: 0.0 kg
-- Total Volume: 0.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 0.0 kg | 6 | Working |
-| 2 | 0.0 kg | 7 | Working |
-| 3 | 0.0 kg | 8 | Working |
 
 #### Treadmill
 - Working Sets: 1
@@ -1252,12 +1252,28 @@ Set Progression:
 
 #### 2025-02-24
 
+**Deadlift** (5 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 5 | 60.0 kg | Warmup |
+| 2 | 5 | 80.0 kg | Warmup |
+| 3 | 4 | 120.0 kg | Working |
+| 4 | 4 | 120.0 kg | Working |
+| 5 | 4 | 120.0 kg | Working |
+
 **Barbell Bench Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 6 | 80.0 kg | Working |
+| 1 | 8 | 40.0 kg | Warmup |
 | 2 | 6 | 80.0 kg | Working |
-| 3 | 8 | 40.0 kg | Warmup |
+| 3 | 6 | 80.0 kg | Working |
+
+**Pull Up** (3 sets)
+| Set | Reps | Weight | Type |
+|-----|------|---------|------|
+| 1 | 8 | 0.0 kg | Working |
+| 2 | 7 | 0.0 kg | Working |
+| 3 | 6 | 0.0 kg | Working |
 
 **Cable Row** (2 sets)
 | Set | Reps | Weight | Type |
@@ -1265,38 +1281,22 @@ Set Progression:
 | 1 | 10 | 55.0 kg | Working |
 | 2 | 10 | 55.0 kg | Working |
 
-**Deadlift** (5 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 4 | 120.0 kg | Working |
-| 2 | 4 | 120.0 kg | Working |
-| 3 | 4 | 120.0 kg | Working |
-| 4 | 5 | 80.0 kg | Warmup |
-| 5 | 5 | 60.0 kg | Warmup |
-
-**Pull Up** (3 sets)
-| Set | Reps | Weight | Type |
-|-----|------|---------|------|
-| 1 | 6 | 0.0 kg | Working |
-| 2 | 7 | 0.0 kg | Working |
-| 3 | 8 | 0.0 kg | Working |
-
 #### 2025-02-27
 
 **Back Squat** (4 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 5 | 100.0 kg | Working |
+| 1 | 5 | 50.0 kg | Warmup |
 | 2 | 5 | 100.0 kg | Working |
 | 3 | 5 | 100.0 kg | Working |
-| 4 | 5 | 50.0 kg | Warmup |
+| 4 | 5 | 100.0 kg | Working |
 
 **Barbell Shoulder Press** (3 sets)
 | Set | Reps | Weight | Type |
 |-----|------|---------|------|
-| 1 | 8 | 40.0 kg | Working |
+| 1 | 10 | 20.0 kg | Warmup |
 | 2 | 8 | 40.0 kg | Working |
-| 3 | 10 | 20.0 kg | Warmup |
+| 3 | 8 | 40.0 kg | Working |
 
 **Dumbbell Bicep Curl** (2 sets)
 | Set | Reps | Weight | Type |
@@ -1317,62 +1317,6 @@ Set Progression:
 
 ### Exercise Details
 
-#### Back Squat
-- Working Sets: 3
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 100.0 kg
-- Total Volume: 1750.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 100.0 kg | 5 | Working |
-| 2 | 100.0 kg | 5 | Working |
-| 3 | 100.0 kg | 5 | Working |
-| 4 | 50.0 kg | 5 | Warmup |
-
-#### Barbell Bench Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 20
-- Max Weight: 80.0 kg
-- Total Volume: 1280.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 80.0 kg | 6 | Working |
-| 2 | 80.0 kg | 6 | Working |
-| 3 | 40.0 kg | 8 | Warmup |
-
-#### Barbell Shoulder Press
-- Working Sets: 2
-- Warmup Sets: 1
-- Total Reps: 26
-- Max Weight: 40.0 kg
-- Total Volume: 840.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 40.0 kg | 8 | Working |
-| 2 | 40.0 kg | 8 | Working |
-| 3 | 20.0 kg | 10 | Warmup |
-
-#### Cable Row
-- Working Sets: 2
-- Warmup Sets: 0
-- Total Reps: 20
-- Max Weight: 55.0 kg
-- Total Volume: 1100.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 55.0 kg | 10 | Working |
-| 2 | 55.0 kg | 10 | Working |
-
 #### Deadlift
 - Working Sets: 3
 - Warmup Sets: 2
@@ -1388,6 +1332,76 @@ Set Progression:
 | 3 | 120.0 kg | 4 | Working |
 | 4 | 80.0 kg | 5 | Warmup |
 | 5 | 60.0 kg | 5 | Warmup |
+
+#### Barbell Bench Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 80.0 kg
+- Total Volume: 1280.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 80.0 kg | 6 | Working |
+| 2 | 80.0 kg | 6 | Working |
+| 3 | 40.0 kg | 8 | Warmup |
+
+#### Pull Up
+- Working Sets: 3
+- Warmup Sets: 0
+- Total Reps: 21
+- Max Weight: 0.0 kg
+- Total Volume: 0.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 0.0 kg | 8 | Working |
+| 2 | 0.0 kg | 7 | Working |
+| 3 | 0.0 kg | 6 | Working |
+
+#### Cable Row
+- Working Sets: 2
+- Warmup Sets: 0
+- Total Reps: 20
+- Max Weight: 55.0 kg
+- Total Volume: 1100.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 55.0 kg | 10 | Working |
+| 2 | 55.0 kg | 10 | Working |
+
+#### Back Squat
+- Working Sets: 3
+- Warmup Sets: 1
+- Total Reps: 20
+- Max Weight: 100.0 kg
+- Total Volume: 1750.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 100.0 kg | 5 | Working |
+| 2 | 100.0 kg | 5 | Working |
+| 3 | 100.0 kg | 5 | Working |
+| 4 | 50.0 kg | 5 | Warmup |
+
+#### Barbell Shoulder Press
+- Working Sets: 2
+- Warmup Sets: 1
+- Total Reps: 26
+- Max Weight: 40.0 kg
+- Total Volume: 840.0 kg*reps
+
+Set Progression:
+| Set | Weight | Reps | Type |
+|-----|---------|------|------|
+| 1 | 40.0 kg | 8 | Working |
+| 2 | 40.0 kg | 8 | Working |
+| 3 | 20.0 kg | 10 | Warmup |
 
 #### Dumbbell Bicep Curl
 - Working Sets: 2
@@ -1414,20 +1428,6 @@ Set Progression:
 |-----|---------|------|------|
 | 1 | 10.0 kg | 15 | Working |
 | 2 | 10.0 kg | 15 | Working |
-
-#### Pull Up
-- Working Sets: 3
-- Warmup Sets: 0
-- Total Reps: 21
-- Max Weight: 0.0 kg
-- Total Volume: 0.0 kg*reps
-
-Set Progression:
-| Set | Weight | Reps | Type |
-|-----|---------|------|------|
-| 1 | 0.0 kg | 6 | Working |
-| 2 | 0.0 kg | 7 | Working |
-| 3 | 0.0 kg | 8 | Working |
 
 #### Treadmill
 - Working Sets: 1

@@ -78,7 +78,9 @@ def process_and_summarize(filtered_df, unit_system, tz_name, period_type, calend
     processed_data = _process_data(filtered_df)
 
     # Use daily granularity for calendar-aligned periods to prevent cross-boundary bleed
-    if period_type == PeriodType.DAILY:
+    if period_type == PeriodType.PER_WORKOUT:
+        group_by = "session"
+    elif period_type == PeriodType.DAILY:
         group_by = "day"
     elif calendar_aligned and period_type in _CALENDAR_TYPES:
         group_by = "day"
@@ -378,12 +380,14 @@ if uploaded_file is not None:
             st.subheader("Summary Options")
             col_period, col_grouping = st.columns([3, 2])
             with col_period:
+                _period_options = [pt.value for pt in PeriodType]
                 period_type = st.selectbox(
                     "Summary Period",
-                    [pt.value for pt in PeriodType],
-                    index=1,
+                    _period_options,
+                    index=_period_options.index(PeriodType.WEEKLY.value),
                     key="period_type",
-                    help="Daily: day-by-day. Weekly: week-by-week. Others: broader trends",
+                    help="Per-workout: one section per logged session, in the order you trained. "
+                    "Daily: day-by-day. Weekly: week-by-week. Others: broader trends",
                 )
                 period_type = PeriodType(period_type)
             with col_grouping:
@@ -457,7 +461,9 @@ if uploaded_file is not None:
             num_periods = len(summaries)
 
             m1, m2, m3, m4 = st.columns(4)
-            if effective_period_type == PeriodType.DAILY or (
+            if effective_period_type == PeriodType.PER_WORKOUT:
+                period_label = f"{num_periods} workouts"
+            elif effective_period_type == PeriodType.DAILY or (
                 effective_calendar_aligned and effective_period_type in _CALENDAR_TYPES
             ):
                 period_label = f"{num_periods} days"

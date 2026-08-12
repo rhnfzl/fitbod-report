@@ -6,77 +6,104 @@ periods:
 - date: '2025-01-06'
   day_of_week: Monday
   exercises:
-  - name: Back Squat
+  - name: Deadlift
     working_sets: 3
-    warmup_sets: 1
-    total_reps: 20
-    max_weight: 100.0
+    warmup_sets: 2
+    total_reps: 22
+    working_reps: 12
+    max_weight: 120.0
     weight_unit: kg
-    total_volume: 1750.0
+    total_volume: 2140.0
+    working_volume: 1440.0
+    working_max_weight: 120.0
     is_cardio: false
   - name: Barbell Bench Press
     working_sets: 2
     warmup_sets: 1
     total_reps: 20
+    working_reps: 12
     max_weight: 80.0
     weight_unit: kg
     total_volume: 1280.0
-    is_cardio: false
-  - name: Barbell Shoulder Press
-    working_sets: 2
-    warmup_sets: 1
-    total_reps: 26
-    max_weight: 40.0
-    weight_unit: kg
-    total_volume: 840.0
-    is_cardio: false
-  - name: Cable Row
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 20
-    max_weight: 55.0
-    weight_unit: kg
-    total_volume: 1100.0
-    is_cardio: false
-  - name: Deadlift
-    working_sets: 3
-    warmup_sets: 2
-    total_reps: 22
-    max_weight: 120.0
-    weight_unit: kg
-    total_volume: 2140.0
-    is_cardio: false
-  - name: Dumbbell Bicep Curl
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 24
-    max_weight: 28.0
-    weight_unit: kg
-    total_volume: 672.0
-    is_cardio: false
-  - name: My Custom Rehab Press
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 30
-    max_weight: 10.0
-    weight_unit: kg
-    total_volume: 300.0
+    working_volume: 960.0
+    working_max_weight: 80.0
     is_cardio: false
   - name: Pull Up
     working_sets: 3
     warmup_sets: 0
     total_reps: 21
+    working_reps: 21
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
+    is_cardio: false
+  - name: Cable Row
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 20
+    working_reps: 20
+    max_weight: 55.0
+    weight_unit: kg
+    total_volume: 1100.0
+    working_volume: 1100.0
+    working_max_weight: 55.0
+    is_cardio: false
+  - name: Back Squat
+    working_sets: 3
+    warmup_sets: 1
+    total_reps: 20
+    working_reps: 15
+    max_weight: 100.0
+    weight_unit: kg
+    total_volume: 1750.0
+    working_volume: 1500.0
+    working_max_weight: 100.0
+    is_cardio: false
+  - name: Barbell Shoulder Press
+    working_sets: 2
+    warmup_sets: 1
+    total_reps: 26
+    working_reps: 16
+    max_weight: 40.0
+    weight_unit: kg
+    total_volume: 840.0
+    working_volume: 640.0
+    working_max_weight: 40.0
+    is_cardio: false
+  - name: Dumbbell Bicep Curl
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 24
+    working_reps: 24
+    max_weight: 28.0
+    weight_unit: kg
+    total_volume: 672.0
+    working_volume: 672.0
+    working_max_weight: 28.0
+    is_cardio: false
+  - name: My Custom Rehab Press
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 30
+    working_reps: 30
+    max_weight: 10.0
+    weight_unit: kg
+    total_volume: 300.0
+    working_volume: 300.0
+    working_max_weight: 10.0
     is_cardio: false
   - name: Treadmill
     working_sets: 1
     warmup_sets: 0
     total_reps: 0
+    working_reps: 0
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
     is_cardio: true
     total_duration_seconds: 1500.0
     total_duration: 0h 25m 0s
@@ -94,77 +121,104 @@ periods:
 - date: '2025-01-13'
   day_of_week: Monday
   exercises:
-  - name: Back Squat
+  - name: Deadlift
     working_sets: 3
-    warmup_sets: 1
-    total_reps: 20
-    max_weight: 100.0
+    warmup_sets: 2
+    total_reps: 22
+    working_reps: 12
+    max_weight: 120.0
     weight_unit: kg
-    total_volume: 1750.0
+    total_volume: 2140.0
+    working_volume: 1440.0
+    working_max_weight: 120.0
     is_cardio: false
   - name: Barbell Bench Press
     working_sets: 2
     warmup_sets: 1
     total_reps: 20
+    working_reps: 12
     max_weight: 80.0
     weight_unit: kg
     total_volume: 1280.0
-    is_cardio: false
-  - name: Barbell Shoulder Press
-    working_sets: 2
-    warmup_sets: 1
-    total_reps: 26
-    max_weight: 40.0
-    weight_unit: kg
-    total_volume: 840.0
-    is_cardio: false
-  - name: Cable Row
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 20
-    max_weight: 55.0
-    weight_unit: kg
-    total_volume: 1100.0
-    is_cardio: false
-  - name: Deadlift
-    working_sets: 3
-    warmup_sets: 2
-    total_reps: 22
-    max_weight: 120.0
-    weight_unit: kg
-    total_volume: 2140.0
-    is_cardio: false
-  - name: Dumbbell Bicep Curl
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 24
-    max_weight: 28.0
-    weight_unit: kg
-    total_volume: 672.0
-    is_cardio: false
-  - name: My Custom Rehab Press
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 30
-    max_weight: 10.0
-    weight_unit: kg
-    total_volume: 300.0
+    working_volume: 960.0
+    working_max_weight: 80.0
     is_cardio: false
   - name: Pull Up
     working_sets: 3
     warmup_sets: 0
     total_reps: 21
+    working_reps: 21
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
+    is_cardio: false
+  - name: Cable Row
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 20
+    working_reps: 20
+    max_weight: 55.0
+    weight_unit: kg
+    total_volume: 1100.0
+    working_volume: 1100.0
+    working_max_weight: 55.0
+    is_cardio: false
+  - name: Back Squat
+    working_sets: 3
+    warmup_sets: 1
+    total_reps: 20
+    working_reps: 15
+    max_weight: 100.0
+    weight_unit: kg
+    total_volume: 1750.0
+    working_volume: 1500.0
+    working_max_weight: 100.0
+    is_cardio: false
+  - name: Barbell Shoulder Press
+    working_sets: 2
+    warmup_sets: 1
+    total_reps: 26
+    working_reps: 16
+    max_weight: 40.0
+    weight_unit: kg
+    total_volume: 840.0
+    working_volume: 640.0
+    working_max_weight: 40.0
+    is_cardio: false
+  - name: Dumbbell Bicep Curl
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 24
+    working_reps: 24
+    max_weight: 28.0
+    weight_unit: kg
+    total_volume: 672.0
+    working_volume: 672.0
+    working_max_weight: 28.0
+    is_cardio: false
+  - name: My Custom Rehab Press
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 30
+    working_reps: 30
+    max_weight: 10.0
+    weight_unit: kg
+    total_volume: 300.0
+    working_volume: 300.0
+    working_max_weight: 10.0
     is_cardio: false
   - name: Treadmill
     working_sets: 1
     warmup_sets: 0
     total_reps: 0
+    working_reps: 0
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
     is_cardio: true
     total_duration_seconds: 1500.0
     total_duration: 0h 25m 0s
@@ -182,77 +236,104 @@ periods:
 - date: '2025-01-20'
   day_of_week: Monday
   exercises:
-  - name: Back Squat
+  - name: Deadlift
     working_sets: 3
-    warmup_sets: 1
-    total_reps: 20
-    max_weight: 100.0
+    warmup_sets: 2
+    total_reps: 22
+    working_reps: 12
+    max_weight: 120.0
     weight_unit: kg
-    total_volume: 1750.0
+    total_volume: 2140.0
+    working_volume: 1440.0
+    working_max_weight: 120.0
     is_cardio: false
   - name: Barbell Bench Press
     working_sets: 2
     warmup_sets: 1
     total_reps: 20
+    working_reps: 12
     max_weight: 80.0
     weight_unit: kg
     total_volume: 1280.0
-    is_cardio: false
-  - name: Barbell Shoulder Press
-    working_sets: 2
-    warmup_sets: 1
-    total_reps: 26
-    max_weight: 40.0
-    weight_unit: kg
-    total_volume: 840.0
-    is_cardio: false
-  - name: Cable Row
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 20
-    max_weight: 55.0
-    weight_unit: kg
-    total_volume: 1100.0
-    is_cardio: false
-  - name: Deadlift
-    working_sets: 3
-    warmup_sets: 2
-    total_reps: 22
-    max_weight: 120.0
-    weight_unit: kg
-    total_volume: 2140.0
-    is_cardio: false
-  - name: Dumbbell Bicep Curl
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 24
-    max_weight: 28.0
-    weight_unit: kg
-    total_volume: 672.0
-    is_cardio: false
-  - name: My Custom Rehab Press
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 30
-    max_weight: 10.0
-    weight_unit: kg
-    total_volume: 300.0
+    working_volume: 960.0
+    working_max_weight: 80.0
     is_cardio: false
   - name: Pull Up
     working_sets: 3
     warmup_sets: 0
     total_reps: 21
+    working_reps: 21
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
+    is_cardio: false
+  - name: Cable Row
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 20
+    working_reps: 20
+    max_weight: 55.0
+    weight_unit: kg
+    total_volume: 1100.0
+    working_volume: 1100.0
+    working_max_weight: 55.0
+    is_cardio: false
+  - name: Back Squat
+    working_sets: 3
+    warmup_sets: 1
+    total_reps: 20
+    working_reps: 15
+    max_weight: 100.0
+    weight_unit: kg
+    total_volume: 1750.0
+    working_volume: 1500.0
+    working_max_weight: 100.0
+    is_cardio: false
+  - name: Barbell Shoulder Press
+    working_sets: 2
+    warmup_sets: 1
+    total_reps: 26
+    working_reps: 16
+    max_weight: 40.0
+    weight_unit: kg
+    total_volume: 840.0
+    working_volume: 640.0
+    working_max_weight: 40.0
+    is_cardio: false
+  - name: Dumbbell Bicep Curl
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 24
+    working_reps: 24
+    max_weight: 28.0
+    weight_unit: kg
+    total_volume: 672.0
+    working_volume: 672.0
+    working_max_weight: 28.0
+    is_cardio: false
+  - name: My Custom Rehab Press
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 30
+    working_reps: 30
+    max_weight: 10.0
+    weight_unit: kg
+    total_volume: 300.0
+    working_volume: 300.0
+    working_max_weight: 10.0
     is_cardio: false
   - name: Treadmill
     working_sets: 1
     warmup_sets: 0
     total_reps: 0
+    working_reps: 0
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
     is_cardio: true
     total_duration_seconds: 1500.0
     total_duration: 0h 25m 0s
@@ -270,77 +351,104 @@ periods:
 - date: '2025-01-27'
   day_of_week: Monday
   exercises:
-  - name: Back Squat
+  - name: Deadlift
     working_sets: 3
-    warmup_sets: 1
-    total_reps: 20
-    max_weight: 100.0
+    warmup_sets: 2
+    total_reps: 22
+    working_reps: 12
+    max_weight: 120.0
     weight_unit: kg
-    total_volume: 1750.0
+    total_volume: 2140.0
+    working_volume: 1440.0
+    working_max_weight: 120.0
     is_cardio: false
   - name: Barbell Bench Press
     working_sets: 2
     warmup_sets: 1
     total_reps: 20
+    working_reps: 12
     max_weight: 80.0
     weight_unit: kg
     total_volume: 1280.0
-    is_cardio: false
-  - name: Barbell Shoulder Press
-    working_sets: 2
-    warmup_sets: 1
-    total_reps: 26
-    max_weight: 40.0
-    weight_unit: kg
-    total_volume: 840.0
-    is_cardio: false
-  - name: Cable Row
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 20
-    max_weight: 55.0
-    weight_unit: kg
-    total_volume: 1100.0
-    is_cardio: false
-  - name: Deadlift
-    working_sets: 3
-    warmup_sets: 2
-    total_reps: 22
-    max_weight: 120.0
-    weight_unit: kg
-    total_volume: 2140.0
-    is_cardio: false
-  - name: Dumbbell Bicep Curl
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 24
-    max_weight: 28.0
-    weight_unit: kg
-    total_volume: 672.0
-    is_cardio: false
-  - name: My Custom Rehab Press
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 30
-    max_weight: 10.0
-    weight_unit: kg
-    total_volume: 300.0
+    working_volume: 960.0
+    working_max_weight: 80.0
     is_cardio: false
   - name: Pull Up
     working_sets: 3
     warmup_sets: 0
     total_reps: 21
+    working_reps: 21
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
+    is_cardio: false
+  - name: Cable Row
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 20
+    working_reps: 20
+    max_weight: 55.0
+    weight_unit: kg
+    total_volume: 1100.0
+    working_volume: 1100.0
+    working_max_weight: 55.0
+    is_cardio: false
+  - name: Back Squat
+    working_sets: 3
+    warmup_sets: 1
+    total_reps: 20
+    working_reps: 15
+    max_weight: 100.0
+    weight_unit: kg
+    total_volume: 1750.0
+    working_volume: 1500.0
+    working_max_weight: 100.0
+    is_cardio: false
+  - name: Barbell Shoulder Press
+    working_sets: 2
+    warmup_sets: 1
+    total_reps: 26
+    working_reps: 16
+    max_weight: 40.0
+    weight_unit: kg
+    total_volume: 840.0
+    working_volume: 640.0
+    working_max_weight: 40.0
+    is_cardio: false
+  - name: Dumbbell Bicep Curl
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 24
+    working_reps: 24
+    max_weight: 28.0
+    weight_unit: kg
+    total_volume: 672.0
+    working_volume: 672.0
+    working_max_weight: 28.0
+    is_cardio: false
+  - name: My Custom Rehab Press
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 30
+    working_reps: 30
+    max_weight: 10.0
+    weight_unit: kg
+    total_volume: 300.0
+    working_volume: 300.0
+    working_max_weight: 10.0
     is_cardio: false
   - name: Treadmill
     working_sets: 1
     warmup_sets: 0
     total_reps: 0
+    working_reps: 0
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
     is_cardio: true
     total_duration_seconds: 1500.0
     total_duration: 0h 25m 0s
@@ -358,77 +466,104 @@ periods:
 - date: '2025-02-03'
   day_of_week: Monday
   exercises:
-  - name: Back Squat
+  - name: Deadlift
     working_sets: 3
-    warmup_sets: 1
-    total_reps: 20
-    max_weight: 100.0
+    warmup_sets: 2
+    total_reps: 22
+    working_reps: 12
+    max_weight: 120.0
     weight_unit: kg
-    total_volume: 1750.0
+    total_volume: 2140.0
+    working_volume: 1440.0
+    working_max_weight: 120.0
     is_cardio: false
   - name: Barbell Bench Press
     working_sets: 2
     warmup_sets: 1
     total_reps: 20
+    working_reps: 12
     max_weight: 80.0
     weight_unit: kg
     total_volume: 1280.0
-    is_cardio: false
-  - name: Barbell Shoulder Press
-    working_sets: 2
-    warmup_sets: 1
-    total_reps: 26
-    max_weight: 40.0
-    weight_unit: kg
-    total_volume: 840.0
-    is_cardio: false
-  - name: Cable Row
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 20
-    max_weight: 55.0
-    weight_unit: kg
-    total_volume: 1100.0
-    is_cardio: false
-  - name: Deadlift
-    working_sets: 3
-    warmup_sets: 2
-    total_reps: 22
-    max_weight: 120.0
-    weight_unit: kg
-    total_volume: 2140.0
-    is_cardio: false
-  - name: Dumbbell Bicep Curl
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 24
-    max_weight: 28.0
-    weight_unit: kg
-    total_volume: 672.0
-    is_cardio: false
-  - name: My Custom Rehab Press
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 30
-    max_weight: 10.0
-    weight_unit: kg
-    total_volume: 300.0
+    working_volume: 960.0
+    working_max_weight: 80.0
     is_cardio: false
   - name: Pull Up
     working_sets: 3
     warmup_sets: 0
     total_reps: 21
+    working_reps: 21
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
+    is_cardio: false
+  - name: Cable Row
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 20
+    working_reps: 20
+    max_weight: 55.0
+    weight_unit: kg
+    total_volume: 1100.0
+    working_volume: 1100.0
+    working_max_weight: 55.0
+    is_cardio: false
+  - name: Back Squat
+    working_sets: 3
+    warmup_sets: 1
+    total_reps: 20
+    working_reps: 15
+    max_weight: 100.0
+    weight_unit: kg
+    total_volume: 1750.0
+    working_volume: 1500.0
+    working_max_weight: 100.0
+    is_cardio: false
+  - name: Barbell Shoulder Press
+    working_sets: 2
+    warmup_sets: 1
+    total_reps: 26
+    working_reps: 16
+    max_weight: 40.0
+    weight_unit: kg
+    total_volume: 840.0
+    working_volume: 640.0
+    working_max_weight: 40.0
+    is_cardio: false
+  - name: Dumbbell Bicep Curl
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 24
+    working_reps: 24
+    max_weight: 28.0
+    weight_unit: kg
+    total_volume: 672.0
+    working_volume: 672.0
+    working_max_weight: 28.0
+    is_cardio: false
+  - name: My Custom Rehab Press
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 30
+    working_reps: 30
+    max_weight: 10.0
+    weight_unit: kg
+    total_volume: 300.0
+    working_volume: 300.0
+    working_max_weight: 10.0
     is_cardio: false
   - name: Treadmill
     working_sets: 1
     warmup_sets: 0
     total_reps: 0
+    working_reps: 0
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
     is_cardio: true
     total_duration_seconds: 1500.0
     total_duration: 0h 25m 0s
@@ -446,77 +581,104 @@ periods:
 - date: '2025-02-17'
   day_of_week: Monday
   exercises:
-  - name: Back Squat
+  - name: Deadlift
     working_sets: 3
-    warmup_sets: 1
-    total_reps: 20
-    max_weight: 100.0
+    warmup_sets: 2
+    total_reps: 22
+    working_reps: 12
+    max_weight: 120.0
     weight_unit: kg
-    total_volume: 1750.0
+    total_volume: 2140.0
+    working_volume: 1440.0
+    working_max_weight: 120.0
     is_cardio: false
   - name: Barbell Bench Press
     working_sets: 2
     warmup_sets: 1
     total_reps: 20
+    working_reps: 12
     max_weight: 80.0
     weight_unit: kg
     total_volume: 1280.0
-    is_cardio: false
-  - name: Barbell Shoulder Press
-    working_sets: 2
-    warmup_sets: 1
-    total_reps: 26
-    max_weight: 40.0
-    weight_unit: kg
-    total_volume: 840.0
-    is_cardio: false
-  - name: Cable Row
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 20
-    max_weight: 55.0
-    weight_unit: kg
-    total_volume: 1100.0
-    is_cardio: false
-  - name: Deadlift
-    working_sets: 3
-    warmup_sets: 2
-    total_reps: 22
-    max_weight: 120.0
-    weight_unit: kg
-    total_volume: 2140.0
-    is_cardio: false
-  - name: Dumbbell Bicep Curl
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 24
-    max_weight: 28.0
-    weight_unit: kg
-    total_volume: 672.0
-    is_cardio: false
-  - name: My Custom Rehab Press
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 30
-    max_weight: 10.0
-    weight_unit: kg
-    total_volume: 300.0
+    working_volume: 960.0
+    working_max_weight: 80.0
     is_cardio: false
   - name: Pull Up
     working_sets: 3
     warmup_sets: 0
     total_reps: 21
+    working_reps: 21
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
+    is_cardio: false
+  - name: Cable Row
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 20
+    working_reps: 20
+    max_weight: 55.0
+    weight_unit: kg
+    total_volume: 1100.0
+    working_volume: 1100.0
+    working_max_weight: 55.0
+    is_cardio: false
+  - name: Back Squat
+    working_sets: 3
+    warmup_sets: 1
+    total_reps: 20
+    working_reps: 15
+    max_weight: 100.0
+    weight_unit: kg
+    total_volume: 1750.0
+    working_volume: 1500.0
+    working_max_weight: 100.0
+    is_cardio: false
+  - name: Barbell Shoulder Press
+    working_sets: 2
+    warmup_sets: 1
+    total_reps: 26
+    working_reps: 16
+    max_weight: 40.0
+    weight_unit: kg
+    total_volume: 840.0
+    working_volume: 640.0
+    working_max_weight: 40.0
+    is_cardio: false
+  - name: Dumbbell Bicep Curl
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 24
+    working_reps: 24
+    max_weight: 28.0
+    weight_unit: kg
+    total_volume: 672.0
+    working_volume: 672.0
+    working_max_weight: 28.0
+    is_cardio: false
+  - name: My Custom Rehab Press
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 30
+    working_reps: 30
+    max_weight: 10.0
+    weight_unit: kg
+    total_volume: 300.0
+    working_volume: 300.0
+    working_max_weight: 10.0
     is_cardio: false
   - name: Treadmill
     working_sets: 1
     warmup_sets: 0
     total_reps: 0
+    working_reps: 0
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
     is_cardio: true
     total_duration_seconds: 1500.0
     total_duration: 0h 25m 0s
@@ -534,77 +696,104 @@ periods:
 - date: '2025-02-24'
   day_of_week: Monday
   exercises:
-  - name: Back Squat
+  - name: Deadlift
     working_sets: 3
-    warmup_sets: 1
-    total_reps: 20
-    max_weight: 100.0
+    warmup_sets: 2
+    total_reps: 22
+    working_reps: 12
+    max_weight: 120.0
     weight_unit: kg
-    total_volume: 1750.0
+    total_volume: 2140.0
+    working_volume: 1440.0
+    working_max_weight: 120.0
     is_cardio: false
   - name: Barbell Bench Press
     working_sets: 2
     warmup_sets: 1
     total_reps: 20
+    working_reps: 12
     max_weight: 80.0
     weight_unit: kg
     total_volume: 1280.0
-    is_cardio: false
-  - name: Barbell Shoulder Press
-    working_sets: 2
-    warmup_sets: 1
-    total_reps: 26
-    max_weight: 40.0
-    weight_unit: kg
-    total_volume: 840.0
-    is_cardio: false
-  - name: Cable Row
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 20
-    max_weight: 55.0
-    weight_unit: kg
-    total_volume: 1100.0
-    is_cardio: false
-  - name: Deadlift
-    working_sets: 3
-    warmup_sets: 2
-    total_reps: 22
-    max_weight: 120.0
-    weight_unit: kg
-    total_volume: 2140.0
-    is_cardio: false
-  - name: Dumbbell Bicep Curl
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 24
-    max_weight: 28.0
-    weight_unit: kg
-    total_volume: 672.0
-    is_cardio: false
-  - name: My Custom Rehab Press
-    working_sets: 2
-    warmup_sets: 0
-    total_reps: 30
-    max_weight: 10.0
-    weight_unit: kg
-    total_volume: 300.0
+    working_volume: 960.0
+    working_max_weight: 80.0
     is_cardio: false
   - name: Pull Up
     working_sets: 3
     warmup_sets: 0
     total_reps: 21
+    working_reps: 21
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
+    is_cardio: false
+  - name: Cable Row
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 20
+    working_reps: 20
+    max_weight: 55.0
+    weight_unit: kg
+    total_volume: 1100.0
+    working_volume: 1100.0
+    working_max_weight: 55.0
+    is_cardio: false
+  - name: Back Squat
+    working_sets: 3
+    warmup_sets: 1
+    total_reps: 20
+    working_reps: 15
+    max_weight: 100.0
+    weight_unit: kg
+    total_volume: 1750.0
+    working_volume: 1500.0
+    working_max_weight: 100.0
+    is_cardio: false
+  - name: Barbell Shoulder Press
+    working_sets: 2
+    warmup_sets: 1
+    total_reps: 26
+    working_reps: 16
+    max_weight: 40.0
+    weight_unit: kg
+    total_volume: 840.0
+    working_volume: 640.0
+    working_max_weight: 40.0
+    is_cardio: false
+  - name: Dumbbell Bicep Curl
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 24
+    working_reps: 24
+    max_weight: 28.0
+    weight_unit: kg
+    total_volume: 672.0
+    working_volume: 672.0
+    working_max_weight: 28.0
+    is_cardio: false
+  - name: My Custom Rehab Press
+    working_sets: 2
+    warmup_sets: 0
+    total_reps: 30
+    working_reps: 30
+    max_weight: 10.0
+    weight_unit: kg
+    total_volume: 300.0
+    working_volume: 300.0
+    working_max_weight: 10.0
     is_cardio: false
   - name: Treadmill
     working_sets: 1
     warmup_sets: 0
     total_reps: 0
+    working_reps: 0
     max_weight: 0
     weight_unit: kg
     total_volume: 0.0
+    working_volume: 0.0
+    working_max_weight: 0
     is_cardio: true
     total_duration_seconds: 1500.0
     total_duration: 0h 25m 0s

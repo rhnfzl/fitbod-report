@@ -158,6 +158,45 @@ def test_timezone_shifts_day_buckets():
     _check("daily_auckland.gpt.txt", generate_gpt_report(auckland, True, "summary", PeriodType.DAILY, False, True))
 
 
+@pytest.mark.parametrize(
+    ("name", "fmt", "report_format"),
+    [
+        ("per_workout.gpt.txt", generate_gpt_report, "summary"),
+        ("per_workout.json", generate_json_report, "summary"),
+        ("per_workout_detailed.md", generate_markdown_report, "detailed"),
+    ],
+)
+def test_per_workout_golden(name, fmt, report_format):
+    """One section per logged workout, keeping two same-day sessions apart."""
+    summaries = _load_summaries(group_by="session")
+    _check(name, fmt(summaries, True, report_format, PeriodType.PER_WORKOUT, False, True))
+
+
+def test_per_workout_keeps_two_sessions_on_one_day_apart():
+    """Daily grouping merges a two-a-day; per-workout must keep them separate."""
+    from datetime import datetime
+
+    from src.report.generator import summarize_workouts as summarize
+
+    def entry(at, exercise):
+        return {
+            "Date": datetime.strptime(at, "%Y-%m-%d %H:%M:%S"),
+            "Exercise": exercise,
+            "Weight(kg)": 100.0,
+            "Reps": 5,
+            "Distance(m)": 0.0,
+            "Duration(s)": 0.0,
+            "isWarmup": "false",
+        }
+
+    two_a_day = [entry("2025-01-06 07:00:00", "Back Squat"), entry("2025-01-06 18:00:00", "Deadlift")]
+
+    assert len(summarize(two_a_day, True, "UTC", "day")) == 1
+    per_workout = summarize(two_a_day, True, "UTC", "session")
+    assert len(per_workout) == 2
+    assert sorted(per_workout) == ["2025-01-06 07:00", "2025-01-06 18:00"]
+
+
 def test_analysis_can_be_disabled():
     summaries = _load_summaries()
     _check("weekly_no_analysis.gpt.txt", generate_gpt_report(summaries, True, "summary", PeriodType.WEEKLY, False, False))
