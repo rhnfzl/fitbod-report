@@ -10,7 +10,9 @@ changes the output, regenerate and read the diff before committing it:
     REGEN_GOLDEN=1 uv run pytest tests/test_golden.py
 """
 
+import json
 import os
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -87,6 +89,53 @@ def test_aggregated_golden(name, period_type, calendar_aligned):
     group_by = "day" if calendar_aligned else "week"
     summaries = _load_summaries(group_by=group_by)
     _check(name, generate_json_report(summaries, True, "summary", period_type, calendar_aligned, True))
+
+
+@pytest.mark.parametrize(
+    ("name", "period_type", "calendar_aligned"),
+    [
+        ("monthly_calendar.md", PeriodType.MONTHLY, True),
+        ("quarterly_calendar.md", PeriodType.QUARTERLY, True),
+    ],
+)
+def test_aggregated_markdown_golden(name, period_type, calendar_aligned):
+    group_by = "day" if calendar_aligned else "week"
+    summaries = _load_summaries(group_by=group_by)
+    _check(name, generate_markdown_report(summaries, True, "summary", period_type, calendar_aligned, True))
+
+
+@pytest.mark.parametrize(
+    ("period_type", "calendar_aligned"),
+    [
+        (PeriodType.WEEKLY, False),
+        (PeriodType.MONTHLY, True),
+        (PeriodType.MONTHLY, False),
+        (PeriodType.QUARTERLY, True),
+    ],
+)
+def test_markdown_and_json_averages_agree(period_type, calendar_aligned):
+    """Both renderers must divide by the same period count.
+
+    Markdown used to divide totals by the raw weekly/daily summary count while
+    the structured report divided by the aggregated period count, so the same
+    input produced averages differing by up to 15x under one heading.
+    """
+    group_by = "day" if calendar_aligned else "week"
+    summaries = _load_summaries(group_by=group_by)
+
+    structured = json.loads(generate_json_report(summaries, True, "summary", period_type, calendar_aligned, True))
+    markdown = generate_markdown_report(summaries, True, "summary", period_type, calendar_aligned, True)
+
+    averages = structured["overall"]["averages"]
+    match = re.search(r"- Average Volume: ([\d,]+\.\d+)", markdown)
+    assert match, "markdown report is missing its Average Volume line"
+    assert float(match.group(1).replace(",", "")) == pytest.approx(averages["avg_volume"])
+
+    reps = re.search(r"- Average Reps: (\d+)", markdown)
+    assert reps and int(reps.group(1)) == averages["avg_reps"]
+
+    workout_time = re.search(r"- Average Workout Time: (.+)", markdown)
+    assert workout_time and workout_time.group(1).strip() == averages["avg_workout_time"]
 
 
 def test_imperial_golden():

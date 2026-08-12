@@ -635,6 +635,8 @@ overall:
   averages:
     period: weekly
     avg_workout_time: 1h 8m 0s
+    avg_strength_time: 0h 43m 0s
+    avg_cardio_time: 0h 25m 0s
     avg_distance: 4.2
     avg_reps: 183
     avg_volume: 8082.0

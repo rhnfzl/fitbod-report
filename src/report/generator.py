@@ -1240,6 +1240,18 @@ def generate_markdown_report(
     # Get all periods sorted by date
     sorted_weeks = sorted(summaries.keys(), key=lambda x: datetime.strptime(_parse_summary_key(x)[0], "%Y-%m-%d"))
 
+    # Single source of truth for period averages and analysis. Built once here
+    # rather than separately in each section, which is what let the Markdown and
+    # JSON averages drift apart.
+    structured = _build_structured_report(
+        summaries,
+        use_metric,
+        report_format,
+        period_type,
+        calendar_aligned,
+        include_analysis,
+    )
+
     if sorted_weeks:
         # Set date range
         overall_summary["start_date"] = _parse_summary_key(sorted_weeks[0])[0]
@@ -1342,14 +1354,6 @@ def generate_markdown_report(
     # Analysis Summary (computed from structured report data)
     if include_analysis:
         try:
-            structured = _build_structured_report(
-                summaries,
-                use_metric,
-                report_format,
-                period_type,
-                calendar_aligned,
-                include_analysis=True,
-            )
             analysis = structured.get("analysis")
             if analysis:
                 report.append("\n# Analysis Summary\n")
@@ -1417,19 +1421,18 @@ def generate_markdown_report(
     report.append("### Overall Summary Statistics")
     report.extend(_format_summary_stats(overall_summary, distance_unit, weight_unit, label_prefix="Total "))
 
-    # Calculate averages per period
-    num_periods = len(sorted_weeks)
-    if num_periods > 0:
-        total_cardio = overall_summary["cardio_duration"]
-        total_strength = overall_summary["strength_duration"]
+    # Averages come from the structured report so that Markdown, JSON, YAML and
+    # the GPT export all state the same figure for the same period.
+    averages = structured["overall"].get("averages")
+    if averages:
         avg_label = str(period_type).replace("-", " ").title() if period_type else "Weekly"
         report.append(f"\n### {avg_label} Averages")
-        report.append(f"- Average Workout Time: {seconds_to_time((total_cardio + total_strength) / num_periods)}")
-        report.append(f"- Average Strength Training Time: {seconds_to_time(total_strength / num_periods)}")
-        report.append(f"- Average Cardio Time: {seconds_to_time(total_cardio / num_periods)}")
-        report.append(f"- Average Distance: {(overall_summary['Distance'] / num_periods):.2f} {distance_unit}")
-        report.append(f"- Average Reps: {int(overall_summary['Reps'] / num_periods)}")
-        report.append(f"- Average Volume: {(overall_summary['Volume'] / num_periods):.2f} {weight_unit}*reps")
+        report.append(f"- Average Workout Time: {averages['avg_workout_time']}")
+        report.append(f"- Average Strength Training Time: {averages['avg_strength_time']}")
+        report.append(f"- Average Cardio Time: {averages['avg_cardio_time']}")
+        report.append(f"- Average Distance: {averages['avg_distance']:.2f} {distance_unit}")
+        report.append(f"- Average Reps: {averages['avg_reps']}")
+        report.append(f"- Average Volume: {averages['avg_volume']:.2f} {weight_unit}*reps")
 
     return "\n".join(report)
 
@@ -1570,12 +1573,17 @@ def _build_structured_report(
         "volume_unit": f"{weight_unit}*reps",
     }
 
+    # Averages are per reported period, so they divide by the aggregated period
+    # count - not by the raw weekly/daily summaries those periods were built
+    # from. Every renderer reads these rather than recomputing them.
     num_periods = len(sorted_keys)
     if num_periods > 0:
         avg_label = str(period_type) if period_type else "weekly"
         overall["averages"] = {
             "period": avg_label,
             "avg_workout_time": seconds_to_time((total_cardio + total_strength) / num_periods),
+            "avg_strength_time": seconds_to_time(total_strength / num_periods),
+            "avg_cardio_time": seconds_to_time(total_cardio / num_periods),
             "avg_distance": round(total_distance / num_periods, 2),
             "avg_reps": int(total_reps / num_periods),
             "avg_volume": round(total_volume / num_periods, 2),

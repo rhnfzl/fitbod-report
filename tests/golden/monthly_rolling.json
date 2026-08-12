@@ -246,6 +246,8 @@
     "averages": {
       "period": "monthly",
       "avg_workout_time": "3h 58m 0s",
+      "avg_strength_time": "2h 30m 30s",
+      "avg_cardio_time": "1h 27m 30s",
       "avg_distance": 14.7,
       "avg_reps": 640,
       "avg_volume": 28287.0

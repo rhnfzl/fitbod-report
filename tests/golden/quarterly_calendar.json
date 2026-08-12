@@ -133,6 +133,8 @@
     "averages": {
       "period": "quarterly",
       "avg_workout_time": "7h 56m 0s",
+      "avg_strength_time": "5h 1m 0s",
+      "avg_cardio_time": "2h 55m 0s",
       "avg_distance": 29.4,
       "avg_reps": 1281,
       "avg_volume": 56574.0
