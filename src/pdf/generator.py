@@ -31,9 +31,38 @@ def _fix_heading_hierarchy(md):
     return "\n".join(result)
 
 
+# Rendering cost grows superlinearly with the size of a single section: a
+# 100 KB report renders in half a second, 200 KB in one section had not
+# finished after several minutes. Splitting the same content into sections of
+# roughly this size renders it in under a second.
+_SECTION_MAX_CHARS = 40_000
+
+
+def _split_sections(md, max_chars=_SECTION_MAX_CHARS):
+    """Split markdown on top-level headings, packing into sections.
+
+    Headings are kept with their content, so a section never starts mid-table.
+    Content before the first heading, and any single oversized block, is
+    emitted as its own section rather than being broken up.
+    """
+    parts = re.split(r"(?m)^(?=## )", md)
+    sections = []
+    current = ""
+    for part in parts:
+        if current and len(current) + len(part) > max_chars:
+            sections.append(current)
+            current = part
+        else:
+            current += part
+    if current:
+        sections.append(current)
+    return sections or [md]
+
+
 def _build_pdf(markdown_content):
     pdf = MarkdownPdf()
-    pdf.add_section(Section(_fix_heading_hierarchy(markdown_content)))
+    for section in _split_sections(_fix_heading_hierarchy(markdown_content)):
+        pdf.add_section(Section(section))
     return pdf
 
 

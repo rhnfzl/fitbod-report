@@ -36,16 +36,16 @@ Pull Up	7	21	147	0	0	0.0	N/A
 
 ## muscle_volume
 muscle	weekly_avg_sets	trend
-biceps	2.0	+0.0%
-chest	2.0	+0.0%
-front_delts	2.0	+0.0%
+biceps	1.0	+0.0%
+chest	1.0	+0.0%
+front_delts	1.0	+0.0%
 glutes	3.0	+0.0%
-hamstrings	3.0	+0.0%
-lats	5.0	+0.0%
-lower_back	3.0	+0.0%
-quads	3.0	+0.0%
-side_delts	2.0	+0.0%
-upper_back	5.0	+0.0%
+hamstrings	1.5	+0.0%
+lats	2.5	+0.0%
+lower_back	1.5	+0.0%
+quads	1.5	+0.0%
+side_delts	1.0	+0.0%
+upper_back	2.5	+0.0%
 
 ## analysis
 metric	value

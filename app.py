@@ -125,9 +125,47 @@ def get_download_config(output_format):
 
 FITBODGPT_URL = "https://chatgpt.com/g/g-69bfd1becff08191b3b93c1d0312fda9-fitbodgpt"
 
+# A detailed report over several years runs to ~1 MB and 45,000 lines. Syntax
+# highlighting that with line numbers, on every rerun, is what locks up the
+# browser tab - the report itself takes under half a second to build.
+PREVIEW_MAX_LINES = 500
+PREVIEW_MAX_CHARS = 60_000
+
+# Above this the report is too large to paste into a chat message anyway, and
+# embedding it in the clipboard iframe is a second copy in the DOM.
+CLIPBOARD_MAX_CHARS = 200_000
+
+
+def render_report_preview(report_content, output_format):
+    """Show the report, truncated when it is too large for the browser."""
+    language = {"json": "json", "yaml": "yaml", "gpt": None}.get(output_format, "markdown")
+    lines = report_content.split("\n")
+
+    if len(lines) <= PREVIEW_MAX_LINES and len(report_content) <= PREVIEW_MAX_CHARS:
+        st.code(report_content, language=language, line_numbers=True)
+        return
+
+    head = "\n".join(lines[:PREVIEW_MAX_LINES])[:PREVIEW_MAX_CHARS]
+    st.caption(
+        f"Preview truncated to the first {min(PREVIEW_MAX_LINES, len(lines)):,} of {len(lines):,} lines "
+        f"({len(report_content):,} characters). Download the report for the full version."
+    )
+    # Line numbers are dropped here: they are the expensive part at this size.
+    st.code(head, language=language)
+
 
 def render_fitbodgpt_steps(report_content):
     """Render FitbodGPT copy + open flow. Instruction first, buttons below."""
+    if len(report_content) > CLIPBOARD_MAX_CHARS:
+        st.info(
+            f"This report is {len(report_content):,} characters - too large to paste into a chat "
+            "message. Download it below and upload the file to FitbodGPT instead, or switch to the "
+            "GPT-optimized format, which is built to be pasted.",
+            icon=":material/info:",
+        )
+        st.link_button("Open FitbodGPT", FITBODGPT_URL)
+        return
+
     escaped = js_string_literal(report_content)
     css = """
     <style>
@@ -497,8 +535,7 @@ if uploaded_file is not None:
 
             # Report preview
             st.subheader("Report Preview")
-            preview_lang = {"json": "json", "yaml": "yaml", "gpt": None}.get(output_format, "markdown")
-            st.code(report_content, language=preview_lang, line_numbers=True)
+            render_report_preview(report_content, output_format)
 
     except Exception as e:
         st.error(f"Error processing file: {e!s}")

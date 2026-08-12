@@ -106,9 +106,17 @@ def _recent_sessions(summaries, limit=14):
                     "working_max_weight": 0.0,
                     "duration_seconds": 0.0,
                     "is_cardio": entry.get("is_cardio", False),
+                    "sets": [],
                 },
             )
             ex["duration_seconds"] += entry.get("duration", 0) or 0
+            ex["sets"].append(
+                {
+                    "reps": entry.get("reps", 0),
+                    "weight": entry.get("weight", 0),
+                    "is_warmup": bool(entry.get("is_warmup")),
+                }
+            )
             if not entry.get("is_warmup"):
                 ex["working_sets"] += 1
                 ex["working_reps"] += entry.get("reps", 0)
@@ -1983,7 +1991,9 @@ def generate_gpt_report(
         if muscle == "unknown":
             continue
         weekly = muscle_weekly_sets[muscle]
-        avg = round(sum(weekly) / len(weekly), 1) if weekly else 0
+        # Divide by every period, not only the periods in which the muscle was
+        # trained, to match the analysis block.
+        avg = round(sum(weekly) / max(len(periods), 1), 1) if weekly else 0
         midpoint = len(weekly) // 2
         if midpoint > 0 and len(weekly) > midpoint:
             first_avg = sum(weekly[:midpoint]) / midpoint
@@ -2042,8 +2052,11 @@ def generate_gpt_report(
             lines.append("")
 
     # --- Recent Sessions (last 14) ---
+    # In detailed format each set is listed individually, warmups marked with a
+    # trailing 'w'. In summary format each exercise collapses to sets x reps.
+    detailed = report_format == "detailed"
     lines.append("## recent_sessions")
-    lines.append("date\texercises")
+    lines.append("date\texercises" + ("  (sets listed individually, w = warmup)" if detailed else ""))
 
     for session in _recent_sessions(summaries):  # Most recent first
         date = session["date"]
@@ -2053,7 +2066,14 @@ def generate_gpt_report(
             ws = ex.get("working_sets", 0)
             reps = ex.get("working_reps", 0)
             max_w = ex.get("working_max_weight", 0)
-            if ex.get("is_cardio", False):
+            if detailed and not ex.get("is_cardio", False) and ex.get("sets"):
+                rendered = []
+                for s in ex["sets"]:
+                    weight = round(s["weight"], 1)
+                    piece = f"{s['reps']}@{weight}" if weight > 0 else f"{s['reps']}"
+                    rendered.append(piece + ("w" if s["is_warmup"] else ""))
+                exercises_compact.append(f"{name}:{','.join(rendered)}")
+            elif ex.get("is_cardio", False):
                 dur_s = ex.get("duration_seconds", 0)
                 if dur_s > 0:
                     dur_min = int(dur_s // 60)
