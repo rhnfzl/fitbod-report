@@ -1,0 +1,8 @@
+services:
+  fitbod-report:
+    build: .
+    image: fitbod-report:local
+    container_name: fitbod-report
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
