@@ -157,14 +157,13 @@ def render_report_preview(report_content, output_format):
 def render_fitbodgpt_steps(report_content):
     """Render FitbodGPT copy + open flow. Instruction first, buttons below."""
     if len(report_content) > CLIPBOARD_MAX_CHARS:
-        st.info(
-            f"This report is {len(report_content):,} characters - too large to paste into a chat "
-            "message. Download it below and upload the file to FitbodGPT instead, or switch to the "
-            "GPT-optimized format, which is built to be pasted.",
-            icon=":material/info:",
+        # Large reports are still copyable - the size is worth knowing, not
+        # worth blocking on.
+        st.caption(
+            f"This report is {len(report_content):,} characters. Copying still works, but it may "
+            "exceed what a chat message accepts - uploading the downloaded file, or switching to "
+            "the GPT-optimized format, is usually easier."
         )
-        st.link_button("Open FitbodGPT", FITBODGPT_URL)
-        return
 
     escaped = js_string_literal(report_content)
     css = """
