@@ -67,6 +67,12 @@ def get_timezone_options():
 
 
 @st.cache_data(**_USER_DATA_CACHE)
+def _pdf_bytes(report_content):
+    """Render the PDF once per report instead of on every widget interaction."""
+    return convert_to_pdf_bytes(report_content)
+
+
+@st.cache_data(**_USER_DATA_CACHE)
 def _process_data(filtered_df):
     """Cache the DataFrame-to-records conversion (independent of report settings)."""
     return process_data_from_df(filtered_df)
@@ -524,13 +530,20 @@ if uploaded_file is not None:
             # one user read another's report.
             st.markdown("---")
             report_date = datetime.now(ZoneInfo(selected_timezone)).strftime("%Y%m%d")
-            payload = convert_to_pdf_bytes(report_content) if output_format == "pdf" else report_content
-            st.download_button(
-                "Download Report",
-                payload,
-                file_name=f"workout_report_{report_date}.{ext}",
-                mime=mime,
-            )
+            payload = report_content
+            if output_format == "pdf":
+                try:
+                    payload = _pdf_bytes(report_content)
+                except RuntimeError as e:
+                    payload = None
+                    st.error(str(e))
+            if payload is not None:
+                st.download_button(
+                    "Download Report",
+                    payload,
+                    file_name=f"workout_report_{report_date}.{ext}",
+                    mime=mime,
+                )
 
             # Report preview
             st.subheader("Report Preview")
