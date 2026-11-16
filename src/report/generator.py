@@ -93,10 +93,25 @@ def _recent_sessions(summaries, limit=14):
         for workout_time, sets in summary.get("Workouts", {}).items():
             workouts.setdefault(workout_time, []).extend(sets)
 
+    # Fitbod gives each cardio entry its own timestamp, so a run logged right
+    # after a lift would otherwise be a separate "session". Entries less than
+    # 30 minutes apart (the rule used for strength sessions) form one session.
+    groups = []
+    previous = None
+    for workout_time in sorted(workouts, reverse=True):
+        current = datetime.strptime(workout_time, "%Y-%m-%d %H:%M")
+        if previous is not None and (previous - current).total_seconds() <= 1800:
+            groups[-1].insert(0, workout_time)
+        else:
+            if len(groups) == limit:
+                break
+            groups.append([workout_time])
+        previous = current
+
     sessions = []
-    for workout_time in sorted(workouts, reverse=True)[:limit]:
+    for group in groups:
         by_exercise = {}
-        for entry in workouts[workout_time]:
+        for entry in (e for workout_time in group for e in workouts[workout_time]):
             ex = by_exercise.setdefault(
                 entry["exercise"],
                 {
@@ -121,7 +136,7 @@ def _recent_sessions(summaries, limit=14):
                 ex["working_sets"] += 1
                 ex["working_reps"] += entry.get("reps", 0)
                 ex["working_max_weight"] = max(ex["working_max_weight"], entry.get("weight", 0))
-        sessions.append({"date": workout_time.split()[0], "exercises": list(by_exercise.values())})
+        sessions.append({"date": group[0].split()[0], "exercises": list(by_exercise.values())})
     return sessions
 
 
@@ -149,6 +164,7 @@ _INTERNAL_KEYS = (
 # How far back training-gap detection looks. Recent gaps are what coaching acts
 # on, and an unbounded list dominated the token-efficient export.
 GAP_WINDOW_WEEKS = 26
+_GAP_PERIOD_TYPES = frozenset({"weekly", "daily", "per-workout"})
 
 # Period types that are already at their finest granularity: the summaries
 # are the periods, so aggregate_summaries must not be called for them.
@@ -189,6 +205,34 @@ EQUIPMENT_DISPLAY_NAMES: dict[str, str] = {
 # ---------------------------------------------------------------------------
 
 
+def _warmup_only(ex):
+    """True for an exercise block with warm-up sets and no working sets."""
+    return "working_sets" in ex and ex["working_sets"] == 0 and ex.get("warmup_sets", 0) > 0
+
+
+def _working_max(ex):
+    """Heaviest working set; falls back to max_weight only for data without working figures."""
+    return ex["working_max_weight"] if "working_max_weight" in ex else ex.get("max_weight", 0)
+
+
+def _half_spans(periods, start_date, end_date):
+    """Split periods into halves; return (half, first_weeks, second_weeks).
+
+    Each half's length is the calendar weeks it covers, so per-week figures are
+    right whatever the period type. Without dates every period counts as a week.
+    """
+    half = len(periods) // 2
+    if half == 0:
+        return 0, 0.0, 0.0
+    try:
+        split_date = datetime.strptime(periods[half].get("date", ""), "%Y-%m-%d").date()
+    except ValueError:
+        split_date = None
+    if start_date and end_date and split_date:
+        return half, max((split_date - start_date).days, 1) / 7.0, max((end_date - split_date).days + 1, 1) / 7.0
+    return half, float(half), float(len(periods) - half)
+
+
 def _aggregate_exercise_stats(periods):
     """Aggregate per-exercise statistics across all periods.
 
@@ -208,7 +252,7 @@ def _aggregate_exercise_stats(periods):
     for i, p in enumerate(periods):
         for ex in p.get("exercises", []):
             name = ex["name"]
-            if ex.get("is_cardio", False):
+            if ex.get("is_cardio", False) or _warmup_only(ex):
                 continue
             if name not in exercise_data:
                 exercise_data[name] = {
@@ -229,7 +273,7 @@ def _aggregate_exercise_stats(periods):
             d["sessions"] += 1
             d["working_sets"] += ex.get("working_sets", 0)
             d["total_reps"] += ex.get("working_reps", 0)
-            working_max = ex.get("working_max_weight", 0) or ex.get("max_weight", 0)
+            working_max = _working_max(ex)
             d["max_weight"] = max(d["max_weight"], working_max)
             d["total_volume"] += ex.get("working_volume", 0)
             if working_max > 0:
@@ -244,9 +288,9 @@ def _aggregate_exercise_stats(periods):
         second_half_weights = []
         for i, p in enumerate(periods):
             for ex in p.get("exercises", []):
-                if ex["name"] != name or ex.get("is_cardio", False):
+                if ex["name"] != name or ex.get("is_cardio", False) or _warmup_only(ex):
                     continue
-                working_max = ex.get("working_max_weight", 0) or ex.get("max_weight", 0)
+                working_max = _working_max(ex)
                 if working_max > 0:
                     if i < midpoint:
                         first_half_weights.append(working_max)
@@ -264,9 +308,11 @@ def _aggregate_exercise_stats(periods):
         else:
             exercise_trends[name] = None
 
-    # Muscle weekly sets
+    # Working sets per muscle, one entry per period with zeros filled in, so
+    # averages and trends use the report's periods rather than only the periods
+    # in which a muscle happened to be trained.
     muscle_weekly_sets: dict[str, list[int]] = {}
-    for p in periods:
+    for i, p in enumerate(periods):
         period_muscles: dict[str, int] = {}
         for ex in p.get("exercises", []):
             if ex.get("is_cardio", False):
@@ -278,14 +324,12 @@ def _aggregate_exercise_stats(periods):
             for m in muscles:
                 period_muscles[m] = period_muscles.get(m, 0) + working
         for m, sets in period_muscles.items():
-            if m not in muscle_weekly_sets:
-                muscle_weekly_sets[m] = []
-            muscle_weekly_sets[m].append(sets)
+            muscle_weekly_sets.setdefault(m, [0] * len(periods))[i] += sets
 
     return exercise_data, exercise_trends, muscle_weekly_sets, unknown_exercises
 
 
-def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, periods, total_sessions, overall):
+def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, periods, total_sessions, overall, period_type=None):
     """Compute all analysis metrics from aggregated exercise data.
 
     Returns:
@@ -428,73 +472,53 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
     stalled_compounds.sort()
     stalled_isolations.sort()
 
-    # --- Training gaps (weekly reports only) ---
+    # --- Training gaps ---
+    # Only periods of a week or shorter can show a missed week. The decision is
+    # made by period type, not inferred from the cadence: inferring it switched
+    # detection off for exactly the athletes with the most gaps. Dates are
+    # compared by Monday-start week, so a daily or per-workout report from
+    # someone who trains on a different weekday each week shows no false gaps.
     gap_weeks_list = []
-    if start_date and end_date and len(periods) >= 2:
-        # Infer period interval from actual data
-        period_dates_sorted = []
+    gaps_checked = False
+    if start_date and end_date and str(period_type or PeriodType.WEEKLY) in _GAP_PERIOD_TYPES:
+        trained_weeks = set()
         for p in periods:
-            date_str = p.get("date", "")
-            if date_str:
-                try:
-                    period_dates_sorted.append(datetime.strptime(date_str, "%Y-%m-%d").date())
-                except ValueError:
-                    pass
-        period_dates_sorted.sort()
-        period_dates_set = set(period_dates_sorted)
-
-        # Only detect gaps for weekly-ish periods (5-9 day cadence).
-        # The cadence comes from the median of every interval, not the mean of
-        # the first five: a gap early in the range used to drag that mean past
-        # the cutoff and switch off the very feature meant to find it.
-        if len(period_dates_sorted) >= 2:
-            intervals = sorted(
-                (period_dates_sorted[i + 1] - period_dates_sorted[i]).days for i in range(len(period_dates_sorted) - 1)
-            )
-            median_interval = intervals[len(intervals) // 2]
-            if 5 <= median_interval <= 9:  # Weekly
-                # Only recent history is actionable, and listing every missed
-                # week since the first workout dominated the export - 114
-                # entries reaching back years, in a format built for brevity.
-                window_start = max(start_date, end_date - timedelta(weeks=GAP_WINDOW_WEEKS))
-                d = start_date
-                while d <= end_date:
-                    if d >= window_start and d not in period_dates_set:
-                        gap_weeks_list.append(d.isoformat())
-                    d += timedelta(days=7)
+            try:
+                d = datetime.strptime(p.get("date", ""), "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            trained_weeks.add(d - timedelta(days=d.weekday()))
+        if trained_weeks:
+            gaps_checked = True
+            # Only recent history is actionable; an unbounded list reaching back
+            # years dominated the token-efficient export.
+            window_start = max(start_date, end_date - timedelta(weeks=GAP_WINDOW_WEEKS))
+            week = start_date - timedelta(days=start_date.weekday())
+            while week <= end_date:
+                if week + timedelta(days=6) >= window_start and week not in trained_weeks:
+                    gap_weeks_list.append(week.isoformat())
+                week += timedelta(days=7)
 
     # --- Volume trend (first half vs second half) ---
-    half = len(periods) // 2
-    if half > 0 and len(periods) > half:
-        first_half = periods[:half]
-        second_half = periods[half:]
+    # Each half is divided by the calendar weeks it covers. Periods are not
+    # weeks (a month is ~4.35), and in per-workout or daily reports they are
+    # not even equal in length, so one shared weeks-per-period factor made both
+    # halves equal to the overall rate and hid any trend.
+    half, first_weeks, second_weeks = _half_spans(periods, start_date, end_date)
+    first_half_sessions = second_half_sessions = first_half_vol = second_half_vol = vol_change_pct = None
+    if half > 0:
+        first_half, second_half = periods[:half], periods[half:]
 
-        # Periods are not weeks: a monthly report's periods are ~4.35 weeks
-        # each. Dividing through by that keeps the reported figures per week,
-        # which is what the field names and the Markdown labels claim. Without
-        # it a monthly report announced 8.47 sessions per week.
-        weeks_per_period = weeks / period_count if period_count else 1.0
-        weeks_per_period = weeks_per_period or 1.0
+        def _per_week(period_list, stat_key, span_weeks):
+            return sum(p.get("stats", {}).get(stat_key, 0) for p in period_list) / span_weeks
 
-        def _avg_per_week(period_list, stat_key):
-            vals = [p.get("stats", {}).get(stat_key, 0) for p in period_list]
-            per_period = sum(vals) / len(vals) if vals else 0
-            return per_period / weeks_per_period
-
-        first_half_sessions = _avg_per_week(first_half, "session_count")
-        second_half_sessions = _avg_per_week(second_half, "session_count")
-        first_half_vol = _avg_per_week(first_half, "total_volume")
-        second_half_vol = _avg_per_week(second_half, "total_volume")
-        # Signed change: positive means volume grew. The old name asserted a
-        # direction the value does not carry, so a 49.9% increase was exported
-        # as volume_drop_pct 49.9 and read as a halving.
-        vol_change_pct = round(((second_half_vol - first_half_vol) / first_half_vol) * 100, 1) if first_half_vol > 0 else None
-    else:
-        first_half_sessions = None
-        second_half_sessions = None
-        first_half_vol = None
-        second_half_vol = None
-        vol_change_pct = None
+        first_half_sessions = _per_week(first_half, "session_count", first_weeks)
+        second_half_sessions = _per_week(second_half, "session_count", second_weeks)
+        first_half_vol = _per_week(first_half, "total_volume", first_weeks)
+        second_half_vol = _per_week(second_half, "total_volume", second_weeks)
+        # Signed change: positive means volume grew.
+        if first_half_vol > 0:
+            vol_change_pct = round(((second_half_vol - first_half_vol) / first_half_vol) * 100, 1)
 
     # --- Equipment list ---
     equip_counts: dict[str, int] = {}
@@ -528,8 +552,10 @@ def _compute_analysis(exercise_data, exercise_trends, muscle_weekly_sets, period
         "first_half_vol_pw": round(first_half_vol, 0) if first_half_vol is not None else None,
         "second_half_vol_pw": round(second_half_vol, 0) if second_half_vol is not None else None,
         "volume_change_pct": vol_change_pct,
-        "gap_weeks": ",".join(gap_weeks_list) or "none",
-        "gap_window_weeks": GAP_WINDOW_WEEKS,
+        # "n/a" when the period type cannot show a missed week, so a monthly
+        # report does not read as "no missed weeks".
+        "gap_weeks": (",".join(gap_weeks_list) or "none") if gaps_checked else "n/a",
+        "gap_window_weeks": GAP_WINDOW_WEEKS if gaps_checked else None,
         "equipment": equipment_list,
         "cardio_undercount": cardio_undercount,
     }
@@ -818,7 +844,13 @@ def summarize_workouts(processed_data, use_metric=True, tz_name="UTC", group_by=
         workout_data["strength_sessions"] = sessions
 
     # Process workouts: initialize summaries, calculate durations, accumulate stats
-    for _, workout_data in workouts_by_date.items():
+    # Oldest first, so Workouts, Exercise_details sets and the order key follow
+    # training order. The export is newest session first; a stable sort on the
+    # timestamp keeps the within-session row order, which is the only record of
+    # sequence.
+    for bucket_key in sorted(workouts_by_date):
+        workout_data = workouts_by_date[bucket_key]
+        workout_data["exercises"].sort(key=lambda ex: ex["local_datetime"])
         summary_key = workout_data["summary_key"]
         if summary_key not in summaries:
             summaries[summary_key] = {
@@ -1016,7 +1048,7 @@ def aggregate_summaries(summaries, period_type, calendar_aligned=False):
     Returns:
         dict: Aggregated summaries by period
     """
-    sorted_weeks = sorted(summaries.keys(), key=lambda x: datetime.strptime(_parse_summary_key(x)[0], "%Y-%m-%d"))
+    sorted_weeks = sorted(summaries.keys(), key=lambda x: (datetime.strptime(_parse_summary_key(x)[0], "%Y-%m-%d"), x))
 
     if not sorted_weeks:
         return {}
@@ -1159,7 +1191,10 @@ def _format_summary_stats(summary, distance_unit, weight_unit, previous_summary=
     lines.append(f"- {label_prefix}Cardio Time: {seconds_to_time(cardio)}")
     lines.append(f"- Total Distance: {summary.get('Distance', 0):.2f} {distance_unit}")
     lines.append(f"- Total Reps: {summary.get('Reps', 0)}")
-    lines.append(f"- Total Volume: {summary.get('Volume', 0):.2f} {weight_unit}*reps")
+    lines.append(f"- Total Volume (incl. warm-ups): {summary.get('Volume', 0):.2f} {weight_unit}*reps")
+    if summary.get("Exercise_details"):
+        working = sum(d.get("working_volume", 0) for d in summary["Exercise_details"].values())
+        lines.append(f"- Working Volume: {working:.2f} {weight_unit}*reps")
 
     if previous_summary:
         prev_dist = previous_summary.get("Distance", 0)
@@ -1215,6 +1250,8 @@ def _render_detailed_exercises(report, period_key, exercise_data, weight_unit, s
             report.append(f"- Total Duration: {seconds_to_time(details['total_duration'])}")
         report.append(f"- Max Weight: {details['max_weight']:.1f} {weight_unit}")
         report.append(f"- Total Volume: {details['total_volume']:.1f} {weight_unit}*reps")
+        if details["warmup_sets"]:
+            report.append(f"- Working Volume: {details.get('working_volume', 0):.1f} {weight_unit}*reps")
 
         report.append("\nSet Progression:")
         report.append("| Set | Weight | Reps | Type |")
@@ -1289,15 +1326,16 @@ def generate_period_summary(period_name, period_summary, use_metric, previous_pe
                 lines.append(f"- Total Duration: {seconds_to_time(details['total_duration'])}")
             lines.append(f"- Max Weight: {details['max_weight']:.1f} {weight_unit}")
             lines.append(f"- Total Volume: {details['total_volume']:.1f} {weight_unit}*reps")
+            if details["warmup_sets"]:
+                lines.append(f"- Working Volume: {details.get('working_volume', 0):.1f} {weight_unit}*reps")
 
             # Show set progression
             lines.append("\nSet Progression:")
             lines.append("| Set | Weight | Reps | Type |")
             lines.append("|-----|---------|------|------|")
 
-            # Sort sets by date and time
-            sorted_sets = sorted(details["sets"], key=lambda x: (x["is_warmup"], -x["weight"]))
-            for i, set_info in enumerate(sorted_sets, 1):
+            # Sets are stored in the order performed; keep it.
+            for i, set_info in enumerate(details["sets"], 1):
                 lines.append(
                     f"| {i} | {set_info['weight']:.1f} {weight_unit} | "
                     f"{set_info['reps']} | "
@@ -1382,7 +1420,7 @@ def generate_markdown_report(
                     "total_volume": details["total_volume"],
                     "working_volume": details.get("working_volume", 0),
                     "order": details.get("order"),
-                    "sets": sorted(details["sets"], key=lambda x: (x["is_warmup"], -x["weight"])),
+                    "sets": details["sets"],
                 }
 
     # Calculate overall totals
@@ -1399,19 +1437,21 @@ def generate_markdown_report(
     }
 
     # Get all periods sorted by date
-    sorted_weeks = sorted(summaries.keys(), key=lambda x: datetime.strptime(_parse_summary_key(x)[0], "%Y-%m-%d"))
+    sorted_weeks = sorted(summaries.keys(), key=lambda x: (datetime.strptime(_parse_summary_key(x)[0], "%Y-%m-%d"), x))
 
     # Single source of truth for period averages and analysis. Built once here
     # rather than separately in each section, which is what let the Markdown and
     # JSON averages drift apart.
-    structured = _build_structured_report(
-        summaries,
-        use_metric,
-        report_format,
-        period_type,
-        calendar_aligned,
-        include_analysis,
-    )
+    analysis_error = None
+    try:
+        structured = _build_structured_report(
+            summaries, use_metric, report_format, period_type, calendar_aligned, include_analysis
+        )
+    except Exception as e:  # noqa: BLE001 - a failed analysis must not lose the whole report
+        if not include_analysis:
+            raise
+        analysis_error = e
+        structured = _build_structured_report(summaries, use_metric, report_format, period_type, calendar_aligned, False)
 
     if sorted_weeks:
         # Set date range
@@ -1520,6 +1560,8 @@ def generate_markdown_report(
     # Analysis Summary (computed from structured report data)
     if include_analysis:
         try:
+            if analysis_error:
+                raise analysis_error
             analysis = structured.get("analysis")
             if analysis:
                 report.append("\n# Analysis Summary\n")
@@ -1560,7 +1602,7 @@ def generate_markdown_report(
                         report.append(f"- Change: {vol_change:+.1f}%")
                     report.append("")
                 gap_weeks = analysis.get("gap_weeks", "none")
-                if gap_weeks != "none":
+                if gap_weeks not in ("none", "n/a"):
                     report.append(f"### Training Gaps\nWeeks with no data: {gap_weeks}")
                     report.append("")
         except Exception as e:
@@ -1635,7 +1677,7 @@ def _build_structured_report(
         effective_summaries = summaries
 
     def _sort_key(x):
-        return _period_key_to_date(x)
+        return (_period_key_to_date(x), x)
 
     sorted_keys = sorted(effective_summaries.keys(), key=_sort_key)
 
@@ -1725,7 +1767,7 @@ def _build_structured_report(
         periods.append(period_entry)
 
     # Overall summary (always from original summaries for accurate totals)
-    raw_sorted = sorted(summaries.keys(), key=lambda x: datetime.strptime(_parse_summary_key(x)[0], "%Y-%m-%d"))
+    raw_sorted = sorted(summaries.keys(), key=lambda x: (datetime.strptime(_parse_summary_key(x)[0], "%Y-%m-%d"), x))
     overall_start = _parse_summary_key(raw_sorted[0])[0] if raw_sorted else None
     overall_end = _parse_summary_key(raw_sorted[-1])[1] if raw_sorted else None
 
@@ -1786,6 +1828,7 @@ def _build_structured_report(
             periods,
             total_sess,
             overall,
+            period_type,
         )
         analysis["unknown_exercise_count"] = len(unknown_exercises)
 
@@ -1942,6 +1985,8 @@ def generate_gpt_report(
                 period_label = f"{p.get('date', '')} to {period_end}"
             else:
                 period_label = p.get("date", "")
+            if p.get("time"):
+                period_label = f"{period_label} {p['time']}"
         strength_sec = 0
         cardio_sec = 0
         if "strength_time" in stats:
@@ -1970,7 +2015,9 @@ def generate_gpt_report(
             exercise_trend_strs[name] = "N/A"
 
     lines.append("## exercise_stats")
-    lines.append(f"exercise\tsessions\tworking_sets\ttotal_reps\tmax_{weight_unit}\tavg_{weight_unit}\ttotal_volume\ttrend")
+    lines.append(
+        f"exercise\tsessions\tworking_sets\tworking_reps\tmax_{weight_unit}\tavg_{weight_unit}\tworking_volume\ttrend"
+    )
 
     for name in sorted(exercise_data.keys()):
         d = exercise_data[name]
@@ -1984,6 +2031,14 @@ def generate_gpt_report(
     lines.append("")
 
     # --- Muscle Volume ---
+    try:
+        start_d = datetime.strptime(start, "%Y-%m-%d").date()
+        end_d = datetime.strptime(end, "%Y-%m-%d").date()
+        report_weeks = ((end_d - start_d).days + 1) / 7.0
+    except (ValueError, TypeError):
+        start_d = end_d = None
+        report_weeks = max(len(periods), 1)
+    half, first_weeks, second_weeks = _half_spans(periods, start_d, end_d)
     lines.append("## muscle_volume")
     lines.append("muscle\tweekly_avg_sets\ttrend")
 
@@ -1991,13 +2046,13 @@ def generate_gpt_report(
         if muscle == "unknown":
             continue
         weekly = muscle_weekly_sets[muscle]
-        # Divide by every period, not only the periods in which the muscle was
-        # trained, to match the analysis block.
-        avg = round(sum(weekly) / max(len(periods), 1), 1) if weekly else 0
-        midpoint = len(weekly) // 2
-        if midpoint > 0 and len(weekly) > midpoint:
-            first_avg = sum(weekly[:midpoint]) / midpoint
-            second_avg = sum(weekly[midpoint:]) / (len(weekly) - midpoint)
+        # Per calendar week of the report, whatever the period type: dividing by
+        # periods made a yearly report claim 428.8 "weekly" chest sets.
+        avg = round(sum(weekly) / report_weeks, 1) if weekly else 0
+        # Same halves and per-week basis as the analysis block's volume trend.
+        if half > 0:
+            first_avg = sum(weekly[:half]) / first_weeks
+            second_avg = sum(weekly[half:]) / second_weeks
             if first_avg > 0:
                 trend = ((second_avg - first_avg) / first_avg) * 100
                 trend_str = f"{trend:+.1f}%"
@@ -2081,15 +2136,16 @@ def generate_gpt_report(
                 else:
                     exercises_compact.append(name)
             elif ws > 0 and reps > 0:
-                # Divide working reps by working sets. Using total_reps here
-                # folded warmup reps into the working-set average, inflating
-                # every prescription in proportion to how much the athlete
-                # warmed up - 3x4 was reported as 3x8.
-                reps_per_set = reps // ws
-                if max_w > 0:
-                    exercises_compact.append(f"{name}:{ws}x{reps_per_set}@{round(max_w, 1)}{weight_unit}")
+                # Working sets only: warm-up reps inflated every prescription
+                # (3x4 was reported as 3x8). Uneven sets are listed rather than
+                # averaged, so 10,8,8 is not shown as 3x8.
+                working_reps = [s["reps"] for s in ex.get("sets", []) if not s["is_warmup"]]
+                if len(set(working_reps)) > 1:
+                    scheme = "/".join(str(r) for r in working_reps)
                 else:
-                    exercises_compact.append(f"{name}:{ws}x{reps_per_set}")
+                    scheme = f"{ws}x{working_reps[0] if working_reps else reps // ws}"
+                suffix = f"@{round(max_w, 1)}{weight_unit}" if max_w > 0 else ""
+                exercises_compact.append(f"{name}:{scheme}{suffix}")
             else:
                 exercises_compact.append(name)
         lines.append(f"{date}\t{','.join(exercises_compact)}")
