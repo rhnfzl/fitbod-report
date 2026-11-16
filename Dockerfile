@@ -1,11 +1,6 @@
 # Runs the Streamlit app from the locked dependency set.
 FROM python:3.13-slim
 
-# markdown-pdf renders via PyMuPDF, which needs libgl/glib at runtime.
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY --from=ghcr.io/astral-sh/uv:0.12.3 /uv /usr/local/bin/uv
 
 WORKDIR /app
@@ -15,7 +10,11 @@ COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --locked --no-install-project
 
 COPY . .
-RUN uv sync --locked
+RUN uv sync --locked \
+    && useradd --create-home --uid 10001 app
+
+# The app only reads its code and venv; it does not need root.
+USER app
 
 ENV PATH="/app/.venv/bin:$PATH" \
     STREAMLIT_SERVER_HEADLESS=true \

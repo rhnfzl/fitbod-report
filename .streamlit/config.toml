@@ -2,6 +2,6 @@
 base = "light"
 
 [server]
-# A real Fitbod export is well under 1 MB. Streamlit's 200 MB default lets a
+# A multi-year Fitbod export is about 1 MB. Streamlit's 200 MB default lets a
 # single request expand into a multi-GB DataFrame and exhaust the container.
 maxUploadSize = 10

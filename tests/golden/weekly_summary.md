@@ -6,21 +6,22 @@
 - Treadmill: 4.20 km
 
 ### Volume by Exercise
-- Back Squat: 1750.00 kg*reps
-- Barbell Bench Press: 1280.00 kg*reps
-- Barbell Shoulder Press: 840.00 kg*reps
+- Back Squat: 1800.00 kg*reps
+- Barbell Bench Press: 1440.00 kg*reps
+- Barbell Shoulder Press: 640.00 kg*reps
 - Cable Row: 1100.00 kg*reps
-- Deadlift: 2140.00 kg*reps
-- Dumbbell Bicep Curl: 672.00 kg*reps
+- Deadlift: 2010.00 kg*reps
+- Dumbbell Bicep Curl: 616.00 kg*reps
 - My Custom Rehab Press: 300.00 kg*reps
 
 ### Summary Statistics
-- Total Workout Time: 1h 8m 0s
-- Strength Training Time: 0h 43m 0s
+- Total Workout Time: 1h 7m 0s
+- Strength Training Time: 0h 42m 0s
 - Cardio Time: 0h 25m 0s
 - Total Distance: 4.20 km
-- Total Reps: 183
-- Total Volume: 8082.00 kg*reps
+- Total Reps: 169
+- Total Volume (incl. warm-ups): 7906.00 kg*reps
+- Working Volume: 6556.00 kg*reps
 
 ---
 
@@ -30,21 +31,22 @@
 - Treadmill: 4.20 km
 
 ### Volume by Exercise
-- Back Squat: 1750.00 kg*reps
-- Barbell Bench Press: 1280.00 kg*reps
-- Barbell Shoulder Press: 840.00 kg*reps
+- Back Squat: 1800.00 kg*reps
+- Barbell Bench Press: 1440.00 kg*reps
+- Barbell Shoulder Press: 640.00 kg*reps
 - Cable Row: 1100.00 kg*reps
-- Deadlift: 2140.00 kg*reps
-- Dumbbell Bicep Curl: 672.00 kg*reps
+- Deadlift: 2010.00 kg*reps
+- Dumbbell Bicep Curl: 616.00 kg*reps
 - My Custom Rehab Press: 300.00 kg*reps
 
 ### Summary Statistics
-- Total Workout Time: 1h 8m 0s
-- Strength Training Time: 0h 43m 0s
+- Total Workout Time: 1h 7m 0s
+- Strength Training Time: 0h 42m 0s
 - Cardio Time: 0h 25m 0s
 - Total Distance: 4.20 km
-- Total Reps: 183
-- Total Volume: 8082.00 kg*reps
+- Total Reps: 169
+- Total Volume (incl. warm-ups): 7906.00 kg*reps
+- Working Volume: 6556.00 kg*reps
 - Distance Change: 0.00%
 - Volume Change: 0.00%
 
@@ -56,21 +58,22 @@
 - Treadmill: 4.20 km
 
 ### Volume by Exercise
-- Back Squat: 1750.00 kg*reps
-- Barbell Bench Press: 1280.00 kg*reps
-- Barbell Shoulder Press: 840.00 kg*reps
+- Back Squat: 1800.00 kg*reps
+- Barbell Bench Press: 1440.00 kg*reps
+- Barbell Shoulder Press: 640.00 kg*reps
 - Cable Row: 1100.00 kg*reps
-- Deadlift: 2140.00 kg*reps
-- Dumbbell Bicep Curl: 672.00 kg*reps
+- Deadlift: 2010.00 kg*reps
+- Dumbbell Bicep Curl: 616.00 kg*reps
 - My Custom Rehab Press: 300.00 kg*reps
 
 ### Summary Statistics
-- Total Workout Time: 1h 8m 0s
-- Strength Training Time: 0h 43m 0s
+- Total Workout Time: 1h 7m 0s
+- Strength Training Time: 0h 42m 0s
 - Cardio Time: 0h 25m 0s
 - Total Distance: 4.20 km
-- Total Reps: 183
-- Total Volume: 8082.00 kg*reps
+- Total Reps: 169
+- Total Volume (incl. warm-ups): 7906.00 kg*reps
+- Working Volume: 6556.00 kg*reps
 - Distance Change: 0.00%
 - Volume Change: 0.00%
 
@@ -82,21 +85,22 @@
 - Treadmill: 4.20 km
 
 ### Volume by Exercise
-- Back Squat: 1750.00 kg*reps
-- Barbell Bench Press: 1280.00 kg*reps
-- Barbell Shoulder Press: 840.00 kg*reps
+- Back Squat: 1800.00 kg*reps
+- Barbell Bench Press: 1440.00 kg*reps
+- Barbell Shoulder Press: 640.00 kg*reps
 - Cable Row: 1100.00 kg*reps
-- Deadlift: 2140.00 kg*reps
-- Dumbbell Bicep Curl: 672.00 kg*reps
+- Deadlift: 2010.00 kg*reps
+- Dumbbell Bicep Curl: 616.00 kg*reps
 - My Custom Rehab Press: 300.00 kg*reps
 
 ### Summary Statistics
-- Total Workout Time: 1h 8m 0s
-- Strength Training Time: 0h 43m 0s
+- Total Workout Time: 1h 7m 0s
+- Strength Training Time: 0h 42m 0s
 - Cardio Time: 0h 25m 0s
 - Total Distance: 4.20 km
-- Total Reps: 183
-- Total Volume: 8082.00 kg*reps
+- Total Reps: 169
+- Total Volume (incl. warm-ups): 7906.00 kg*reps
+- Working Volume: 6556.00 kg*reps
 - Distance Change: 0.00%
 - Volume Change: 0.00%
 
@@ -108,21 +112,22 @@
 - Treadmill: 4.20 km
 
 ### Volume by Exercise
-- Back Squat: 1750.00 kg*reps
-- Barbell Bench Press: 1280.00 kg*reps
-- Barbell Shoulder Press: 840.00 kg*reps
+- Back Squat: 1800.00 kg*reps
+- Barbell Bench Press: 1440.00 kg*reps
+- Barbell Shoulder Press: 640.00 kg*reps
 - Cable Row: 1100.00 kg*reps
-- Deadlift: 2140.00 kg*reps
-- Dumbbell Bicep Curl: 672.00 kg*reps
+- Deadlift: 2010.00 kg*reps
+- Dumbbell Bicep Curl: 616.00 kg*reps
 - My Custom Rehab Press: 300.00 kg*reps
 
 ### Summary Statistics
-- Total Workout Time: 1h 8m 0s
-- Strength Training Time: 0h 43m 0s
+- Total Workout Time: 1h 7m 0s
+- Strength Training Time: 0h 42m 0s
 - Cardio Time: 0h 25m 0s
 - Total Distance: 4.20 km
-- Total Reps: 183
-- Total Volume: 8082.00 kg*reps
+- Total Reps: 169
+- Total Volume (incl. warm-ups): 7906.00 kg*reps
+- Working Volume: 6556.00 kg*reps
 - Distance Change: 0.00%
 - Volume Change: 0.00%
 
@@ -134,21 +139,22 @@
 - Treadmill: 4.20 km
 
 ### Volume by Exercise
-- Back Squat: 1750.00 kg*reps
-- Barbell Bench Press: 1280.00 kg*reps
-- Barbell Shoulder Press: 840.00 kg*reps
+- Back Squat: 1800.00 kg*reps
+- Barbell Bench Press: 1440.00 kg*reps
+- Barbell Shoulder Press: 640.00 kg*reps
 - Cable Row: 1100.00 kg*reps
-- Deadlift: 2140.00 kg*reps
-- Dumbbell Bicep Curl: 672.00 kg*reps
+- Deadlift: 2010.00 kg*reps
+- Dumbbell Bicep Curl: 616.00 kg*reps
 - My Custom Rehab Press: 300.00 kg*reps
 
 ### Summary Statistics
-- Total Workout Time: 1h 8m 0s
-- Strength Training Time: 0h 43m 0s
+- Total Workout Time: 1h 7m 0s
+- Strength Training Time: 0h 42m 0s
 - Cardio Time: 0h 25m 0s
 - Total Distance: 4.20 km
-- Total Reps: 183
-- Total Volume: 8082.00 kg*reps
+- Total Reps: 169
+- Total Volume (incl. warm-ups): 7906.00 kg*reps
+- Working Volume: 6556.00 kg*reps
 - Distance Change: 0.00%
 - Volume Change: 0.00%
 
@@ -160,21 +166,22 @@
 - Treadmill: 4.20 km
 
 ### Volume by Exercise
-- Back Squat: 1750.00 kg*reps
-- Barbell Bench Press: 1280.00 kg*reps
-- Barbell Shoulder Press: 840.00 kg*reps
+- Back Squat: 1800.00 kg*reps
+- Barbell Bench Press: 1440.00 kg*reps
+- Barbell Shoulder Press: 640.00 kg*reps
 - Cable Row: 1100.00 kg*reps
-- Deadlift: 2140.00 kg*reps
-- Dumbbell Bicep Curl: 672.00 kg*reps
+- Deadlift: 2010.00 kg*reps
+- Dumbbell Bicep Curl: 616.00 kg*reps
 - My Custom Rehab Press: 300.00 kg*reps
 
 ### Summary Statistics
-- Total Workout Time: 1h 8m 0s
-- Strength Training Time: 0h 43m 0s
+- Total Workout Time: 1h 11m 0s
+- Strength Training Time: 0h 46m 0s
 - Cardio Time: 0h 25m 0s
 - Total Distance: 4.20 km
-- Total Reps: 183
-- Total Volume: 8082.00 kg*reps
+- Total Reps: 169
+- Total Volume (incl. warm-ups): 7906.00 kg*reps
+- Working Volume: 6556.00 kg*reps
 - Distance Change: 0.00%
 - Volume Change: 0.00%
 
@@ -183,7 +190,7 @@
 
 # Analysis Summary
 
-- **Experience Level**: Intermediate (score: 41.3/100)
+- **Experience Level**: Intermediate (score: 41.2/100)
 - **Push:Pull Ratio**: 0.57:1 (target: 1:1 to 1:1.5)
 - **Upper:Lower Ratio**: 1.5:1 (lower body: 40.0%)
 - **Equipment Used**: barbell, bodyweight, cable station, dumbbells
@@ -200,9 +207,9 @@
 | My Custom Rehab Press | +0.0% | Isolation |
 
 ### Volume Trend
-- First half: 1.75 sessions/week, 7,072 volume/week
-- Second half: 1.75 sessions/week, 7,072 volume/week
-- Change: +0.0%
+- First half: 3.0 sessions/week, 7,906 volume/week
+- Second half: 2.6 sessions/week, 6,325 volume/week
+- Change: -20.0%
 
 ### Training Gaps
 Weeks with no data: 2025-02-10
@@ -214,26 +221,26 @@ Weeks with no data: 2025-02-10
 - Treadmill: 29.40 km
 
 ### Total Volume by Exercise
-- Back Squat: 12250.00 kg*reps
-- Barbell Bench Press: 8960.00 kg*reps
-- Barbell Shoulder Press: 5880.00 kg*reps
+- Back Squat: 12600.00 kg*reps
+- Barbell Bench Press: 10080.00 kg*reps
+- Barbell Shoulder Press: 4480.00 kg*reps
 - Cable Row: 7700.00 kg*reps
-- Deadlift: 14980.00 kg*reps
-- Dumbbell Bicep Curl: 4704.00 kg*reps
+- Deadlift: 14070.00 kg*reps
+- Dumbbell Bicep Curl: 4312.00 kg*reps
 - My Custom Rehab Press: 2100.00 kg*reps
 
 ### Overall Summary Statistics
-- Total Workout Time: 7h 56m 0s
-- Total Strength Training Time: 5h 1m 0s
+- Total Workout Time: 7h 53m 0s
+- Total Strength Training Time: 4h 58m 0s
 - Total Cardio Time: 2h 55m 0s
 - Total Distance: 29.40 km
-- Total Reps: 1281
-- Total Volume: 56574.00 kg*reps
+- Total Reps: 1183
+- Total Volume (incl. warm-ups): 55342.00 kg*reps
 
 ### Weekly Averages
-- Average Workout Time: 1h 8m 0s
-- Average Strength Training Time: 0h 43m 0s
+- Average Workout Time: 1h 7m 34s
+- Average Strength Training Time: 0h 42m 34s
 - Average Cardio Time: 0h 25m 0s
 - Average Distance: 4.20 km
-- Average Reps: 183
-- Average Volume: 8082.00 kg*reps
+- Average Reps: 169
+- Average Volume: 7906.00 kg*reps

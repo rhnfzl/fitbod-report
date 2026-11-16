@@ -1,8 +1,16 @@
 .git
+.github
 .venv
 input
 tests/golden
-__pycache__
-*.pyc
+**/__pycache__
+**/*.pyc
 .pytest_cache
 .ruff_cache
+# Personal data, mirroring .gitignore: never bake an export or report into an image
+**/*.csv
+!tests/fixtures/*.csv
+workout_data
+output
+.env
+*.pdf

@@ -173,6 +173,8 @@ cython_debug/
 # Workout data
 workout_data/
 *.csv
+# Fictional fixture data used by the tests
+!tests/fixtures/*.csv
 
 # AI agent instructions
 CLAUDE.md

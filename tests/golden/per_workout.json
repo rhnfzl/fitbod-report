@@ -13,11 +13,11 @@
           "name": "Deadlift",
           "working_sets": 3,
           "warmup_sets": 2,
-          "total_reps": 22,
+          "total_reps": 20,
           "working_reps": 12,
           "max_weight": 120.0,
           "weight_unit": "kg",
-          "total_volume": 2140.0,
+          "total_volume": 2010.0,
           "working_volume": 1440.0,
           "working_max_weight": 120.0,
           "is_cardio": false
@@ -30,7 +30,7 @@
           "working_reps": 12,
           "max_weight": 80.0,
           "weight_unit": "kg",
-          "total_volume": 1280.0,
+          "total_volume": 1440.0,
           "working_volume": 960.0,
           "working_max_weight": 80.0,
           "is_cardio": false
@@ -70,8 +70,8 @@
         "cardio_time": "0h 0m 0s",
         "total_distance": 0.0,
         "distance_unit": "km",
-        "total_reps": 83,
-        "total_volume": 4520.0,
+        "total_reps": 81,
+        "total_volume": 4550.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -88,7 +88,7 @@
           "working_reps": 15,
           "max_weight": 100.0,
           "weight_unit": "kg",
-          "total_volume": 1750.0,
+          "total_volume": 1800.0,
           "working_volume": 1500.0,
           "working_max_weight": 100.0,
           "is_cardio": false
@@ -96,12 +96,12 @@
         {
           "name": "Barbell Shoulder Press",
           "working_sets": 2,
-          "warmup_sets": 1,
-          "total_reps": 26,
+          "warmup_sets": 0,
+          "total_reps": 16,
           "working_reps": 16,
           "max_weight": 40.0,
           "weight_unit": "kg",
-          "total_volume": 840.0,
+          "total_volume": 640.0,
           "working_volume": 640.0,
           "working_max_weight": 40.0,
           "is_cardio": false
@@ -110,12 +110,12 @@
           "name": "Dumbbell Bicep Curl",
           "working_sets": 2,
           "warmup_sets": 0,
-          "total_reps": 24,
-          "working_reps": 24,
+          "total_reps": 22,
+          "working_reps": 22,
           "max_weight": 28.0,
           "weight_unit": "kg",
-          "total_volume": 672.0,
-          "working_volume": 672.0,
+          "total_volume": 616.0,
+          "working_volume": 616.0,
           "working_max_weight": 28.0,
           "is_cardio": false
         },
@@ -131,7 +131,26 @@
           "working_volume": 300.0,
           "working_max_weight": 10.0,
           "is_cardio": false
-        },
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 19m 0s",
+        "total_workout_seconds": 1140,
+        "strength_time": "0h 19m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 88,
+        "total_volume": 3356.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-01-09",
+      "day_of_week": "Thursday",
+      "time": "19:20",
+      "exercises": [
         {
           "name": "Treadmill",
           "working_sets": 1,
@@ -150,14 +169,14 @@
       ],
       "stats": {
         "session_count": 1,
-        "total_workout_time": "0h 45m 0s",
-        "total_workout_seconds": 2700.0,
-        "strength_time": "0h 20m 0s",
+        "total_workout_time": "0h 25m 0s",
+        "total_workout_seconds": 1500.0,
+        "strength_time": "0h 0m 0s",
         "cardio_time": "0h 25m 0s",
         "total_distance": 4.2,
         "distance_unit": "km",
-        "total_reps": 100,
-        "total_volume": 3562.0,
+        "total_reps": 0,
+        "total_volume": 0.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -170,11 +189,11 @@
           "name": "Deadlift",
           "working_sets": 3,
           "warmup_sets": 2,
-          "total_reps": 22,
+          "total_reps": 20,
           "working_reps": 12,
           "max_weight": 120.0,
           "weight_unit": "kg",
-          "total_volume": 2140.0,
+          "total_volume": 2010.0,
           "working_volume": 1440.0,
           "working_max_weight": 120.0,
           "is_cardio": false
@@ -187,7 +206,7 @@
           "working_reps": 12,
           "max_weight": 80.0,
           "weight_unit": "kg",
-          "total_volume": 1280.0,
+          "total_volume": 1440.0,
           "working_volume": 960.0,
           "working_max_weight": 80.0,
           "is_cardio": false
@@ -227,8 +246,8 @@
         "cardio_time": "0h 0m 0s",
         "total_distance": 0.0,
         "distance_unit": "km",
-        "total_reps": 83,
-        "total_volume": 4520.0,
+        "total_reps": 81,
+        "total_volume": 4550.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -245,7 +264,7 @@
           "working_reps": 15,
           "max_weight": 100.0,
           "weight_unit": "kg",
-          "total_volume": 1750.0,
+          "total_volume": 1800.0,
           "working_volume": 1500.0,
           "working_max_weight": 100.0,
           "is_cardio": false
@@ -253,12 +272,12 @@
         {
           "name": "Barbell Shoulder Press",
           "working_sets": 2,
-          "warmup_sets": 1,
-          "total_reps": 26,
+          "warmup_sets": 0,
+          "total_reps": 16,
           "working_reps": 16,
           "max_weight": 40.0,
           "weight_unit": "kg",
-          "total_volume": 840.0,
+          "total_volume": 640.0,
           "working_volume": 640.0,
           "working_max_weight": 40.0,
           "is_cardio": false
@@ -267,12 +286,12 @@
           "name": "Dumbbell Bicep Curl",
           "working_sets": 2,
           "warmup_sets": 0,
-          "total_reps": 24,
-          "working_reps": 24,
+          "total_reps": 22,
+          "working_reps": 22,
           "max_weight": 28.0,
           "weight_unit": "kg",
-          "total_volume": 672.0,
-          "working_volume": 672.0,
+          "total_volume": 616.0,
+          "working_volume": 616.0,
           "working_max_weight": 28.0,
           "is_cardio": false
         },
@@ -288,7 +307,26 @@
           "working_volume": 300.0,
           "working_max_weight": 10.0,
           "is_cardio": false
-        },
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 19m 0s",
+        "total_workout_seconds": 1140,
+        "strength_time": "0h 19m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 88,
+        "total_volume": 3356.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-01-16",
+      "day_of_week": "Thursday",
+      "time": "19:20",
+      "exercises": [
         {
           "name": "Treadmill",
           "working_sets": 1,
@@ -307,14 +345,14 @@
       ],
       "stats": {
         "session_count": 1,
-        "total_workout_time": "0h 45m 0s",
-        "total_workout_seconds": 2700.0,
-        "strength_time": "0h 20m 0s",
+        "total_workout_time": "0h 25m 0s",
+        "total_workout_seconds": 1500.0,
+        "strength_time": "0h 0m 0s",
         "cardio_time": "0h 25m 0s",
         "total_distance": 4.2,
         "distance_unit": "km",
-        "total_reps": 100,
-        "total_volume": 3562.0,
+        "total_reps": 0,
+        "total_volume": 0.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -327,11 +365,11 @@
           "name": "Deadlift",
           "working_sets": 3,
           "warmup_sets": 2,
-          "total_reps": 22,
+          "total_reps": 20,
           "working_reps": 12,
           "max_weight": 120.0,
           "weight_unit": "kg",
-          "total_volume": 2140.0,
+          "total_volume": 2010.0,
           "working_volume": 1440.0,
           "working_max_weight": 120.0,
           "is_cardio": false
@@ -344,7 +382,7 @@
           "working_reps": 12,
           "max_weight": 80.0,
           "weight_unit": "kg",
-          "total_volume": 1280.0,
+          "total_volume": 1440.0,
           "working_volume": 960.0,
           "working_max_weight": 80.0,
           "is_cardio": false
@@ -384,8 +422,8 @@
         "cardio_time": "0h 0m 0s",
         "total_distance": 0.0,
         "distance_unit": "km",
-        "total_reps": 83,
-        "total_volume": 4520.0,
+        "total_reps": 81,
+        "total_volume": 4550.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -402,7 +440,7 @@
           "working_reps": 15,
           "max_weight": 100.0,
           "weight_unit": "kg",
-          "total_volume": 1750.0,
+          "total_volume": 1800.0,
           "working_volume": 1500.0,
           "working_max_weight": 100.0,
           "is_cardio": false
@@ -410,12 +448,12 @@
         {
           "name": "Barbell Shoulder Press",
           "working_sets": 2,
-          "warmup_sets": 1,
-          "total_reps": 26,
+          "warmup_sets": 0,
+          "total_reps": 16,
           "working_reps": 16,
           "max_weight": 40.0,
           "weight_unit": "kg",
-          "total_volume": 840.0,
+          "total_volume": 640.0,
           "working_volume": 640.0,
           "working_max_weight": 40.0,
           "is_cardio": false
@@ -424,12 +462,12 @@
           "name": "Dumbbell Bicep Curl",
           "working_sets": 2,
           "warmup_sets": 0,
-          "total_reps": 24,
-          "working_reps": 24,
+          "total_reps": 22,
+          "working_reps": 22,
           "max_weight": 28.0,
           "weight_unit": "kg",
-          "total_volume": 672.0,
-          "working_volume": 672.0,
+          "total_volume": 616.0,
+          "working_volume": 616.0,
           "working_max_weight": 28.0,
           "is_cardio": false
         },
@@ -445,7 +483,26 @@
           "working_volume": 300.0,
           "working_max_weight": 10.0,
           "is_cardio": false
-        },
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 19m 0s",
+        "total_workout_seconds": 1140,
+        "strength_time": "0h 19m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 88,
+        "total_volume": 3356.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-01-23",
+      "day_of_week": "Thursday",
+      "time": "19:20",
+      "exercises": [
         {
           "name": "Treadmill",
           "working_sets": 1,
@@ -464,14 +521,14 @@
       ],
       "stats": {
         "session_count": 1,
-        "total_workout_time": "0h 45m 0s",
-        "total_workout_seconds": 2700.0,
-        "strength_time": "0h 20m 0s",
+        "total_workout_time": "0h 25m 0s",
+        "total_workout_seconds": 1500.0,
+        "strength_time": "0h 0m 0s",
         "cardio_time": "0h 25m 0s",
         "total_distance": 4.2,
         "distance_unit": "km",
-        "total_reps": 100,
-        "total_volume": 3562.0,
+        "total_reps": 0,
+        "total_volume": 0.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -484,11 +541,11 @@
           "name": "Deadlift",
           "working_sets": 3,
           "warmup_sets": 2,
-          "total_reps": 22,
+          "total_reps": 20,
           "working_reps": 12,
           "max_weight": 120.0,
           "weight_unit": "kg",
-          "total_volume": 2140.0,
+          "total_volume": 2010.0,
           "working_volume": 1440.0,
           "working_max_weight": 120.0,
           "is_cardio": false
@@ -501,7 +558,7 @@
           "working_reps": 12,
           "max_weight": 80.0,
           "weight_unit": "kg",
-          "total_volume": 1280.0,
+          "total_volume": 1440.0,
           "working_volume": 960.0,
           "working_max_weight": 80.0,
           "is_cardio": false
@@ -541,8 +598,8 @@
         "cardio_time": "0h 0m 0s",
         "total_distance": 0.0,
         "distance_unit": "km",
-        "total_reps": 83,
-        "total_volume": 4520.0,
+        "total_reps": 81,
+        "total_volume": 4550.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -559,7 +616,7 @@
           "working_reps": 15,
           "max_weight": 100.0,
           "weight_unit": "kg",
-          "total_volume": 1750.0,
+          "total_volume": 1800.0,
           "working_volume": 1500.0,
           "working_max_weight": 100.0,
           "is_cardio": false
@@ -567,12 +624,12 @@
         {
           "name": "Barbell Shoulder Press",
           "working_sets": 2,
-          "warmup_sets": 1,
-          "total_reps": 26,
+          "warmup_sets": 0,
+          "total_reps": 16,
           "working_reps": 16,
           "max_weight": 40.0,
           "weight_unit": "kg",
-          "total_volume": 840.0,
+          "total_volume": 640.0,
           "working_volume": 640.0,
           "working_max_weight": 40.0,
           "is_cardio": false
@@ -581,12 +638,12 @@
           "name": "Dumbbell Bicep Curl",
           "working_sets": 2,
           "warmup_sets": 0,
-          "total_reps": 24,
-          "working_reps": 24,
+          "total_reps": 22,
+          "working_reps": 22,
           "max_weight": 28.0,
           "weight_unit": "kg",
-          "total_volume": 672.0,
-          "working_volume": 672.0,
+          "total_volume": 616.0,
+          "working_volume": 616.0,
           "working_max_weight": 28.0,
           "is_cardio": false
         },
@@ -602,7 +659,26 @@
           "working_volume": 300.0,
           "working_max_weight": 10.0,
           "is_cardio": false
-        },
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 19m 0s",
+        "total_workout_seconds": 1140,
+        "strength_time": "0h 19m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 88,
+        "total_volume": 3356.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-01-30",
+      "day_of_week": "Thursday",
+      "time": "19:20",
+      "exercises": [
         {
           "name": "Treadmill",
           "working_sets": 1,
@@ -621,14 +697,14 @@
       ],
       "stats": {
         "session_count": 1,
-        "total_workout_time": "0h 45m 0s",
-        "total_workout_seconds": 2700.0,
-        "strength_time": "0h 20m 0s",
+        "total_workout_time": "0h 25m 0s",
+        "total_workout_seconds": 1500.0,
+        "strength_time": "0h 0m 0s",
         "cardio_time": "0h 25m 0s",
         "total_distance": 4.2,
         "distance_unit": "km",
-        "total_reps": 100,
-        "total_volume": 3562.0,
+        "total_reps": 0,
+        "total_volume": 0.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -641,11 +717,11 @@
           "name": "Deadlift",
           "working_sets": 3,
           "warmup_sets": 2,
-          "total_reps": 22,
+          "total_reps": 20,
           "working_reps": 12,
           "max_weight": 120.0,
           "weight_unit": "kg",
-          "total_volume": 2140.0,
+          "total_volume": 2010.0,
           "working_volume": 1440.0,
           "working_max_weight": 120.0,
           "is_cardio": false
@@ -658,7 +734,7 @@
           "working_reps": 12,
           "max_weight": 80.0,
           "weight_unit": "kg",
-          "total_volume": 1280.0,
+          "total_volume": 1440.0,
           "working_volume": 960.0,
           "working_max_weight": 80.0,
           "is_cardio": false
@@ -698,8 +774,8 @@
         "cardio_time": "0h 0m 0s",
         "total_distance": 0.0,
         "distance_unit": "km",
-        "total_reps": 83,
-        "total_volume": 4520.0,
+        "total_reps": 81,
+        "total_volume": 4550.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -716,7 +792,7 @@
           "working_reps": 15,
           "max_weight": 100.0,
           "weight_unit": "kg",
-          "total_volume": 1750.0,
+          "total_volume": 1800.0,
           "working_volume": 1500.0,
           "working_max_weight": 100.0,
           "is_cardio": false
@@ -724,12 +800,12 @@
         {
           "name": "Barbell Shoulder Press",
           "working_sets": 2,
-          "warmup_sets": 1,
-          "total_reps": 26,
+          "warmup_sets": 0,
+          "total_reps": 16,
           "working_reps": 16,
           "max_weight": 40.0,
           "weight_unit": "kg",
-          "total_volume": 840.0,
+          "total_volume": 640.0,
           "working_volume": 640.0,
           "working_max_weight": 40.0,
           "is_cardio": false
@@ -738,12 +814,12 @@
           "name": "Dumbbell Bicep Curl",
           "working_sets": 2,
           "warmup_sets": 0,
-          "total_reps": 24,
-          "working_reps": 24,
+          "total_reps": 22,
+          "working_reps": 22,
           "max_weight": 28.0,
           "weight_unit": "kg",
-          "total_volume": 672.0,
-          "working_volume": 672.0,
+          "total_volume": 616.0,
+          "working_volume": 616.0,
           "working_max_weight": 28.0,
           "is_cardio": false
         },
@@ -759,7 +835,26 @@
           "working_volume": 300.0,
           "working_max_weight": 10.0,
           "is_cardio": false
-        },
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 19m 0s",
+        "total_workout_seconds": 1140,
+        "strength_time": "0h 19m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 88,
+        "total_volume": 3356.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-02-06",
+      "day_of_week": "Thursday",
+      "time": "19:20",
+      "exercises": [
         {
           "name": "Treadmill",
           "working_sets": 1,
@@ -778,14 +873,14 @@
       ],
       "stats": {
         "session_count": 1,
-        "total_workout_time": "0h 45m 0s",
-        "total_workout_seconds": 2700.0,
-        "strength_time": "0h 20m 0s",
+        "total_workout_time": "0h 25m 0s",
+        "total_workout_seconds": 1500.0,
+        "strength_time": "0h 0m 0s",
         "cardio_time": "0h 25m 0s",
         "total_distance": 4.2,
         "distance_unit": "km",
-        "total_reps": 100,
-        "total_volume": 3562.0,
+        "total_reps": 0,
+        "total_volume": 0.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -798,11 +893,11 @@
           "name": "Deadlift",
           "working_sets": 3,
           "warmup_sets": 2,
-          "total_reps": 22,
+          "total_reps": 20,
           "working_reps": 12,
           "max_weight": 120.0,
           "weight_unit": "kg",
-          "total_volume": 2140.0,
+          "total_volume": 2010.0,
           "working_volume": 1440.0,
           "working_max_weight": 120.0,
           "is_cardio": false
@@ -815,7 +910,7 @@
           "working_reps": 12,
           "max_weight": 80.0,
           "weight_unit": "kg",
-          "total_volume": 1280.0,
+          "total_volume": 1440.0,
           "working_volume": 960.0,
           "working_max_weight": 80.0,
           "is_cardio": false
@@ -855,8 +950,8 @@
         "cardio_time": "0h 0m 0s",
         "total_distance": 0.0,
         "distance_unit": "km",
-        "total_reps": 83,
-        "total_volume": 4520.0,
+        "total_reps": 81,
+        "total_volume": 4550.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -873,7 +968,7 @@
           "working_reps": 15,
           "max_weight": 100.0,
           "weight_unit": "kg",
-          "total_volume": 1750.0,
+          "total_volume": 1800.0,
           "working_volume": 1500.0,
           "working_max_weight": 100.0,
           "is_cardio": false
@@ -881,12 +976,12 @@
         {
           "name": "Barbell Shoulder Press",
           "working_sets": 2,
-          "warmup_sets": 1,
-          "total_reps": 26,
+          "warmup_sets": 0,
+          "total_reps": 16,
           "working_reps": 16,
           "max_weight": 40.0,
           "weight_unit": "kg",
-          "total_volume": 840.0,
+          "total_volume": 640.0,
           "working_volume": 640.0,
           "working_max_weight": 40.0,
           "is_cardio": false
@@ -895,12 +990,12 @@
           "name": "Dumbbell Bicep Curl",
           "working_sets": 2,
           "warmup_sets": 0,
-          "total_reps": 24,
-          "working_reps": 24,
+          "total_reps": 22,
+          "working_reps": 22,
           "max_weight": 28.0,
           "weight_unit": "kg",
-          "total_volume": 672.0,
-          "working_volume": 672.0,
+          "total_volume": 616.0,
+          "working_volume": 616.0,
           "working_max_weight": 28.0,
           "is_cardio": false
         },
@@ -916,7 +1011,26 @@
           "working_volume": 300.0,
           "working_max_weight": 10.0,
           "is_cardio": false
-        },
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 19m 0s",
+        "total_workout_seconds": 1140,
+        "strength_time": "0h 19m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 88,
+        "total_volume": 3356.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-02-20",
+      "day_of_week": "Thursday",
+      "time": "19:20",
+      "exercises": [
         {
           "name": "Treadmill",
           "working_sets": 1,
@@ -935,14 +1049,46 @@
       ],
       "stats": {
         "session_count": 1,
-        "total_workout_time": "0h 45m 0s",
-        "total_workout_seconds": 2700.0,
-        "strength_time": "0h 20m 0s",
+        "total_workout_time": "0h 25m 0s",
+        "total_workout_seconds": 1500.0,
+        "strength_time": "0h 0m 0s",
         "cardio_time": "0h 25m 0s",
         "total_distance": 4.2,
         "distance_unit": "km",
-        "total_reps": 100,
-        "total_volume": 3562.0,
+        "total_reps": 0,
+        "total_volume": 0.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-02-24",
+      "day_of_week": "Monday",
+      "time": "07:00",
+      "exercises": [
+        {
+          "name": "Plank",
+          "working_sets": 2,
+          "warmup_sets": 0,
+          "total_reps": 0,
+          "working_reps": 0,
+          "max_weight": 0,
+          "weight_unit": "kg",
+          "total_volume": 0.0,
+          "working_volume": 0.0,
+          "working_max_weight": 0,
+          "is_cardio": false
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 4m 0s",
+        "total_workout_seconds": 240,
+        "strength_time": "0h 4m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 0,
+        "total_volume": 0.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -955,11 +1101,11 @@
           "name": "Deadlift",
           "working_sets": 3,
           "warmup_sets": 2,
-          "total_reps": 22,
+          "total_reps": 20,
           "working_reps": 12,
           "max_weight": 120.0,
           "weight_unit": "kg",
-          "total_volume": 2140.0,
+          "total_volume": 2010.0,
           "working_volume": 1440.0,
           "working_max_weight": 120.0,
           "is_cardio": false
@@ -972,7 +1118,7 @@
           "working_reps": 12,
           "max_weight": 80.0,
           "weight_unit": "kg",
-          "total_volume": 1280.0,
+          "total_volume": 1440.0,
           "working_volume": 960.0,
           "working_max_weight": 80.0,
           "is_cardio": false
@@ -1012,8 +1158,8 @@
         "cardio_time": "0h 0m 0s",
         "total_distance": 0.0,
         "distance_unit": "km",
-        "total_reps": 83,
-        "total_volume": 4520.0,
+        "total_reps": 81,
+        "total_volume": 4550.0,
         "volume_unit": "kg*reps"
       }
     },
@@ -1030,7 +1176,7 @@
           "working_reps": 15,
           "max_weight": 100.0,
           "weight_unit": "kg",
-          "total_volume": 1750.0,
+          "total_volume": 1800.0,
           "working_volume": 1500.0,
           "working_max_weight": 100.0,
           "is_cardio": false
@@ -1038,12 +1184,12 @@
         {
           "name": "Barbell Shoulder Press",
           "working_sets": 2,
-          "warmup_sets": 1,
-          "total_reps": 26,
+          "warmup_sets": 0,
+          "total_reps": 16,
           "working_reps": 16,
           "max_weight": 40.0,
           "weight_unit": "kg",
-          "total_volume": 840.0,
+          "total_volume": 640.0,
           "working_volume": 640.0,
           "working_max_weight": 40.0,
           "is_cardio": false
@@ -1052,12 +1198,12 @@
           "name": "Dumbbell Bicep Curl",
           "working_sets": 2,
           "warmup_sets": 0,
-          "total_reps": 24,
-          "working_reps": 24,
+          "total_reps": 22,
+          "working_reps": 22,
           "max_weight": 28.0,
           "weight_unit": "kg",
-          "total_volume": 672.0,
-          "working_volume": 672.0,
+          "total_volume": 616.0,
+          "working_volume": 616.0,
           "working_max_weight": 28.0,
           "is_cardio": false
         },
@@ -1073,7 +1219,26 @@
           "working_volume": 300.0,
           "working_max_weight": 10.0,
           "is_cardio": false
-        },
+        }
+      ],
+      "stats": {
+        "session_count": 1,
+        "total_workout_time": "0h 19m 0s",
+        "total_workout_seconds": 1140,
+        "strength_time": "0h 19m 0s",
+        "cardio_time": "0h 0m 0s",
+        "total_distance": 0.0,
+        "distance_unit": "km",
+        "total_reps": 88,
+        "total_volume": 3356.0,
+        "volume_unit": "kg*reps"
+      }
+    },
+    {
+      "date": "2025-02-27",
+      "day_of_week": "Thursday",
+      "time": "19:20",
+      "exercises": [
         {
           "name": "Treadmill",
           "working_sets": 1,
@@ -1092,14 +1257,14 @@
       ],
       "stats": {
         "session_count": 1,
-        "total_workout_time": "0h 45m 0s",
-        "total_workout_seconds": 2700.0,
-        "strength_time": "0h 20m 0s",
+        "total_workout_time": "0h 25m 0s",
+        "total_workout_seconds": 1500.0,
+        "strength_time": "0h 0m 0s",
         "cardio_time": "0h 25m 0s",
         "total_distance": 4.2,
         "distance_unit": "km",
-        "total_reps": 100,
-        "total_volume": 3562.0,
+        "total_reps": 0,
+        "total_volume": 0.0,
         "volume_unit": "kg*reps"
       }
     }
@@ -1109,40 +1274,40 @@
       "start": "2025-01-06",
       "end": "2025-02-27"
     },
-    "total_sessions": 14,
-    "total_workout_time": "7h 56m 0s",
-    "total_strength_time": "5h 1m 0s",
+    "total_sessions": 22,
+    "total_workout_time": "7h 53m 0s",
+    "total_strength_time": "4h 58m 0s",
     "total_cardio_time": "2h 55m 0s",
     "total_distance": 29.4,
     "distance_unit": "km",
-    "total_reps": 1281,
-    "total_volume": 56574.0,
+    "total_reps": 1183,
+    "total_volume": 55342.0,
     "volume_unit": "kg*reps",
     "averages": {
       "period": "per-workout",
-      "avg_workout_time": "0h 34m 0s",
-      "avg_strength_time": "0h 21m 30s",
-      "avg_cardio_time": "0h 12m 30s",
-      "avg_distance": 2.1,
-      "avg_reps": 91,
-      "avg_volume": 4041.0
+      "avg_workout_time": "0h 21m 30s",
+      "avg_strength_time": "0h 13m 32s",
+      "avg_cardio_time": "0h 7m 57s",
+      "avg_distance": 1.34,
+      "avg_reps": 53,
+      "avg_volume": 2515.55
     }
   },
   "analysis": {
     "push_pull_ratio": 0.57,
     "upper_lower_ratio": 1.5,
     "lower_share_pct": 40.0,
-    "core_share_pct": 9.1,
-    "level_score": 41.3,
+    "core_share_pct": 10.6,
+    "level_score": 41.2,
     "level": "Intermediate",
     "stalled_compounds": "Back Squat:+0.0%,Barbell Bench Press:+0.0%,Barbell Shoulder Press:+0.0%,Cable Row:+0.0%,Deadlift:+0.0%",
     "stalled_isolations": "Dumbbell Bicep Curl:+0.0%,My Custom Rehab Press:+0.0%",
-    "first_half_sessions_pw": 1.85,
-    "second_half_sessions_pw": 1.85,
-    "first_half_vol_pw": 7599.0,
-    "second_half_vol_pw": 7346.0,
-    "volume_change_pct": -3.3,
-    "gap_weeks": "none",
+    "first_half_sessions_pw": 3.21,
+    "second_half_sessions_pw": 2.66,
+    "first_half_vol_pw": 9224.0,
+    "second_half_vol_pw": 5725.0,
+    "volume_change_pct": -37.9,
+    "gap_weeks": "2025-02-10",
     "gap_window_weeks": 26,
     "equipment": [
       "barbell",
