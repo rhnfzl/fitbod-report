@@ -226,7 +226,7 @@ def _half_spans(periods, start_date, end_date):
         return 0, 0.0, 0.0
     try:
         split_date = datetime.strptime(periods[half].get("date", ""), "%Y-%m-%d").date()
-    except ValueError:
+    except (ValueError, TypeError):
         split_date = None
     if start_date and end_date and split_date:
         return half, max((split_date - start_date).days, 1) / 7.0, max((end_date - split_date).days + 1, 1) / 7.0

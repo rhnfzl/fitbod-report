@@ -534,9 +534,9 @@ if uploaded_file is not None:
             if output_format == "pdf":
                 try:
                     payload = _pdf_bytes(report_content)
-                except RuntimeError as e:
+                except Exception:  # any PDF failure: keep the page alive and point to Markdown
                     payload = None
-                    st.error(str(e))
+                    st.error("PDF could not be built. Download the Markdown report instead.")
             if payload is not None:
                 st.download_button(
                     "Download Report",
