@@ -12,15 +12,17 @@ Handles PDF conversion and formatting.
 
 #### Functions
 
-`convert_to_pdf(markdown_content, output_path)`
-- **Purpose**: Converts markdown content to PDF
-- **Arguments**:
-  - `markdown_content`: Markdown formatted string
-  - `output_path`: Path for saving PDF file
+`convert_to_pdf_bytes(markdown_content)`
+- **Purpose**: Converts markdown content to PDF in memory (used by the web app, so no report touches disk)
+- **Returns**: the PDF as `bytes`
 - **Process**:
-  1. Creates MarkdownPdf instance
-  2. Adds content as a section
-  3. Saves to specified path
+  1. Normalises heading levels
+  2. Cuts tables longer than 30 rows into chunks that repeat the header (MuPDF can loop forever on a table taller than a page)
+  3. Packs the report into ~20 KB sections split at h2-h4 headings (layout cost grows superlinearly with section size)
+  4. Renders each section with a page cap, raising `RuntimeError` instead of hanging
+
+`convert_to_pdf(markdown_content, output_path)`
+- Same, but writes the PDF to `output_path`. For command-line and test use.
 
 ## PDF Features
 

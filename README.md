@@ -65,14 +65,19 @@ git clone https://github.com/rhnfzl/fitbod-report.git
 cd fitbod-report
 ```
 
-3. Install dependencies using UV:
+3. Install the locked dependencies using UV (the same set CI tests):
 ```bash
-uv pip install -e .
+uv sync --locked
 ```
 
-For development, install additional dependencies:
+For development, include the dev tools (pytest, ruff):
 ```bash
-uv pip install -e ".[dev]"
+uv sync --locked --extra dev
+```
+
+Or run it in Docker (served on http://localhost:8501 only):
+```bash
+docker compose up --build
 ```
 
 ## Usage

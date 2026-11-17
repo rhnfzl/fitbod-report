@@ -1,0 +1,9 @@
+services:
+  fitbod-report:
+    build: .
+    image: fitbod-report:local
+    container_name: fitbod-report
+    ports:
+      # Loopback only: the app has no login. Use "8501:8501" to share it on your network.
+      - "127.0.0.1:8501:8501"
+    restart: unless-stopped

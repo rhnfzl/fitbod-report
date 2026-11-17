@@ -1,0 +1,64 @@
+date_range: 2025-01-06 to 2025-03-02
+report_type: weekly
+grouping_mode: rolling
+period_count: 7
+sessions: 22
+unit: metric
+exercises: 10
+
+## period_summary
+period	sessions	strength_min	cardio_min	volume_kg	reps	distance_km
+2025-01-06	3	42	25	7906.0	169	4.2
+2025-01-13	3	42	25	7906.0	169	4.2
+2025-01-20	3	42	25	7906.0	169	4.2
+2025-01-27	3	42	25	7906.0	169	4.2
+2025-02-03	3	42	25	7906.0	169	4.2
+2025-02-17	3	42	25	7906.0	169	4.2
+2025-02-24	4	46	25	7906.0	169	4.2
+
+## exercise_stats
+exercise	sessions	working_sets	working_reps	max_kg	avg_kg	working_volume	trend
+Back Squat	7	21	105	100.0	100.0	10500.0	+0.0%
+Barbell Bench Press	7	14	84	80.0	80.0	6720.0	+0.0%
+Barbell Shoulder Press	7	14	112	40.0	40.0	4480.0	+0.0%
+Cable Row	7	14	140	55.0	55.0	7700.0	+0.0%
+Deadlift	7	21	84	120.0	120.0	10080.0	+0.0%
+Dumbbell Bicep Curl	7	14	154	28.0	28.0	4312.0	+0.0%
+My Custom Rehab Press	7	14	210	10.0	10.0	2100.0	+0.0%
+Plank	1	2	0	0	0	0.0	N/A
+Pull Up	7	21	147	0	0	0.0	N/A
+
+## muscle_volume
+muscle	weekly_avg_sets	trend
+abs	0.2	N/A
+biceps	1.8	-20.0%
+chest	1.8	-20.0%
+front_delts	1.8	-20.0%
+glutes	5.2	-20.0%
+hamstrings	2.6	-20.0%
+lats	4.4	-20.0%
+lower_back	2.6	-20.0%
+obliques	0.2	N/A
+quads	2.6	-20.0%
+side_delts	1.8	-20.0%
+upper_back	4.4	-20.0%
+
+## recent_sessions
+date	exercises
+2025-02-27	Treadmill:25min
+2025-02-27	Back Squat:3x5@100.0kg,Barbell Shoulder Press:2x8@40.0kg,Dumbbell Bicep Curl:12/10@28.0kg,My Custom Rehab Press:2x15@10.0kg
+2025-02-24	Deadlift:3x4@120.0kg,Barbell Bench Press:2x6@80.0kg,Pull Up:8/7/6,Cable Row:2x10@55.0kg
+2025-02-24	Plank
+2025-02-20	Treadmill:25min
+2025-02-20	Back Squat:3x5@100.0kg,Barbell Shoulder Press:2x8@40.0kg,Dumbbell Bicep Curl:12/10@28.0kg,My Custom Rehab Press:2x15@10.0kg
+2025-02-17	Deadlift:3x4@120.0kg,Barbell Bench Press:2x6@80.0kg,Pull Up:8/7/6,Cable Row:2x10@55.0kg
+2025-02-06	Treadmill:25min
+2025-02-06	Back Squat:3x5@100.0kg,Barbell Shoulder Press:2x8@40.0kg,Dumbbell Bicep Curl:12/10@28.0kg,My Custom Rehab Press:2x15@10.0kg
+2025-02-03	Deadlift:3x4@120.0kg,Barbell Bench Press:2x6@80.0kg,Pull Up:8/7/6,Cable Row:2x10@55.0kg
+2025-01-30	Treadmill:25min
+2025-01-30	Back Squat:3x5@100.0kg,Barbell Shoulder Press:2x8@40.0kg,Dumbbell Bicep Curl:12/10@28.0kg,My Custom Rehab Press:2x15@10.0kg
+2025-01-27	Deadlift:3x4@120.0kg,Barbell Bench Press:2x6@80.0kg,Pull Up:8/7/6,Cable Row:2x10@55.0kg
+2025-01-23	Treadmill:25min
+
+## unknown_exercises
+My Custom Rehab Press
